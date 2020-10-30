@@ -18,14 +18,12 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.extern.slf4j.Slf4j;
 import org.spacious_team.table_wrapper.api.*;
 
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Slf4j
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
     private final String tableName;

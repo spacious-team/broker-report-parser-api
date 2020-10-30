@@ -20,14 +20,12 @@ package org.spacious_team.broker.report_parser.api;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Slf4j
 public abstract class InitializableReportTable<RowType> implements ReportTable<RowType> {
     @Getter
     private final BrokerReport report;
