@@ -28,6 +28,27 @@
 - паттерн `<branch>-SNAPSHOT` для сборки зависимости с последнего коммита выбранной ветки;
 - короткий 10-ти значный номер коммита для сборки зависимости с указанного коммита.
 
+Если брокер предоставляет отчет в формате excel файла, можете воспользоваться существующим excel
+[парсером](https://github.com/spacious-team/table-wrapper-excel-impl)
+```xml
+<dependency>
+    <groupId>com.github.spacious-team</groupId>
+    <artifactId>table-wrapper-excel-impl</artifactId>
+    <!-- ... или table-wrapper-xml-impl, если брокер предоставляет отчеты в xml файле -->
+    <version>master-SNAPSHOT</version>
+</dependency>
+```
+если в формате xml, то xml [парсером](https://github.com/spacious-team/table-wrapper-xml-impl)
+ ```xml
+ <dependency>
+     <groupId>com.github.spacious-team</groupId>
+     <artifactId>table-wrapper-xml-impl</artifactId>
+     <version>master-SNAPSHOT</version>
+ </dependency>
+ ```
+или напишите библиотеку парсера для другого формата, используя
+[Table Wrapper API](https://github.com/spacious-team/table-wrapper-api).
+
 ### Документация по разработке
 Главным объектом расширения является объект, реализующий интерфейс `BrokerReport`. Этот класс является оберткой
 над файлом-отчетом брокера, из которого в дальнейшем будет получена информация. Создайте этот класс, например
