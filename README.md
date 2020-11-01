@@ -43,11 +43,7 @@ public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
 
     @Override
     public BrokerReport create(String excelFileName, InputStream is) {
-        BrokerReport brokerReport = super.create(expectedFileNamePattern, excelFileName, is, MyBrokerReport::new);
-        if (brokerReport != null) {
-            log.info("Обнаружен отчет '{}' валютного рынка Промсвязьбанк брокера", excelFileName);
-        }
-        return brokerReport;
+        return  super.create(expectedFileNamePattern, excelFileName, is, MyBrokerReport::new);
     }
 }
 ```
