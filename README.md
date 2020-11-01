@@ -27,3 +27,64 @@
 - версию [релиза](https://github.com/spacious-team/broker-report-parser-api/releases) на github;
 - паттерн `<branch>-SNAPSHOT` для сборки зависимости с последнего коммита выбранной ветки;
 - короткий 10-ти значный номер коммита для сборки зависимости с указанного коммита.
+
+### Документация по разработке
+Главным объектом расширения является объект, реализующий интерфейс `BrokerReport`. Этот класс является оберткой
+над файлом-отчетом брокера, из которого в дальнейшем будет получена информация. Создайте этот класс, например
+`MyBrokerReport`, и предоставьте его через фабрику
+```java
+public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
+    
+    private final Pattern expectedFileNamePattern = Pattern.compile("^My_broker_[0-9()\\-_]+\\.xml$");
+
+    public String getBrokerName() {
+        return "MyBroker";
+    }
+
+    @Override
+    public BrokerReport create(String excelFileName, InputStream is) {
+        BrokerReport brokerReport = super.create(expectedFileNamePattern, excelFileName, is, MyBrokerReport::new);
+        if (brokerReport != null) {
+            log.info("Обнаружен отчет '{}' валютного рынка Промсвязьбанк брокера", excelFileName);
+        }
+        return brokerReport;
+    }
+}
+```
+Далее реализуйте интерфейс `ReportTables`, который предоставит информацию из отчета брокера в виде объектов `ReportTable`.
+Пример реализации класса `ReportTables` доступен по
+[ссылке](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/foreignmarket/PsbForeignMarketReportTables.java)
+```java
+public class MyReportTables implements ReportTables {
+    
+    @Override
+    public ReportTable<Security> getSecuritiesTable() {
+        return new EmptyReportTable<>(report);
+    }
+    // другие методы ...
+```
+Пример реализации `ReportTable` также в свободном
+[доступе](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/SecuritiesTable.java).
+
+Обратите внимание, ответ брокера может не содержать всей информации, например если брокер не предоставляет информации
+о котировках, можно вернуть заглушку `EmptyReportTable`. На первом этапе вы можете парсить из отчета
+брокера только часть информации, для информации, которую не парсите просто верните `EmptyReportTable`.
+
+Когда клас `ReportTables` реализован, нужно создать для него фабричный класс
+```java
+public class MyReportTablesFactory implements ReportTablesFactory {
+    @Override
+    public boolean canCreate(BrokerReport brokerReport) {
+        return (brokerReport instanceof ByBrokerReport);
+    }
+
+    @Override
+    public ReportTables create(BrokerReport brokerReport) {
+        return new MyReportTables(brokerReport);
+    }
+}
+```
+Парсер отчетов брокера готов. Соберите jar-архив
+```shell script
+mvn clean install
+```
