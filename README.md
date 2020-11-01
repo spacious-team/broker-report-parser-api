@@ -34,7 +34,6 @@
 <dependency>
     <groupId>com.github.spacious-team</groupId>
     <artifactId>table-wrapper-excel-impl</artifactId>
-    <!-- ... или table-wrapper-xml-impl, если брокер предоставляет отчеты в xml файле -->
     <version>master-SNAPSHOT</version>
 </dependency>
 ```
