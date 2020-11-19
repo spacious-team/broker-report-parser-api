@@ -37,7 +37,7 @@ public class DerivativeTransaction {
 
     public static final String QUOTE_CURRENCY = "PNT"; // point
     private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    private final long transactionId;
+    private final String transactionId;
     private final String portfolio;
     private final String contract;
     private final Instant timestamp;
