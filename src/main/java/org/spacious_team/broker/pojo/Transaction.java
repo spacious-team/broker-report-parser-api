@@ -32,7 +32,7 @@ import java.time.Instant;
 @EqualsAndHashCode
 public class Transaction {
     @NotNull
-    private final Long id;
+    private final String id;
 
     @NotNull
     private final String portfolio;

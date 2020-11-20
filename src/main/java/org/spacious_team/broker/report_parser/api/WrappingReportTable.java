@@ -20,21 +20,12 @@ package org.spacious_team.broker.report_parser.api;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     @Getter
     private final BrokerReport report;
-    @Getter
     private final List<RowType> data;
-
-    public WrappingReportTable(BrokerReport report, List<RowType> data) {
-        this.report = report;
-        this.data = Collections.unmodifiableList(data);
-    }
 
     @SafeVarargs
     public static <T> WrappingReportTable<T> of(ReportTable<T>... tables) {
@@ -60,9 +51,29 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         this.data = data;
     }
 
+    @SafeVarargs
+    public static <T> WrappingReportTable<T> of(BrokerReport report, Collection<T>... dataset) {
+        return new WrappingReportTable<>(report, dataset);
+    }
+
+    @SafeVarargs
+    public WrappingReportTable(BrokerReport report, Collection<RowType>... dataset) {
+        List<RowType> data = new ArrayList<>();
+        for (Collection<RowType> d : dataset) {
+            data.addAll(d);
+        }
+        this.report = report;
+        this.data = data;
+    }
+
     private static void assertIsTrue(boolean expression, String message) {
         if (!expression) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    @Override
+    public List<RowType> getData() {
+        return Collections.unmodifiableList(data);
     }
 }

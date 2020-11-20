@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 public class TransactionCashFlow {
     @NotNull
     @JsonProperty("transaction-id")
-    private final Long transactionId;
+    private final String transactionId;
 
     @NotNull
     private final String portfolio;

@@ -36,7 +36,7 @@ import java.util.List;
 public class SecurityTransaction {
 
     private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    private final long transactionId;
+    private final String transactionId;
     private final String portfolio;
     private final String isin;
     private final Instant timestamp;
