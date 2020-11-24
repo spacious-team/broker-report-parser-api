@@ -36,10 +36,10 @@ public enum SecurityType {
     }
 
     public static SecurityType getSecurityType(String isin) {
-        if (isin.endsWith("_TOD") || isin.endsWith("_TOM") || isin.length() == 6) { // USDRUB_TOM or USDRUB_TOD or USDRUB
-            return CURRENCY_PAIR;
-        } else if (isin.length() == 12) {
+        if (isin.length() == 12 && !isin.contains("-")) {
             return STOCK_OR_BOND;
+        } else if (isin.length() == 6 || (isin.length() > 7 && isin.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
+            return CURRENCY_PAIR;
         } else {
             return DERIVATIVE;
         }
@@ -50,7 +50,6 @@ public enum SecurityType {
      */
     public static String getCurrencyPair(String contract) {
         return (contract.length() == 6) ? contract :
-                contract.replace("_TOD", "")
-                        .replace("_TOM", "");
+                contract.substring(0, Math.min(6, contract.length()));
     }
 }
