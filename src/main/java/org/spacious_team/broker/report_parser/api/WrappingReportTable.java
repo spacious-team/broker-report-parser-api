@@ -20,7 +20,11 @@ package org.spacious_team.broker.report_parser.api;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     @Getter

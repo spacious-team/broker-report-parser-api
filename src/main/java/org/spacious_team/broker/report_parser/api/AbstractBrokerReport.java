@@ -18,7 +18,11 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.spacious_team.table_wrapper.api.ReportPage;
 
 import java.nio.file.Path;
