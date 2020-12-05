@@ -37,7 +37,7 @@ public class SecurityQuote {
     private final Integer id;
 
     @NotNull
-    private final String isin;
+    private final String security;
 
     @NotNull
     private final Instant timestamp;

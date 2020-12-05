@@ -51,7 +51,7 @@ public class DerivativeTransaction {
         return Transaction.builder()
                 .id(transactionId)
                 .portfolio(portfolio)
-                .isin(contract)
+                .security(contract)
                 .timestamp(timestamp)
                 .count(count)
                 .build();
