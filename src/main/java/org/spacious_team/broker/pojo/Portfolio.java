@@ -30,7 +30,6 @@ import javax.validation.constraints.NotNull;
 @Builder(toBuilder = true)
 @EqualsAndHashCode
 public class Portfolio {
-    public static final Portfolio ALL = new Portfolio("all");
     @NotNull
     private final String id;
 }
