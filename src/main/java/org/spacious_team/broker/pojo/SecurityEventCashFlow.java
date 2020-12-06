@@ -45,7 +45,7 @@ public class SecurityEventCashFlow {
     private final Instant timestamp;
 
     @NotNull
-    private final String isin;
+    private final String security;
 
     @NotNull
     private final Integer count;
@@ -67,7 +67,7 @@ public class SecurityEventCashFlow {
         return cash1.getPortfolio().equals(cash2.getPortfolio()) &&
                 cash1.getTimestamp().equals(cash2.getTimestamp()) &&
                 cash1.getEventType().equals(cash2.getEventType()) &&
-                cash1.getIsin().equals(cash2.getIsin());
+                cash1.getSecurity().equals(cash2.getSecurity());
     }
 
     /**

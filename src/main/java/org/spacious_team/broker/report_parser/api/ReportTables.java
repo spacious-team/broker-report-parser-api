@@ -18,7 +18,11 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import org.spacious_team.broker.pojo.*;
+import org.spacious_team.broker.pojo.EventCashFlow;
+import org.spacious_team.broker.pojo.PortfolioProperty;
+import org.spacious_team.broker.pojo.Security;
+import org.spacious_team.broker.pojo.SecurityEventCashFlow;
+import org.spacious_team.broker.pojo.SecurityQuote;
 
 public interface ReportTables {
     BrokerReport getReport();

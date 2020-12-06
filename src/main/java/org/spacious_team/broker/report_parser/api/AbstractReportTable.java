@@ -18,7 +18,11 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import org.spacious_team.table_wrapper.api.*;
+import org.spacious_team.table_wrapper.api.ReportPage;
+import org.spacious_team.table_wrapper.api.Table;
+import org.spacious_team.table_wrapper.api.TableColumnDescription;
+import org.spacious_team.table_wrapper.api.TableFactory;
+import org.spacious_team.table_wrapper.api.TableRow;
 
 import java.time.Instant;
 import java.util.Arrays;

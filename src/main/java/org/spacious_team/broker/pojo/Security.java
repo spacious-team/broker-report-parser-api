@@ -31,7 +31,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 public class Security {
     @NotNull
-    private final String isin;
+    private final String id;
 
     //@Nullable
     private final String ticker;

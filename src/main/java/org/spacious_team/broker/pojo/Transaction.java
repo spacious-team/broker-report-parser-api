@@ -38,7 +38,7 @@ public class Transaction {
     private final String portfolio;
 
     @NotNull
-    private final String isin;
+    private final String security;
 
     @NotNull
     private final Instant timestamp;

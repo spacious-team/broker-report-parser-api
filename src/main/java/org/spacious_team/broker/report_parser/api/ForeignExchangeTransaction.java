@@ -38,7 +38,7 @@ public class ForeignExchangeTransaction {
     private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
     private final String transactionId;
     private final String portfolio;
-    private final String instrument; // валютная пара
+    private final String contract; // валютная пара
     private final Instant timestamp; // дата исполнения
     private final int count;
     private final BigDecimal value; // оценочная стоиомсть в валюце цены
@@ -50,7 +50,7 @@ public class ForeignExchangeTransaction {
         return Transaction.builder()
                 .id(transactionId)
                 .portfolio(portfolio)
-                .isin(instrument)
+                .security(contract)
                 .timestamp(timestamp)
                 .count(count)
                 .build();

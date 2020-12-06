@@ -38,7 +38,7 @@ public class SecurityTransaction {
     private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
     private final String transactionId;
     private final String portfolio;
-    private final String isin;
+    private final String security;
     private final Instant timestamp;
     private final int count;
     private final BigDecimal value; // оценочная стоиомсть в валюце цены
@@ -51,7 +51,7 @@ public class SecurityTransaction {
         return Transaction.builder()
                 .id(transactionId)
                 .portfolio(portfolio)
-                .isin(isin)
+                .security(security)
                 .timestamp(timestamp)
                 .count(count)
                 .build();

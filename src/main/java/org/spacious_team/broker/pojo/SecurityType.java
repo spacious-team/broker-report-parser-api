@@ -32,13 +32,13 @@ public enum SecurityType {
     private final String description;
 
     public static SecurityType getSecurityType(Security security) {
-        return getSecurityType(security.getIsin());
+        return getSecurityType(security.getId());
     }
 
-    public static SecurityType getSecurityType(String isin) {
-        if (isin.length() == 12 && !isin.contains("-")) {
+    public static SecurityType getSecurityType(String security) {
+        if (security.length() == 12 && !security.contains("-")) {
             return STOCK_OR_BOND;
-        } else if (isin.length() == 6 || (isin.length() > 7 && isin.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
+        } else if (security.length() == 6 || (security.length() > 7 && security.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
             return CURRENCY_PAIR;
         } else {
             return DERIVATIVE;
