@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,8 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
+
 @Getter
 @ToString
 @Builder(toBuilder = true)
@@ -50,4 +52,22 @@ public class SecurityQuote {
 
     //@Nullable
     private final BigDecimal accruedInterest;
+
+    /**
+     * Returns in currency stock, derivative and currency pair price, bond price with accrued interest currency (not quote)
+     */
+    public BigDecimal getFullPriceInCurrency() {
+        SecurityType type = SecurityType.getSecurityType(security);
+        if (type == DERIVATIVE) {
+            return price;
+        } else {
+            if (price != null) {
+                // for bonds
+                return (accruedInterest == null) ? price : price.add(accruedInterest);
+            } else {
+                // for stocks and currency pairs
+                return quote;
+            }
+        }
+    }
 }
