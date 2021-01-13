@@ -45,29 +45,35 @@ public class SecurityQuote {
     private final Instant timestamp;
 
     @NotNull
-    private final BigDecimal quote;
+    private final BigDecimal quote; // for stock and currency pair in currency, for bond - in percent, for derivative - in quote
 
     //@Nullable
-    private final BigDecimal price;
+    private final BigDecimal price; // for bond and derivative - in currency, for others is null
 
     //@Nullable
-    private final BigDecimal accruedInterest;
+    private final BigDecimal accruedInterest; // for bond in currency, for others is null
 
     /**
-     * Returns in currency stock, derivative and currency pair price, bond price with accrued interest currency (not quote)
+     * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
      */
-    public BigDecimal getFullPriceInCurrency() {
+    public BigDecimal getCleanPriceInCurrency() {
         SecurityType type = SecurityType.getSecurityType(security);
         if (type == DERIVATIVE) {
             return price;
         } else {
-            if (price != null) {
-                // for bonds
-                return (accruedInterest == null) ? price : price.add(accruedInterest);
+            if (price == null && accruedInterest == null) {
+                return quote; // for stocks and currency pairs
             } else {
-                // for stocks and currency pairs
-                return quote;
+                return price; // for bonds
             }
         }
+    }
+
+    /**
+     * Returns price in currency (not a quote), bond price accounted with accrued interest. May be null if unknown.
+     */
+    public BigDecimal getDirtyPriceInCurrency() {
+        BigDecimal cleanPrice = getCleanPriceInCurrency();
+        return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
     }
 }
