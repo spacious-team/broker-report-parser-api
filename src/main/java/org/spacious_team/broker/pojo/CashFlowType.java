@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,11 +31,11 @@ public enum CashFlowType {
     REDEMPTION(5), // погашение номинала облигации
     COUPON(6), // выплата купона (сумма до удержания налога)
     DIVIDEND(7), // выплата дивиденда (сумма до удержания налога)
-    DERIVATIVE_PROFIT(8),// вариационная маржа
+    DERIVATIVE_PROFIT(8), // вариационная маржа
     MARGIN(9), // гарантийное обеспечение
     TAX(10), // налог уплаченный
     FORECAST_TAX(11), // прогнозируемый налог
-    DERIVATIVE_PRICE(12), // Стоимость сделки с деривативом, рубли
+    DERIVATIVE_PRICE(12), // Стоимость сделки с деривативом, валюта (RUB, USD или др.)
     DERIVATIVE_QUOTE(13); // Стоимость сделки с деривативом, пункты
 
     @Getter

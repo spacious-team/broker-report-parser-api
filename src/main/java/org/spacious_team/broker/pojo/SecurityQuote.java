@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,8 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
+
 @Getter
 @ToString
 @Builder(toBuilder = true)
@@ -43,11 +45,35 @@ public class SecurityQuote {
     private final Instant timestamp;
 
     @NotNull
-    private final BigDecimal quote;
+    private final BigDecimal quote; // for stock and currency pair in currency, for bond - in percent, for derivative - in quote
 
     //@Nullable
-    private final BigDecimal price;
+    private final BigDecimal price; // for bond and derivative - in currency, for others is null
 
     //@Nullable
-    private final BigDecimal accruedInterest;
+    private final BigDecimal accruedInterest; // for bond in currency, for others is null
+
+    /**
+     * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
+     */
+    public BigDecimal getCleanPriceInCurrency() {
+        SecurityType type = SecurityType.getSecurityType(security);
+        if (type == DERIVATIVE) {
+            return price;
+        } else {
+            if (price == null && accruedInterest == null) {
+                return quote; // for stocks and currency pairs
+            } else {
+                return price; // for bonds
+            }
+        }
+    }
+
+    /**
+     * Returns price in currency (not a quote), bond price accounted with accrued interest. May be null if unknown.
+     */
+    public BigDecimal getDirtyPriceInCurrency() {
+        BigDecimal cleanPrice = getCleanPriceInCurrency();
+        return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
+    }
 }
