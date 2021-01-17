@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package org.spacious_team.broker.report_parser.api;
 
 import org.spacious_team.broker.pojo.EventCashFlow;
+import org.spacious_team.broker.pojo.ForeignExchangeRate;
 import org.spacious_team.broker.pojo.PortfolioProperty;
 import org.spacious_team.broker.pojo.Security;
 import org.spacious_team.broker.pojo.SecurityEventCashFlow;
@@ -48,4 +49,6 @@ public interface ReportTables {
     ReportTable<SecurityEventCashFlow> getDerivativeCashFlowTable();
 
     ReportTable<SecurityQuote> getSecurityQuoteTable();
+
+    ReportTable<ForeignExchangeRate> getForeignExchangeRateTable();
 }
