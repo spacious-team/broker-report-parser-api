@@ -18,8 +18,26 @@
 
 package org.spacious_team.broker.pojo;
 
-public enum PortfolioPropertyType {
-    TOTAL_ASSETS_RUB,
-    TOTAL_ASSETS_USD, // use one of TOTAL_ASSETS_RUB or TOTAL_ASSETS_USD
-    CASH
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Getter
+@ToString
+@Builder(toBuilder = true)
+@EqualsAndHashCode
+public class ForeignExchangeRate {
+    @NotNull
+    private final LocalDate date;
+
+    @NotNull
+    private final String currencyPair;
+
+    @NotNull
+    private final BigDecimal rate;
 }
