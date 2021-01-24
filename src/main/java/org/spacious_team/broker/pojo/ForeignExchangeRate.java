@@ -18,10 +18,12 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
 public class ForeignExchangeRate {
@@ -36,6 +39,7 @@ public class ForeignExchangeRate {
     private final LocalDate date;
 
     @NotNull
+    @JsonProperty("currency-pair")
     private final String currencyPair;
 
     @NotNull

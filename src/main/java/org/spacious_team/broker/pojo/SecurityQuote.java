@@ -18,10 +18,12 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -31,6 +33,7 @@ import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
 public class SecurityQuote {
@@ -51,6 +54,7 @@ public class SecurityQuote {
     private final BigDecimal price; // for bond and derivative - in currency, for others is null
 
     //@Nullable
+    @JsonProperty("accrued-interest")
     private final BigDecimal accruedInterest; // for bond in currency, for others is null
 
     /**
