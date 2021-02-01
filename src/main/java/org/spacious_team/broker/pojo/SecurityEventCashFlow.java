@@ -19,6 +19,7 @@
 package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,30 +37,39 @@ import java.util.Collections;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
 public class SecurityEventCashFlow {
     //@Nullable // autoincrement
+    @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
     private final Integer id;
 
     @NotNull
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String portfolio;
 
     @NotNull
+    @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
     @NotNull
+    @Schema(description = "Инструмент", example = "NL0009805522", required = true)
     private final String security;
 
     @NotNull
+    @Schema(description = "Количество бумаг (контрактов)", example = "10", required = true)
     private final Integer count;
 
     @NotNull
     @JsonProperty("event-type")
+    @Schema(description = "Тип события", example = "DIVIDEND", required = true)
     private final CashFlowType eventType;
 
     @NotNull
+    @Schema(description = "Сумма", example = "100.20", required = true)
     private final BigDecimal value;
 
     @Builder.Default
+    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUR";
 
     /**

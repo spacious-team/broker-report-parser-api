@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +32,9 @@ import javax.validation.constraints.NotNull;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Счет")
 public class Portfolio {
     @NotNull
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String id;
 }

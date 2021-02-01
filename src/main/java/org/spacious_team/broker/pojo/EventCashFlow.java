@@ -19,6 +19,7 @@
 package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,27 +38,35 @@ import java.util.StringJoiner;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Движение ДС по счету", description = "Ввод и вывод ДС, налоги, комиссии, а также выплаты по инструментам другого счета")
 public class EventCashFlow {
     //@Nullable // autoincrement
+    @Schema(description = "Идентификатор записи", example = "123", nullable = true)
     private final Integer id;
 
     @NotNull
+    @Schema(description = "Номер счета", example = "10200I", required = true)
     private final String portfolio;
 
     @NotNull
+    @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", required = true)
     private final Instant timestamp;
 
     @NotNull
     @JsonProperty("event-type")
+    @Schema(description = "Тип события", example = "CASH", required = true)
     private final CashFlowType eventType;
 
     @NotNull
+    @Schema(description = "Значение", example = "100.50", required = true)
     private final BigDecimal value;
 
     @Builder.Default
+    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUB";
 
     //@Nullable
+    @Schema(description = "Описание события", example = "Внесение наличных", nullable = true)
     private final String description;
 
     /**

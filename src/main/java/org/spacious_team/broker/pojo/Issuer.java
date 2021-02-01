@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,10 +32,13 @@ import javax.validation.constraints.NotNull;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Эмитент")
 public class Issuer {
     @NotNull
+    @Schema(description = "ИНН", example = "7736050003")
     private final Long inn;
 
     @NotNull
+    @Schema(description = "Наименование", example = "ПАО Газпром")
     private final String name;
 }
