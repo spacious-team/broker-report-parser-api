@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,64 +18,13 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.spacious_team.broker.pojo.CashFlowType;
-import org.spacious_team.broker.pojo.Transaction;
-import org.spacious_team.broker.pojo.TransactionCashFlow;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class ForeignExchangeTransaction extends AbstractTransaction {
 
-@Getter
-@Builder
-@EqualsAndHashCode
-public class ForeignExchangeTransaction {
-
-    private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    private final String transactionId;
-    private final String portfolio;
-    private final String contract; // валютная пара
-    private final Instant timestamp; // дата исполнения
-    private final int count;
-    private final BigDecimal value; // оценочная стоиомсть в валюце цены
-    private final BigDecimal commission;
-    private final String valueCurrency; // валюта платежа
-    private final String commissionCurrency; // валюта коммиссии
-
-    public Transaction getTransaction() {
-        return Transaction.builder()
-                .id(transactionId)
-                .portfolio(portfolio)
-                .security(contract)
-                .timestamp(timestamp)
-                .count(count)
-                .build();
-    }
-
-    public List<TransactionCashFlow> getTransactionCashFlows() {
-        List<TransactionCashFlow> list = new ArrayList<>(3);
-        if (!value.equals(BigDecimal.ZERO)) {
-            list.add(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
-                    .eventType(CashFlowType.PRICE)
-                    .value(value)
-                    .currency(valueCurrency)
-                    .build());
-        }
-        if (commission.abs().compareTo(minValue) >= 0) {
-            list.add(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
-                    .eventType(CashFlowType.COMMISSION)
-                    .value(commission)
-                    .currency(commissionCurrency)
-                    .build());
-        }
-        return list;
-    }
 }

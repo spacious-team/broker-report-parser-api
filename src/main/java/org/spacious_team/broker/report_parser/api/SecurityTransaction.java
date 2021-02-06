@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,58 +18,37 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.spacious_team.broker.pojo.CashFlowType;
-import org.spacious_team.broker.pojo.Transaction;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
-@Builder
-@EqualsAndHashCode
-public class SecurityTransaction {
-
-    private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    private final String transactionId;
-    private final String portfolio;
-    private final String security;
-    private final Instant timestamp;
-    private final int count;
-    private final BigDecimal value; // оценочная стоиомсть в валюце цены
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class SecurityTransaction extends AbstractTransaction {
     private final BigDecimal accruedInterest; // НКД, в валюте бумаги
-    private final BigDecimal commission;
-    private final String valueCurrency; // валюта платежа
-    private final String commissionCurrency; // валюта коммиссии
-
-    public Transaction getTransaction() {
-        return Transaction.builder()
-                .id(transactionId)
-                .portfolio(portfolio)
-                .security(security)
-                .timestamp(timestamp)
-                .count(count)
-                .build();
-    }
 
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(3);
-        if (value.abs().compareTo(minValue) >= 0) {
-            list.add(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
-                    .eventType(CashFlowType.PRICE)
-                    .value(value)
-                    .currency(valueCurrency)
-                    .build());
-        }
-        if (accruedInterest.abs().compareTo(minValue) >= 0) { // for securities accrued interest = 0
-            list.add(TransactionCashFlow.builder()
+        getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
+        getAccruedInterestCashFlow().ifPresent(list::add);
+        getCommissionCashFlow().ifPresent(list::add);
+        return list;
+    }
+
+    private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
+        // for securities accrued interest = 0
+        if (accruedInterest != null && accruedInterest.abs().compareTo(minValue) >= 0) {
+            return Optional.of(TransactionCashFlow.builder()
                     .transactionId(transactionId)
                     .portfolio(portfolio)
                     .eventType(CashFlowType.ACCRUED_INTEREST)
@@ -77,15 +56,6 @@ public class SecurityTransaction {
                     .currency(valueCurrency)
                     .build());
         }
-        if (commission.abs().compareTo(minValue) >= 0) {
-            list.add(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
-                    .eventType(CashFlowType.COMMISSION)
-                    .value(commission)
-                    .currency(commissionCurrency)
-                    .build());
-        }
-        return list;
+        return Optional.empty();
     }
 }
