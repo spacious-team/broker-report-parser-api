@@ -47,13 +47,27 @@ public class DerivativeTransaction extends AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
-        if (valueInPoints != null && valueInPoints.abs().compareTo(minValue) >= 0) {
+        if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(transactionId)
                     .portfolio(portfolio)
                     .eventType(CashFlowType.DERIVATIVE_QUOTE)
                     .value(valueInPoints)
                     .currency(QUOTE_CURRENCY)
+                    .build());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
+        if (value != null) {
+            return Optional.of(TransactionCashFlow.builder()
+                    .transactionId(transactionId)
+                    .portfolio(portfolio)
+                    .eventType(type)
+                    .value(value)
+                    .currency(valueCurrency)
                     .build());
         }
         return Optional.empty();
