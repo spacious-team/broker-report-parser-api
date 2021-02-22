@@ -18,10 +18,14 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -31,31 +35,42 @@ import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Котировка")
 public class SecurityQuote {
 
-    @NotNull
+    //@Nullable // autoincrement
+    @Schema(description = "Внутренний идентификатор записи", example = "333", nullable = true)
     private final Integer id;
 
     @NotNull
+    @Schema(description = "Инструмент", example = "NL0009805522", required = true)
     private final String security;
 
     @NotNull
+    @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
     @NotNull
+    @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", required = true)
     private final BigDecimal quote; // for stock and currency pair in currency, for bond - in percent, for derivative - in quote
 
     //@Nullable
+    @Schema(description = "Котировка (в валюте, только для облигаций и деривативов)", example = "1020.30", nullable = true)
     private final BigDecimal price; // for bond and derivative - in currency, for others is null
 
     //@Nullable
+    @JsonProperty("accrued-interest")
+    @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
     private final BigDecimal accruedInterest; // for bond in currency, for others is null
 
     /**
      * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
      */
+    @JsonIgnore
+    @Schema(hidden = true)
     public BigDecimal getCleanPriceInCurrency() {
         SecurityType type = SecurityType.getSecurityType(security);
         if (type == DERIVATIVE) {
@@ -72,6 +87,8 @@ public class SecurityQuote {
     /**
      * Returns price in currency (not a quote), bond price accounted with accrued interest. May be null if unknown.
      */
+    @JsonIgnore
+    @Schema(hidden = true)
     public BigDecimal getDirtyPriceInCurrency() {
         BigDecimal cleanPrice = getCleanPriceInCurrency();
         return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);

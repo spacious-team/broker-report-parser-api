@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,21 +18,27 @@
 
 package org.spacious_team.broker.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Эмитент")
 public class Issuer {
     @NotNull
+    @Schema(description = "ИНН", example = "7736050003")
     private final Long inn;
 
     @NotNull
+    @Schema(description = "Наименование", example = "ПАО Газпром")
     private final String name;
 }

@@ -20,33 +20,42 @@ package org.spacious_team.broker.pojo;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
     @NotNull
     @JsonProperty("transaction-id")
+    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", required = true)
     private final String transactionId;
 
     @NotNull
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String portfolio;
 
     @NotNull
     @JsonProperty("event-type")
+    @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", required = true)
     private final CashFlowType eventType;
 
     @NotNull
+    @Schema(description = "Сумма по событию", example = "1000.20", required = true)
     private final BigDecimal value;
 
     @Builder.Default
+    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUB";
 }

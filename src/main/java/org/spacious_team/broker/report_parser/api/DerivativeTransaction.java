@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,66 +18,58 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.spacious_team.broker.pojo.CashFlowType;
-import org.spacious_team.broker.pojo.Transaction;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
-@Builder
-@EqualsAndHashCode
-public class DerivativeTransaction {
-
-    public static final String QUOTE_CURRENCY = "PNT"; // point
-    private static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    private final String transactionId;
-    private final String portfolio;
-    private final String contract;
-    private final Instant timestamp;
-    private final int count;
-    private final BigDecimal value; // оценочная стоиомсть в валюце цены
-    private final BigDecimal commission;
-    private final String valueCurrency; // валюта платежа
-    private final String commissionCurrency; // валюта коммиссии
-
-    public Transaction getTransaction() {
-        return Transaction.builder()
-                .id(transactionId)
-                .portfolio(portfolio)
-                .security(contract)
-                .timestamp(timestamp)
-                .count(count)
-                .build();
-    }
+@SuperBuilder
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class DerivativeTransaction extends AbstractTransaction {
+    private static final String QUOTE_CURRENCY = "PNT"; // point
+    private final BigDecimal valueInPoints;
 
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
-        list.add(TransactionCashFlow.builder()
-                .transactionId(transactionId)
-                .portfolio(portfolio)
-                .eventType(valueCurrency.equals(QUOTE_CURRENCY) ?
-                        CashFlowType.DERIVATIVE_QUOTE :
-                        CashFlowType.DERIVATIVE_PRICE)
-                .value(value)
-                .currency(valueCurrency)
-                .build());
+        getValueInPointsCashFlow().ifPresent(list::add);
+        getValueCashFlow(CashFlowType.DERIVATIVE_PRICE).ifPresent(list::add);
+        getCommissionCashFlow().ifPresent(list::add);
+        return list;
+    }
 
-        if (commission.abs().compareTo(minValue) >= 0) {
-            list.add(TransactionCashFlow.builder()
+    protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
+        if (valueInPoints != null) {
+            return Optional.of(TransactionCashFlow.builder()
                     .transactionId(transactionId)
                     .portfolio(portfolio)
-                    .eventType(CashFlowType.COMMISSION)
-                    .value(commission)
-                    .currency(commissionCurrency)
+                    .eventType(CashFlowType.DERIVATIVE_QUOTE)
+                    .value(valueInPoints)
+                    .currency(QUOTE_CURRENCY)
                     .build());
         }
-        return list;
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
+        if (value != null) {
+            return Optional.of(TransactionCashFlow.builder()
+                    .transactionId(transactionId)
+                    .portfolio(portfolio)
+                    .eventType(type)
+                    .value(value)
+                    .currency(valueCurrency)
+                    .build());
+        }
+        return Optional.empty();
     }
 }

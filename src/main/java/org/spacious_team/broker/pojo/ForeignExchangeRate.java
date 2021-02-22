@@ -18,10 +18,13 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -29,15 +32,21 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode
+@Schema(name = "Официальный обменный курс")
 public class ForeignExchangeRate {
     @NotNull
+    @Schema(description = "Дата", example = "2021-21-23", required = true)
     private final LocalDate date;
 
     @NotNull
+    @JsonProperty("currency-pair")
+    @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", required = true)
     private final String currencyPair;
 
     @NotNull
+    @Schema(description = "Значение обменного курса", example = "75.67", required = true)
     private final BigDecimal rate;
 }
