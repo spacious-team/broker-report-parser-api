@@ -19,6 +19,7 @@
 package org.spacious_team.broker.report_parser.api;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
@@ -30,7 +31,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Collections;
 
 @Getter
 @Builder
@@ -45,12 +45,20 @@ public class PortfolioCash {
     private BigDecimal value;
     private String currency;
 
-    public static Collection<PortfolioCash> valueOf(String value) {
+    public static String serialize(Collection<PortfolioCash> cash) {
+        try {
+            return objectMapper.writeValueAsString(cash);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Can't serialize portfolio cash", e);
+        }
+    }
+
+    public static Collection<PortfolioCash> deserialize(String value) {
         try {
             return objectMapper.readValue(value, new TypeReference<>() {
             });
-        } catch (Exception ex) {
-            return Collections.emptyList();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Can't deserialize portfolio cash", e);
         }
     }
 }
