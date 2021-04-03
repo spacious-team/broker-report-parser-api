@@ -36,9 +36,10 @@ public enum SecurityType {
     }
 
     public static SecurityType getSecurityType(String security) {
-        if (security.length() == 12 && !security.contains("-")) {
+        int length = security.length();
+        if (length == 12 && security.indexOf('-') == -1) {
             return STOCK_OR_BOND;
-        } else if (security.length() == 6 || (security.length() > 7 && security.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
+        } else if (length == 6 || (length > 7 && security.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
             return CURRENCY_PAIR;
         } else {
             return DERIVATIVE;
