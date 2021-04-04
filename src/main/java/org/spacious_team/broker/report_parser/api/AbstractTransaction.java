@@ -18,7 +18,6 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

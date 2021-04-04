@@ -21,7 +21,6 @@ package org.spacious_team.broker.report_parser.api;
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableColumnDescription;
-import org.spacious_team.table_wrapper.api.TableFactory;
 import org.spacious_team.table_wrapper.api.TableRow;
 
 import java.time.Instant;
@@ -58,10 +57,9 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected Collection<RowType> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
-            TableFactory tableFactory = TableFactoryRegistry.get(reportPage);
             Table table = (tableFooter != null && !tableFooter.isEmpty()) ?
-                    tableFactory.create(reportPage, tableName, tableFooter, headerDescription, headersRowCount) :
-                    tableFactory.create(reportPage, tableName, headerDescription, headersRowCount);
+                    reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
+                    reportPage.create(tableName, headerDescription, headersRowCount);
             return parseTable(table);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' " +
@@ -77,7 +75,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
         return getReport().convertToInstant(dateTime);
     }
 
-    protected abstract Collection<RowType> getRow(Table table, TableRow row);
+    protected abstract Collection<RowType> getRow(TableRow row);
 
     protected boolean checkEquality(RowType object1, RowType object2) {
         return object1.equals(object2);

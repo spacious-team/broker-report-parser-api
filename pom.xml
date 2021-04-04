@@ -24,7 +24,7 @@
 
     <groupId>org.spacious-team</groupId>
     <artifactId>broker-report-parser-api</artifactId>
-    <version>2021.3</version>
+    <version>2021.4</version>
     <packaging>jar</packaging>
 
     <name>Broker Report Parser API</name>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.github.spacious-team</groupId>
             <artifactId>table-wrapper-api</artifactId>
-            <version>2020.12</version>
+            <version>2021.4</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -102,6 +102,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
