@@ -27,18 +27,28 @@ import java.util.regex.Pattern;
 public abstract class AbstractBrokerReportFactory implements BrokerReportFactory {
 
     /**
-     * Checks input stream and returns broker report if can, otherwise reset input stream mark to original position
-     * and returns null
-     *
      * @param expectedFileNamePattern used for fast report check without input stream reading
+     */
+    protected BrokerReport create(Pattern expectedFileNamePattern,
+                                  String excelFileName,
+                                  InputStream is,
+                                  BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
+        if (expectedFileNamePattern.matcher(excelFileName).matches()) {
+            return create(excelFileName, is, brokerReportProvider);
+        }
+        return null;
+    }
+
+    /**
+     * Checks input stream and returns broker report if can, otherwise reset input stream mark to original position
+     * and returns null.
+     *
      * @return broker report if can parse or null
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    public BrokerReport create(Pattern expectedFileNamePattern, String excelFileName, InputStream is,
-                                                    BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
-        if (!expectedFileNamePattern.matcher(excelFileName).matches()) {
-            return null;
-        }
+    protected BrokerReport create(String excelFileName,
+                                  InputStream is,
+                                  BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
         if (!is.markSupported()) {
             throw new IllegalArgumentException("Provided input stream doesn't supports mark");
         }
