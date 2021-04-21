@@ -62,13 +62,12 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                     reportPage.create(tableName, headerDescription, headersRowCount);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' " +
-                    "в файле " + getReport().getPath().getFileName(), e);
+            throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' в отчете " + getReport(), e);
         }
     }
 
     protected Collection<RowType> parseTable(Table table) {
-        return table.getDataCollection(getReport().getPath(), this::getRow, this::checkEquality, this::mergeDuplicates);
+        return table.getDataCollection(getReport(), this::getRow, this::checkEquality, this::mergeDuplicates);
     }
 
     protected Instant convertToInstant(String dateTime) {

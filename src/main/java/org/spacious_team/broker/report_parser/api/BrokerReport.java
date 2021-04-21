@@ -20,15 +20,11 @@ package org.spacious_team.broker.report_parser.api;
 
 import org.spacious_team.table_wrapper.api.ReportPage;
 
-import java.nio.file.Path;
 import java.time.Instant;
-import java.time.ZoneId;
 
 public interface BrokerReport extends AutoCloseable {
+
     ReportPage getReportPage();
-    String getPortfolio();
-    Path getPath();
-    Instant getReportEndDateTime();
-    ZoneId getReportZoneId();
+
     Instant convertToInstant(String value);
 }
