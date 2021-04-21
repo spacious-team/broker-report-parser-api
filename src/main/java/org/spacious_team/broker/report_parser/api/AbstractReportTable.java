@@ -23,13 +23,16 @@ import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableColumnDescription;
 import org.spacious_team.table_wrapper.api.TableRow;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 
+/**
+ * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
+ * {@link #parseRowToCollection(TableRow)} methods.
+ */
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
     private final String tableName;
@@ -104,10 +107,10 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     }
 
     protected Collection<RowType> parseTable(Table table) {
-        return table.getDataCollection(getReport(), this::getRow, this::checkEquality, this::mergeDuplicates);
+        return table.getDataCollection(getReport(), this::parseRowToCollection, this::checkEquality, this::mergeDuplicates);
     }
 
-    protected Collection<RowType> getRow(TableRow row) {
+    protected Collection<RowType> parseRowToCollection(TableRow row) {
         RowType data = parseRow(row);
         return (data == null) ? emptyList() : singleton(data);
     }

@@ -20,8 +20,6 @@ package org.spacious_team.broker.report_parser.api;
 
 import org.spacious_team.table_wrapper.api.ReportPage;
 
-import java.time.Instant;
-
 public interface BrokerReport extends AutoCloseable {
 
     ReportPage getReportPage();
