@@ -30,6 +30,7 @@ import java.util.Collection;
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
     private final String tableName;
+    private final String namelessTableFirstLine;
     private final String tableFooter;
     private final Class<? extends TableColumnDescription> headerDescription;
     private final int headersRowCount;
@@ -48,6 +49,29 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   int headersRowCount) {
         super(report);
         this.tableName = tableName;
+        this.namelessTableFirstLine = null;
+        this.tableFooter = tableFooter;
+        this.headerDescription = headerDescription;
+        this.headersRowCount = headersRowCount;
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  String namelessTableFirstLine,
+                                  String tableFooter,
+                                  Class<? extends TableColumnDescription> headerDescription) {
+        this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  String namelessTableFirstLine,
+                                  String tableFooter,
+                                  Class<? extends TableColumnDescription> headerDescription,
+                                  int headersRowCount) {
+        super(report);
+        this.tableName = providedTableName;
+        this.namelessTableFirstLine = namelessTableFirstLine;
         this.tableFooter = tableFooter;
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
@@ -57,9 +81,19 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected Collection<RowType> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
-            Table table = (tableFooter != null && !tableFooter.isEmpty()) ?
-                    reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
-                    reportPage.create(tableName, headerDescription, headersRowCount);
+            Table table;
+            if (namelessTableFirstLine == null) {
+                table = (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.create(tableName, headerDescription, headersRowCount);
+            } else {
+                table = (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.createNameless(
+                                tableName, namelessTableFirstLine, tableFooter, headerDescription, headersRowCount)
+                                .excludeTotalRow() :
+                        reportPage.createNameless(
+                                tableName, namelessTableFirstLine, headerDescription, headersRowCount);
+            }
             return parseTable(table);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' в отчете " + getReport(), e);
