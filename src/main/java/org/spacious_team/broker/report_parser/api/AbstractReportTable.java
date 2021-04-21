@@ -27,6 +27,9 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
     private final String tableName;
@@ -96,7 +99,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
             }
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' в отчете " + getReport(), e);
+            throw new RuntimeException("Ошибка при парсинге таблицы '" + tableName + "' в отчете " + getReport(), e);
         }
     }
 
@@ -104,11 +107,14 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
         return table.getDataCollection(getReport(), this::getRow, this::checkEquality, this::mergeDuplicates);
     }
 
-    protected Instant convertToInstant(String dateTime) {
-        return getReport().convertToInstant(dateTime);
+    protected Collection<RowType> getRow(TableRow row) {
+        RowType data = parseRow(row);
+        return (data == null) ? emptyList() : singleton(data);
     }
 
-    protected abstract Collection<RowType> getRow(TableRow row);
+    protected RowType parseRow(TableRow row) {
+        return null;
+    }
 
     protected boolean checkEquality(RowType object1, RowType object2) {
         return object1.equals(object2);
@@ -116,5 +122,9 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
 
     protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {
         return Arrays.asList(oldObject, newObject);
+    }
+
+    protected Instant convertToInstant(String dateTime) {
+        return getReport().convertToInstant(dateTime);
     }
 }
