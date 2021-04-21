@@ -123,8 +123,4 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {
         return Arrays.asList(oldObject, newObject);
     }
-
-    protected Instant convertToInstant(String dateTime) {
-        return getReport().convertToInstant(dateTime);
-    }
 }

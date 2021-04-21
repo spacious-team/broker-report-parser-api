@@ -26,5 +26,4 @@ public interface BrokerReport extends AutoCloseable {
 
     ReportPage getReportPage();
 
-    Instant convertToInstant(String value);
 }
