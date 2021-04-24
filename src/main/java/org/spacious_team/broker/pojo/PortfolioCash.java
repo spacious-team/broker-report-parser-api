@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,43 +16,74 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.spacious_team.broker.report_parser.api;
+package org.spacious_team.broker.pojo;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.stream.Collectors;
+
 
 @Getter
-@Builder
+@ToString
+@Jacksonized
+@Builder(toBuilder = true)
 @EqualsAndHashCode
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PortfolioCash {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private String section;
-    private BigDecimal value;
-    private String currency;
+    //@Nullable // autoincrement
+    private final Integer id;
+    private final String portfolio;
+    private final Instant timestamp;
+    private final String section;
+    private final BigDecimal value;
+    private final String currency;
 
+    /**
+     * Serializes in format:
+     * <pre>
+     * [
+     *     {
+     *         "section": "forts",
+     *         "value": "1000",
+     *         "currency": "RUB"
+     *     }
+     * ]
+     * </pre>
+     * {@code Portfolio} and {@code timestamp} fields are not serialized.
+     * Used to serialize portfolio cash for {@link PortfolioProperty.PortfolioPropertyBuilder#value(String)}.
+     */
+    @Deprecated
     public static String serialize(Collection<PortfolioCash> cash) {
         try {
+            cash = cash.stream()
+                    .map(PortfolioCash::toBuilder)
+                    .map(builder -> builder.portfolio(null))
+                    .map(builder -> builder.timestamp(null))
+                    .map(PortfolioCashBuilder::build)
+                    .collect(Collectors.toList());
             return objectMapper.writeValueAsString(cash);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Can't serialize portfolio cash", e);
         }
     }
 
+    /**
+     * Used to deserialize portfolio cash from {@link PortfolioProperty#getValue()}.
+     */
+    @Deprecated
     public static Collection<PortfolioCash> deserialize(String value) {
         try {
             return objectMapper.readValue(value, new TypeReference<>() {

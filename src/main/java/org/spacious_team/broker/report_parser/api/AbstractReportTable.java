@@ -23,13 +23,20 @@ import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableColumnDescription;
 import org.spacious_team.table_wrapper.api.TableRow;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+
+/**
+ * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
+ * {@link #parseRowToCollection(TableRow)} methods.
+ */
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
     private final String tableName;
+    private final String namelessTableFirstLine;
     private final String tableFooter;
     private final Class<? extends TableColumnDescription> headerDescription;
     private final int headersRowCount;
@@ -48,6 +55,29 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   int headersRowCount) {
         super(report);
         this.tableName = tableName;
+        this.namelessTableFirstLine = null;
+        this.tableFooter = tableFooter;
+        this.headerDescription = headerDescription;
+        this.headersRowCount = headersRowCount;
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  String namelessTableFirstLine,
+                                  String tableFooter,
+                                  Class<? extends TableColumnDescription> headerDescription) {
+        this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  String namelessTableFirstLine,
+                                  String tableFooter,
+                                  Class<? extends TableColumnDescription> headerDescription,
+                                  int headersRowCount) {
+        super(report);
+        this.tableName = providedTableName;
+        this.namelessTableFirstLine = namelessTableFirstLine;
         this.tableFooter = tableFooter;
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
@@ -57,25 +87,37 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected Collection<RowType> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
-            Table table = (tableFooter != null && !tableFooter.isEmpty()) ?
-                    reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
-                    reportPage.create(tableName, headerDescription, headersRowCount);
+            Table table;
+            if (namelessTableFirstLine == null) {
+                table = (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.create(tableName, headerDescription, headersRowCount);
+            } else {
+                table = (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.createNameless(
+                                tableName, namelessTableFirstLine, tableFooter, headerDescription, headersRowCount)
+                                .excludeTotalRow() :
+                        reportPage.createNameless(
+                                tableName, namelessTableFirstLine, headerDescription, headersRowCount);
+            }
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы '" + this.tableName + "' " +
-                    "в файле " + getReport().getPath().getFileName(), e);
+            throw new RuntimeException("Ошибка при парсинге таблицы '" + tableName + "' в отчете " + getReport(), e);
         }
     }
 
     protected Collection<RowType> parseTable(Table table) {
-        return table.getDataCollection(getReport().getPath(), this::getRow, this::checkEquality, this::mergeDuplicates);
+        return table.getDataCollection(getReport(), this::parseRowToCollection, this::checkEquality, this::mergeDuplicates);
     }
 
-    protected Instant convertToInstant(String dateTime) {
-        return getReport().convertToInstant(dateTime);
+    protected Collection<RowType> parseRowToCollection(TableRow row) {
+        RowType data = parseRow(row);
+        return (data == null) ? emptyList() : singleton(data);
     }
 
-    protected abstract Collection<RowType> getRow(TableRow row);
+    protected RowType parseRow(TableRow row) {
+        return null;
+    }
 
     protected boolean checkEquality(RowType object1, RowType object2) {
         return object1.equals(object2);

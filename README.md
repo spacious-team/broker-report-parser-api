@@ -79,11 +79,11 @@ public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
 Пример реализации класса `ReportTables` доступен по
 [ссылке](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/foreignmarket/PsbForeignMarketReportTables.java)
 ```java
-public class MyReportTables implements ReportTables {
-    
+public class MyReportTables extends AbstractReportTables {
+
     @Override
     public ReportTable<Security> getSecuritiesTable() {
-        return new EmptyReportTable<>(report);
+        return emptyTable();
     }
     // другие методы ...
 ```
