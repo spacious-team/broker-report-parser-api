@@ -66,6 +66,11 @@ public class SecurityQuote {
     @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
     private final BigDecimal accruedInterest; // for bond in currency, for others is null
 
+    //@Nullable
+    @JsonProperty("currency")
+    @Schema(description = "Валюта котировки для акций, облигаций и деривативов (опционально)", example = "RUB", nullable = true)
+    private final String currency;
+
     /**
      * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
      */
