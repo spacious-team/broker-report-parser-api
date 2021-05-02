@@ -28,11 +28,13 @@ import lombok.extern.jackson.Jacksonized;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Сделка")
 public class Transaction {
     @NotNull

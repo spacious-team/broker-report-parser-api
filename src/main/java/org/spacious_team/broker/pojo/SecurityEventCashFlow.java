@@ -32,11 +32,13 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
 public class SecurityEventCashFlow {
     //@Nullable // autoincrement

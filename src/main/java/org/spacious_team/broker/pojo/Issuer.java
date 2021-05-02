@@ -27,11 +27,13 @@ import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Эмитент")
 public class Issuer {
     @NotNull

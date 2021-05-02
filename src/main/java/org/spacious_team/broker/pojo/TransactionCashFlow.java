@@ -30,11 +30,13 @@ import lombok.extern.jackson.Jacksonized;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
     @NotNull

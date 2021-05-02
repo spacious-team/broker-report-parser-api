@@ -27,11 +27,13 @@ import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
 public class Security {
     @NotNull

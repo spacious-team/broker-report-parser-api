@@ -33,12 +33,14 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PortfolioCash {
     private static final ObjectMapper objectMapper = new ObjectMapper();

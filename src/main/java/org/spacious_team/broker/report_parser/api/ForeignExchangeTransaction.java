@@ -22,9 +22,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @SuperBuilder
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class ForeignExchangeTransaction extends AbstractTransaction {
 
 }

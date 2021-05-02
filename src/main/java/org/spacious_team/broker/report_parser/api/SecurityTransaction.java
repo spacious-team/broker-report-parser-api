@@ -30,10 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @SuperBuilder
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {
     private final BigDecimal accruedInterest; // НКД, в валюте бумаги
 

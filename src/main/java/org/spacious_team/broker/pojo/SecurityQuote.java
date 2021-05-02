@@ -31,13 +31,14 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
 
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Котировка")
 public class SecurityQuote {
 

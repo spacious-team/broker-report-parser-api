@@ -33,11 +33,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.StringJoiner;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по счету", description = "Ввод и вывод ДС, налоги, комиссии, а также выплаты по инструментам другого счета")
 public class EventCashFlow {
     //@Nullable // autoincrement

@@ -32,10 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 @Getter
 @SuperBuilder
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
     protected static final BigDecimal minValue = BigDecimal.valueOf(0.01);
     protected final String transactionId;
