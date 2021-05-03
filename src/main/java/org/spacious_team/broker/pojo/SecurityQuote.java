@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
+ * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,13 +31,14 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 import static org.spacious_team.broker.pojo.SecurityType.DERIVATIVE;
 
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Котировка")
 public class SecurityQuote {
 
@@ -65,6 +66,11 @@ public class SecurityQuote {
     @JsonProperty("accrued-interest")
     @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
     private final BigDecimal accruedInterest; // for bond in currency, for others is null
+
+    //@Nullable
+    @JsonProperty("currency")
+    @Schema(description = "Валюта котировки для акций, облигаций и деривативов (опционально)", example = "RUB", nullable = true)
+    private final String currency;
 
     /**
      * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.

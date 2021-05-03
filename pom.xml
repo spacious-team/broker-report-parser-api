@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Broker Report Parser API
-  ~ Copyright (C) 2021  Vitalii Ananev <an-vitek@ya.ru>
+  ~ Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@
 
     <groupId>org.spacious-team</groupId>
     <artifactId>broker-report-parser-api</artifactId>
-    <version>2021.5</version>
+    <version>2021.6</version>
     <packaging>jar</packaging>
 
     <name>Broker Report Parser API</name>
