@@ -46,7 +46,7 @@ public class Security {
     private final String ticker;
 
     //@Nullable
-    @Schema(description = "Наименвание (опционально)", example = "Yandex clA", nullable = true)
+    @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
     private final String name;
 
     //@Nullable
