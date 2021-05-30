@@ -36,10 +36,15 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
 public class Security {
+    // update to nullable after change to Integer
     @NotNull
-    @Schema(description = "Идентификатор (для акций и облигаций - ISIN, валютный пары и срочных контрактов - название)",
+    @Schema(description = "Внутренний идентификатор инструмента (для акций и облигаций - ISIN, валютный пары и срочных контрактов - название)",
             example = "NL0009805522, USDRUB_TOM или Si-12.21", required = true)
     private final String id;
+
+    //@Nullable
+    @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
+    private final String isin;
 
     //@Nullable
     @Schema(description = "Тикер (опционально)", example = "YNDX", nullable = true)
@@ -48,8 +53,4 @@ public class Security {
     //@Nullable
     @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
     private final String name;
-
-    //@Nullable
-    @Schema(description = "Эмитент (опционально)", example = "7736207543", nullable = true)
-    private final Long inn;
 }
