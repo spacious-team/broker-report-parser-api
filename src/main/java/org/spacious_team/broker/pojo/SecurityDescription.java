@@ -34,18 +34,17 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Эмитент")
-public class Issuer {
-    //@Nullable
-    @Schema(description = "Внутренний идентификатор эмитента")
-    private final Integer id;
-
-    //@Nullable
-    @Schema(description = "Идентификатор налогоплательщика (Россия - ИНН, США - EIN и т.д.)",
-            example = "7736050003", nullable = true)
-    private final Long taxpayerId;
-
+@Schema(name = "Свойства инструмента", description = "Информация об инструменте")
+public class SecurityDescription {
     @NotNull
-    @Schema(description = "Наименование", example = "ПАО Газпром")
-    private final String name;
+    @Schema(description = "Внутренний идентификатор инструмента", example = "NL0009805522, USDRUB_TOM или Si-12.21", required = true)
+    private final String security;
+
+    //@Nullable
+    @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
+    private final String sector;
+
+    //@Nullable
+    @Schema(description = "Эмитент (опционально)", example = "7736207543", nullable = true)
+    private final Integer issuer;
 }

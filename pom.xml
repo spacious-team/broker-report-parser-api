@@ -24,7 +24,7 @@
 
     <groupId>org.spacious-team</groupId>
     <artifactId>broker-report-parser-api</artifactId>
-    <version>2021.6</version>
+    <version>2021.7</version>
     <packaging>jar</packaging>
 
     <name>Broker Report Parser API</name>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.github.spacious-team</groupId>
             <artifactId>table-wrapper-api</artifactId>
-            <version>2021.5</version>
+            <version>2021.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
