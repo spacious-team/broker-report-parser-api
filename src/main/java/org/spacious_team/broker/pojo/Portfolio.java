@@ -39,4 +39,9 @@ public class Portfolio {
     @NotNull
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String id;
+
+    @NotNull
+    @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
+            required = true)
+    private final boolean enabled;
 }
