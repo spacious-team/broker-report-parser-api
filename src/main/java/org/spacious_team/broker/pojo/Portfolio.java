@@ -43,5 +43,6 @@ public class Portfolio {
     @NotNull
     @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
             required = true)
-    private final boolean enabled;
+    @Builder.Default
+    private final boolean enabled = true;
 }
