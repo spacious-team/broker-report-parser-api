@@ -24,7 +24,7 @@
 
     <groupId>org.spacious-team</groupId>
     <artifactId>broker-report-parser-api</artifactId>
-    <version>2021.7</version>
+    <version>2021.8</version>
     <packaging>jar</packaging>
 
     <name>Broker Report Parser API</name>
