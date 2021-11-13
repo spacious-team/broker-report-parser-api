@@ -23,6 +23,14 @@ import java.io.InputStream;
 public interface BrokerReportFactory {
 
     /**
+     * Fast check if this factory can't parse report.
+     * Method should always reset input stream mark to original position.
+     * @return false when can't parse, true when parsing maybe possible
+     * @throws IllegalArgumentException if InputStream is not supports mark
+     */
+    boolean canCreate(String excelFileName, InputStream is);
+
+    /**
      * Checks input stream and returns broker report if can, otherwise reset input stream mark to original position
      * and returns null
      * @return broker report if can parse or null
