@@ -20,6 +20,6 @@ package org.spacious_team.broker.pojo;
 
 public enum PortfolioPropertyType {
     TOTAL_ASSETS_RUB,
-    TOTAL_ASSETS_USD, // use one of TOTAL_ASSETS_RUB or TOTAL_ASSETS_USD
+    TOTAL_ASSETS_USD, // if TOTAL_ASSETS_RUB and TOTAL_ASSETS_USD exists for same date, total assets is sum of them
     CASH
 }
