@@ -51,8 +51,6 @@ public class SecurityTransaction extends AbstractTransaction {
         // for securities accrued interest = 0
         if (accruedInterest != null && accruedInterest.abs().compareTo(minValue) >= 0) {
             return Optional.of(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
                     .eventType(CashFlowType.ACCRUED_INTEREST)
                     .value(accruedInterest)
                     .currency(valueCurrency)

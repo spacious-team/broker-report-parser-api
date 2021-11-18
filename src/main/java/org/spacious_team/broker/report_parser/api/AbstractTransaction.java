@@ -70,8 +70,6 @@ public abstract class AbstractTransaction {
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
         if (value != null && value.abs().compareTo(minValue) >= 0) {
         return Optional.of(TransactionCashFlow.builder()
-                .transactionId(transactionId)
-                .portfolio(portfolio)
                 .eventType(type)
                 .value(value)
                 .currency(valueCurrency)
@@ -83,8 +81,6 @@ public abstract class AbstractTransaction {
     protected Optional<TransactionCashFlow> getCommissionCashFlow() {
         if (commission != null && commission.abs().compareTo(minValue) >= 0) {
             return Optional.of(TransactionCashFlow.builder()
-                    .transactionId(transactionId)
-                    .portfolio(portfolio)
                     .eventType(CashFlowType.COMMISSION)
                     .value(commission)
                     .currency(commissionCurrency)
