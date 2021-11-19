@@ -40,6 +40,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
     protected static final BigDecimal minValue = BigDecimal.valueOf(0.01);
+    protected final Integer id;
     protected final String tradeId;
     protected final String portfolio;
     protected final String security;
@@ -52,6 +53,7 @@ public abstract class AbstractTransaction {
 
     public Transaction getTransaction() {
         return Transaction.builder()
+                .id(id)
                 .tradeId(tradeId)
                 .portfolio(portfolio)
                 .security(security)
@@ -70,6 +72,7 @@ public abstract class AbstractTransaction {
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
         if (value != null && value.abs().compareTo(minValue) >= 0) {
         return Optional.of(TransactionCashFlow.builder()
+                .transactionId(id)
                 .eventType(type)
                 .value(value)
                 .currency(valueCurrency)
@@ -81,6 +84,7 @@ public abstract class AbstractTransaction {
     protected Optional<TransactionCashFlow> getCommissionCashFlow() {
         if (commission != null && commission.abs().compareTo(minValue) >= 0) {
             return Optional.of(TransactionCashFlow.builder()
+                    .transactionId(id)
                     .eventType(CashFlowType.COMMISSION)
                     .value(commission)
                     .currency(commissionCurrency)

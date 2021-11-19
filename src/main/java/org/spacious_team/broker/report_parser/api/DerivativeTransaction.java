@@ -51,6 +51,7 @@ public class DerivativeTransaction extends AbstractTransaction {
     protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
+                    .transactionId(id)
                     .eventType(CashFlowType.DERIVATIVE_QUOTE)
                     .value(valueInPoints)
                     .currency(QUOTE_CURRENCY)
@@ -63,6 +64,7 @@ public class DerivativeTransaction extends AbstractTransaction {
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
         if (value != null) {
             return Optional.of(TransactionCashFlow.builder()
+                    .transactionId(id)
                     .eventType(type)
                     .value(value)
                     .currency(valueCurrency)
