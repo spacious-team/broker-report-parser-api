@@ -40,7 +40,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
     protected static final BigDecimal minValue = BigDecimal.valueOf(0.01);
-    protected final String transactionId;
+    protected final String tradeId;
     protected final String portfolio;
     protected final String security;
     protected final Instant timestamp;
@@ -52,7 +52,7 @@ public abstract class AbstractTransaction {
 
     public Transaction getTransaction() {
         return Transaction.builder()
-                .id(transactionId)
+                .tradeId(tradeId)
                 .portfolio(portfolio)
                 .security(security)
                 .timestamp(timestamp)

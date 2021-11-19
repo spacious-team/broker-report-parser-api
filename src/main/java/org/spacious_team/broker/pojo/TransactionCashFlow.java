@@ -41,12 +41,12 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 public class TransactionCashFlow {
     //@Nullable // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "1", required = true)
-    private final Integer pk;
+    private final Integer id;
 
     @NotNull
-    @JsonProperty("transaction-pk")
+    @JsonProperty("transaction-id")
     @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
-    private final Integer transactionPk;
+    private final Integer transactionId;
 
     @NotNull
     @JsonProperty("event-type")
