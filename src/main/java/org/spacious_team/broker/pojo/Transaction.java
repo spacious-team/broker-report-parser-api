@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -37,9 +38,14 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Сделка")
 public class Transaction {
+    //@Nullable // autoincrement
+    @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
+    private final Integer id;
+
     @NotNull
+    @JsonProperty("trade-id")
     @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", required = true)
-    private final String id;
+    private final String tradeId;
 
     @NotNull
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)

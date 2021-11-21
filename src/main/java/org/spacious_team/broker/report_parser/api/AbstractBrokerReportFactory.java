@@ -29,14 +29,8 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
     /**
      * @param expectedFileNamePattern used for fast report check without input stream reading
      */
-    protected BrokerReport create(Pattern expectedFileNamePattern,
-                                  String excelFileName,
-                                  InputStream is,
-                                  BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
-        if (expectedFileNamePattern.matcher(excelFileName).matches()) {
-            return create(excelFileName, is, brokerReportProvider);
-        }
-        return null;
+    protected boolean canCreate(Pattern expectedFileNamePattern, String excelFileName, InputStream is) {
+        return expectedFileNamePattern.matcher(excelFileName).matches();
     }
 
     /**
