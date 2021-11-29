@@ -56,7 +56,7 @@ public class SecurityQuote {
 
     @NotNull
     @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", required = true)
-    private final BigDecimal quote; // for stock and currency pair in currency, for bond - in percent, for derivative - in quote
+    private final BigDecimal quote; // for stock, currency pair and asset in currency, for bond - in percent, for derivative - in quote
 
     //@Nullable
     @Schema(description = "Котировка (в валюте, только для облигаций и деривативов)", example = "1020.30", nullable = true)
@@ -83,7 +83,7 @@ public class SecurityQuote {
             return price;
         } else {
             if (price == null && accruedInterest == null) {
-                return quote; // for stocks and currency pairs
+                return quote; // for stocks, currency pairs, asset
             } else {
                 return price; // for bonds
             }
