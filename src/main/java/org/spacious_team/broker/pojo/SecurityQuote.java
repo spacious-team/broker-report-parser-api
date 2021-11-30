@@ -69,7 +69,8 @@ public class SecurityQuote {
 
     //@Nullable
     @JsonProperty("currency")
-    @Schema(description = "Валюта котировки для акций, облигаций и деривативов (опционально)", example = "RUB", nullable = true)
+    @Schema(description = "Валюта котировки для акций, облигаций, произвольных активов и опционально для деривативов",
+            example = "RUB", nullable = true)
     private final String currency;
 
     /**

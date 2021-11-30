@@ -31,6 +31,7 @@ public enum SecurityType {
     CURRENCY_PAIR("валюта"),
     ASSET("произвольный актив");
 
+    public static final String ASSET_PREFIX = "ASSET:";
     @Getter
     private final String description;
 
@@ -38,20 +39,17 @@ public enum SecurityType {
         return getSecurityType(security.getId());
     }
 
-    /**
-     * Для правильного определения дериватива наименование должно быть представлено в полном формате с дефисом, например "Si-3.22"
-     */
     public static SecurityType getSecurityType(String security) {
         int length = security.length();
-        int dashPosition = security.indexOf('-');
-        if (length == 12 && dashPosition == -1) {
+        if (length == 12 && security.indexOf('-') == -1) {
             return STOCK_OR_BOND;
         } else if (length == 6 || (length > 7 && security.charAt(6) == '_')) { // USDRUB_TOM or USDRUB_TOD or USDRUB
             return CURRENCY_PAIR;
-        } else if (dashPosition != -1) {
-            return DERIVATIVE;
+        } else if (security.startsWith(ASSET_PREFIX)) {
+            return ASSET;
         }
-        return ASSET;
+        // фьючерс всегда с дефисом, например Si-12.21, опцион может быть MXI-6.21M170621CA3000 или MM3000BF1
+        return DERIVATIVE;
     }
 
     /**
