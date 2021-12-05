@@ -42,6 +42,10 @@ public class Security {
             example = "NL0009805522, USDRUB_TOM или Si-12.21", required = true)
     private final String id;
 
+    @NotNull
+    @Schema(description = "Тип ценной бумаги", example = "STOCK", required = true)
+    private final SecurityType type;
+
     //@Nullable
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
     private final String isin;

@@ -51,6 +51,10 @@ public class SecurityQuote {
     private final String security;
 
     @NotNull
+    @Schema(description = "Тип", example = "STOCK", required = true)
+    private final SecurityType securityType;
+
+    @NotNull
     @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
@@ -79,15 +83,12 @@ public class SecurityQuote {
     @JsonIgnore
     @Schema(hidden = true)
     public BigDecimal getCleanPriceInCurrency() {
-        SecurityType type = SecurityType.getSecurityType(security);
-        if (type == DERIVATIVE) {
+        if (securityType == DERIVATIVE) {
             return price;
+        } else if (price == null && accruedInterest == null) {
+            return quote; // for stocks, currency pairs, asset
         } else {
-            if (price == null && accruedInterest == null) {
-                return quote; // for stocks, currency pairs, asset
-            } else {
-                return price; // for bonds
-            }
+            return price; // for bonds
         }
     }
 
