@@ -29,8 +29,8 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
     /**
      * @param expectedFileNamePattern used for fast report check without input stream reading
      */
-    protected boolean canCreate(Pattern expectedFileNamePattern, String excelFileName, InputStream is) {
-        return expectedFileNamePattern.matcher(excelFileName).matches();
+    protected boolean canCreate(Pattern expectedFileNamePattern, String fileName, InputStream is) {
+        return expectedFileNamePattern.matcher(fileName).matches();
     }
 
     /**
@@ -40,7 +40,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
      * @return broker report if can parse or null
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    protected BrokerReport create(String excelFileName,
+    protected BrokerReport create(String fileName,
                                   InputStream is,
                                   BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
         if (!is.markSupported()) {
@@ -50,7 +50,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
         is.mark(Integer.MAX_VALUE);
         Exception exception = null;
         try {
-            return brokerReportProvider.apply(excelFileName, is);
+            return brokerReportProvider.apply(fileName, is);
         } catch (Exception e) {
             exception = e;
             return null;
