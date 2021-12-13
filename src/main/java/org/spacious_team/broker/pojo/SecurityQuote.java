@@ -51,10 +51,6 @@ public class SecurityQuote {
     private final String security;
 
     @NotNull
-    @Schema(description = "Тип", example = "STOCK", required = true)
-    private final SecurityType securityType;
-
-    @NotNull
     @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
@@ -82,9 +78,9 @@ public class SecurityQuote {
      */
     @JsonIgnore
     @Schema(hidden = true)
-    public BigDecimal getCleanPriceInCurrency() {
-        if (securityType == DERIVATIVE) {
-            return price;
+    public BigDecimal getCleanPriceInCurrency(boolean isDerivative) {
+        if (isDerivative) {
+            return price; // for future and option always use price, also in case of price == null
         } else if (price == null && accruedInterest == null) {
             return quote; // for stocks, currency pairs, asset
         } else {
@@ -97,8 +93,8 @@ public class SecurityQuote {
      */
     @JsonIgnore
     @Schema(hidden = true)
-    public BigDecimal getDirtyPriceInCurrency() {
-        BigDecimal cleanPrice = getCleanPriceInCurrency();
+    public BigDecimal getDirtyPriceInCurrency(boolean isDerivative) {
+        BigDecimal cleanPrice = getCleanPriceInCurrency(isDerivative);
         return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
     }
 }
