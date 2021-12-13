@@ -43,7 +43,7 @@ public abstract class AbstractTransaction {
     protected final Integer id;
     protected final String tradeId;
     protected final String portfolio;
-    protected final String security;
+    protected final int security;
     protected final Instant timestamp;
     protected final int count;
     protected final BigDecimal value; // стоиомсть в валюце цены
