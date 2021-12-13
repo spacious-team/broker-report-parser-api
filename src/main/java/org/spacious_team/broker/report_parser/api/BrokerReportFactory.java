@@ -28,7 +28,7 @@ public interface BrokerReportFactory {
      * @return false when can't parse, true when parsing maybe possible
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    boolean canCreate(String excelFileName, InputStream is);
+    boolean canCreate(String fileName, InputStream is);
 
     /**
      * Checks input stream and returns broker report if can, otherwise reset input stream mark to original position
@@ -36,7 +36,7 @@ public interface BrokerReportFactory {
      * @return broker report if can parse or null
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    BrokerReport create(String excelFileName, InputStream is);
+    BrokerReport create(String fileName, InputStream is);
 
     String getBrokerName();
 }
