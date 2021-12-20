@@ -35,7 +35,7 @@ import java.util.Optional;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @ToString
 @EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
@@ -92,4 +92,6 @@ public abstract class AbstractTransaction {
         }
         return Optional.empty();
     }
+
+    public abstract AbstractTransactionBuilder<? extends AbstractTransaction, ? extends AbstractTransactionBuilder<?, ?>> toBuilder();
 }
