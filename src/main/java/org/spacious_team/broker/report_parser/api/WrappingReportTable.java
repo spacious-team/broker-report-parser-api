@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class WrappingReportTable<RowType> implements ReportTable<RowType> {
@@ -85,14 +86,17 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
         private final BrokerReport report;
         private final ReportTable<RowType>[] tables;
+        private volatile List<RowType> data;
 
         @Override
         public List<RowType> getData() {
-            List<RowType> data = new ArrayList<>();
-            for (ReportTable<RowType> table : tables) {
-                data.addAll(table.getData());
+            if (data == null) {
+                data = Arrays.stream(tables)
+                        .map(ReportTable::getData)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toUnmodifiableList());
             }
-            return Collections.unmodifiableList(data);
+            return data;
         }
     }
 }
