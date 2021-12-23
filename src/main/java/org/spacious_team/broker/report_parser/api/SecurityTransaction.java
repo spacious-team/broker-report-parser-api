@@ -33,7 +33,7 @@ import java.util.Optional;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {

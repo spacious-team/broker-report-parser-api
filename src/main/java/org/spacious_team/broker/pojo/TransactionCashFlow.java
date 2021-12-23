@@ -46,7 +46,7 @@ public class TransactionCashFlow {
     @NotNull
     @JsonProperty("transaction-id")
     @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
-    private final Integer transactionId;
+    private final int transactionId;
 
     @NotNull
     @JsonProperty("event-type")

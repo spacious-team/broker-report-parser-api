@@ -37,8 +37,8 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Свойства инструмента", description = "Информация об инструменте")
 public class SecurityDescription {
     @NotNull
-    @Schema(description = "Внутренний идентификатор инструмента", example = "NL0009805522, USDRUB_TOM или Si-12.21", required = true)
-    private final String security;
+    @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
+    private final int security;
 
     //@Nullable
     @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
