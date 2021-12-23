@@ -81,20 +81,30 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         }
     }
 
-    @RequiredArgsConstructor
     private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
         private final BrokerReport report;
-        private final ReportTable<RowType>[] tables;
+        private volatile ReportTable<RowType>[] tables;
         private volatile List<RowType> data;
+
+        @SafeVarargs
+        private LazyWrappingReportTable(BrokerReport report, ReportTable<RowType>... tables) {
+            this.report = report;
+            this.tables = tables;
+        }
 
         @Override
         public List<RowType> getData() {
             if (data == null) {
-                data = Arrays.stream(tables)
-                        .map(ReportTable::getData)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toUnmodifiableList());
+                synchronized (this) {
+                    if (data == null) {
+                        data = Arrays.stream(tables)
+                                .map(ReportTable::getData)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toUnmodifiableList());
+                        tables = null; // erase for GC
+                    }
+                }
             }
             return data;
         }
