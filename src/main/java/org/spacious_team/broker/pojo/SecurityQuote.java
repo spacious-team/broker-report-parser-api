@@ -47,8 +47,8 @@ public class SecurityQuote {
     private final Integer id;
 
     @NotNull
-    @Schema(description = "Инструмент", example = "NL0009805522", required = true)
-    private final String security;
+    @Schema(description = "Инструмент", example = "123", required = true)
+    private final int security;
 
     @NotNull
     @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
@@ -78,16 +78,13 @@ public class SecurityQuote {
      */
     @JsonIgnore
     @Schema(hidden = true)
-    public BigDecimal getCleanPriceInCurrency() {
-        SecurityType type = SecurityType.getSecurityType(security);
-        if (type == DERIVATIVE) {
-            return price;
+    public BigDecimal getCleanPriceInCurrency(boolean isDerivative) {
+        if (isDerivative) {
+            return price; // for future and option always use price, also in case of price == null
+        } else if (price == null && accruedInterest == null) {
+            return quote; // for stocks, currency pairs, asset
         } else {
-            if (price == null && accruedInterest == null) {
-                return quote; // for stocks, currency pairs, asset
-            } else {
-                return price; // for bonds
-            }
+            return price; // for bonds
         }
     }
 
@@ -96,8 +93,8 @@ public class SecurityQuote {
      */
     @JsonIgnore
     @Schema(hidden = true)
-    public BigDecimal getDirtyPriceInCurrency() {
-        BigDecimal cleanPrice = getCleanPriceInCurrency();
+    public BigDecimal getDirtyPriceInCurrency(boolean isDerivative) {
+        BigDecimal cleanPrice = getCleanPriceInCurrency(isDerivative);
         return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
     }
 }

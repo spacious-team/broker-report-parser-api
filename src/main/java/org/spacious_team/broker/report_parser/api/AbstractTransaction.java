@@ -35,7 +35,7 @@ import java.util.Optional;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @ToString
 @EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
@@ -43,7 +43,7 @@ public abstract class AbstractTransaction {
     protected final Integer id;
     protected final String tradeId;
     protected final String portfolio;
-    protected final String security;
+    protected final int security;
     protected final Instant timestamp;
     protected final int count;
     protected final BigDecimal value; // стоиомсть в валюце цены
@@ -92,4 +92,6 @@ public abstract class AbstractTransaction {
         }
         return Optional.empty();
     }
+
+    public abstract AbstractTransactionBuilder<? extends AbstractTransaction, ? extends AbstractTransactionBuilder<?, ?>> toBuilder();
 }

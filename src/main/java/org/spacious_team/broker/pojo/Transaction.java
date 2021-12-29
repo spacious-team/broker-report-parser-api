@@ -52,8 +52,8 @@ public class Transaction {
     private final String portfolio;
 
     @NotNull
-    @Schema(description = "Инструмент", example = "NL0009805522", required = true)
-    private final String security;
+    @Schema(description = "Инструмент", example = "123", required = true)
+    private final int security;
 
     @NotNull
     @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", required = true)

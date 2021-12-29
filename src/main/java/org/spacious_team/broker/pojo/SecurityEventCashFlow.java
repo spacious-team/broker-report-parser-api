@@ -54,8 +54,8 @@ public class SecurityEventCashFlow {
     private final Instant timestamp;
 
     @NotNull
-    @Schema(description = "Инструмент", example = "NL0009805522", required = true)
-    private final String security;
+    @Schema(description = "Инструмент", example = "123", required = true)
+    private final int security;
 
     @NotNull
     @Schema(description = "Количество бумаг (контрактов)", example = "10", required = true)
@@ -81,7 +81,7 @@ public class SecurityEventCashFlow {
         return cash1.getPortfolio().equals(cash2.getPortfolio()) &&
                 cash1.getTimestamp().equals(cash2.getTimestamp()) &&
                 cash1.getEventType().equals(cash2.getEventType()) &&
-                cash1.getSecurity().equals(cash2.getSecurity());
+                cash1.getSecurity() == cash2.getSecurity();
     }
 
     /**

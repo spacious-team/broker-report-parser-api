@@ -18,18 +18,25 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class WrappingReportTable<RowType> implements ReportTable<RowType> {
-    @Getter
-    private final BrokerReport report;
-    private final List<RowType> data;
+    private final ReportTable<RowType> reportTable;
+
+    @SafeVarargs
+    public static <T> WrappingReportTable<T> of(BrokerReport report, Collection<T>... dataset) {
+        return new WrappingReportTable<>(new EagerWrappingReportTable<>(report, dataset));
+    }
 
     @SafeVarargs
     public static <T> WrappingReportTable<T> of(ReportTable<T>... tables) {
@@ -37,37 +44,9 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         BrokerReport report = tables[0].getReport();
         boolean isAllReportsIsSame = Arrays.stream(tables)
                 .map(ReportTable::getReport)
-                .filter(tableReport -> tableReport != report)
-                .findAny()
-                .isEmpty();
+                .allMatch(tableReport -> tableReport == report);
         assertIsTrue(isAllReportsIsSame, "Wrapping report tables should be built for same broker report");
-        return new WrappingReportTable<>(report, tables);
-
-    }
-
-    @SafeVarargs
-    public WrappingReportTable(BrokerReport report, ReportTable<RowType>... tables) {
-        List<RowType> data = new ArrayList<>();
-        for (ReportTable<RowType> table : tables) {
-            data.addAll(table.getData());
-        }
-        this.report = report;
-        this.data = data;
-    }
-
-    @SafeVarargs
-    public static <T> WrappingReportTable<T> of(BrokerReport report, Collection<T>... dataset) {
-        return new WrappingReportTable<>(report, dataset);
-    }
-
-    @SafeVarargs
-    public WrappingReportTable(BrokerReport report, Collection<RowType>... dataset) {
-        List<RowType> data = new ArrayList<>();
-        for (Collection<RowType> d : dataset) {
-            data.addAll(d);
-        }
-        this.report = report;
-        this.data = data;
+        return new WrappingReportTable<>(new LazyWrappingReportTable<>(report, tables));
     }
 
     private static void assertIsTrue(boolean expression, String message) {
@@ -77,7 +56,57 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     }
 
     @Override
+    public BrokerReport getReport() {
+        return reportTable.getReport();
+    }
+
+    @Override
     public List<RowType> getData() {
-        return Collections.unmodifiableList(data);
+        return reportTable.getData();
+    }
+
+    @Getter
+    private static class EagerWrappingReportTable<RowType> implements ReportTable<RowType> {
+        private final BrokerReport report;
+        private final List<RowType> data;
+
+        @SafeVarargs
+        public EagerWrappingReportTable(BrokerReport report, Collection<RowType>... dataset) {
+            List<RowType> data = new ArrayList<>();
+            for (Collection<RowType> d : dataset) {
+                data.addAll(d);
+            }
+            this.report = report;
+            this.data = Collections.unmodifiableList(data);
+        }
+    }
+
+    private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
+        @Getter
+        private final BrokerReport report;
+        private volatile ReportTable<RowType>[] tables;
+        private volatile List<RowType> data;
+
+        @SafeVarargs
+        private LazyWrappingReportTable(BrokerReport report, ReportTable<RowType>... tables) {
+            this.report = report;
+            this.tables = tables;
+        }
+
+        @Override
+        public List<RowType> getData() {
+            if (data == null) {
+                synchronized (this) {
+                    if (data == null) {
+                        data = Arrays.stream(tables)
+                                .map(ReportTable::getData)
+                                .flatMap(Collection::stream)
+                                .collect(Collectors.toUnmodifiableList());
+                        tables = null; // erase for GC
+                    }
+                }
+            }
+            return data;
+        }
     }
 }
