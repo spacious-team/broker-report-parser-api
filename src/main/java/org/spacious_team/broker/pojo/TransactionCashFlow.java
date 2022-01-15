@@ -40,7 +40,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
     //@Nullable // autoincrement
-    @Schema(description = "Внутренний идентификатор записи", example = "1", required = true)
+    @Schema(description = "Внутренний идентификатор записи", example = "1", nullable = true)
     private final Integer id;
 
     @NotNull

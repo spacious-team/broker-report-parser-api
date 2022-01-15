@@ -37,7 +37,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
 public class Security {
     //@Nullable // autoincrement
-    @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
+    @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
     private final Integer id;
 
     @NotNull
