@@ -39,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Сделка")
 public class Transaction {
     //@Nullable // autoincrement
-    @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
+    @Schema(description = "Внутренний идентификатор сделки", example = "123", nullable = true)
     private final Integer id;
 
     @NotNull

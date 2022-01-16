@@ -37,7 +37,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Эмитент")
 public class Issuer {
     //@Nullable
-    @Schema(description = "Внутренний идентификатор эмитента")
+    @Schema(description = "Внутренний идентификатор эмитента", nullable = true)
     private final Integer id;
 
     //@Nullable
