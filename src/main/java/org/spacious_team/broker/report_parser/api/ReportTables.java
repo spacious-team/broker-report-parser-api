@@ -31,23 +31,15 @@ public interface ReportTables {
 
     ReportTable<PortfolioProperty> getPortfolioPropertyTable();
 
-    ReportTable<PortfolioCash> getCashTable();
+    ReportTable<PortfolioCash> getPortfolioCashTable();
 
     ReportTable<EventCashFlow> getCashFlowTable();
 
     ReportTable<Security> getSecuritiesTable();
 
-    ReportTable<SecurityTransaction> getSecurityTransactionTable();
+    ReportTable<AbstractTransaction> getTransactionTable();
 
-    ReportTable<DerivativeTransaction> getDerivativeTransactionTable();
-
-    ReportTable<ForeignExchangeTransaction> getForeignExchangeTransactionTable();
-
-    ReportTable<SecurityEventCashFlow> getCouponAmortizationRedemptionTable();
-
-    ReportTable<SecurityEventCashFlow> getDividendTable();
-
-    ReportTable<SecurityEventCashFlow> getDerivativeCashFlowTable();
+    ReportTable<SecurityEventCashFlow> getSecurityEventCashFlowTable();
 
     ReportTable<SecurityQuote> getSecurityQuoteTable();
 

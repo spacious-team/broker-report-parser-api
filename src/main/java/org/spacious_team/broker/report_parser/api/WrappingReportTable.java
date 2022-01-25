@@ -34,12 +34,12 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     private final ReportTable<RowType> reportTable;
 
     @SafeVarargs
-    public static <T> WrappingReportTable<T> of(BrokerReport report, Collection<T>... dataset) {
+    public static <T> WrappingReportTable<T> of(BrokerReport report, Collection<? extends T>... dataset) {
         return new WrappingReportTable<>(new EagerWrappingReportTable<>(report, dataset));
     }
 
     @SafeVarargs
-    public static <T> WrappingReportTable<T> of(ReportTable<T>... tables) {
+    public static <T> WrappingReportTable<T> of(ReportTable<? extends T>... tables) {
         assertIsTrue(tables.length > 0, "Can't wrap, report tables not provided");
         BrokerReport report = tables[0].getReport();
         boolean isAllReportsIsSame = Arrays.stream(tables)
@@ -71,9 +71,9 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         private final List<RowType> data;
 
         @SafeVarargs
-        public EagerWrappingReportTable(BrokerReport report, Collection<RowType>... dataset) {
+        public EagerWrappingReportTable(BrokerReport report, Collection<? extends RowType>... dataset) {
             List<RowType> data = new ArrayList<>();
-            for (Collection<RowType> d : dataset) {
+            for (Collection<? extends RowType> d : dataset) {
                 data.addAll(d);
             }
             this.report = report;
@@ -84,11 +84,11 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
         private final BrokerReport report;
-        private volatile ReportTable<RowType>[] tables;
+        private volatile ReportTable<? extends RowType>[] tables;
         private volatile List<RowType> data;
 
         @SafeVarargs
-        private LazyWrappingReportTable(BrokerReport report, ReportTable<RowType>... tables) {
+        private LazyWrappingReportTable(BrokerReport report, ReportTable<? extends RowType>... tables) {
             this.report = report;
             this.tables = tables;
         }
