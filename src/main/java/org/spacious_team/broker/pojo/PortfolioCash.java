@@ -50,7 +50,7 @@ public class PortfolioCash {
     @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", required = true)
     private final Instant timestamp;
 
-    @Schema(description = "Рынок", example = "Фондовый", nullable = true)
+    @Schema(description = "Рынок", example = "Фондовый", required = true)
     private final String market;
 
     @Schema(description = "Остаток денежных средств", example = "102.30", required = true)
