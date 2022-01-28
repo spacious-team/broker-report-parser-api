@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -45,7 +46,7 @@ public class Issuer {
             example = "7736050003", nullable = true)
     private final Long taxpayerId;
 
-    @NotNull
+    @NotEmpty
     @Schema(description = "Наименование", example = "ПАО Газпром")
     private final String name;
 }

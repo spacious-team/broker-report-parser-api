@@ -57,6 +57,7 @@ public class TransactionCashFlow {
     @Schema(description = "Сумма по событию", example = "1000.20", required = true)
     private final BigDecimal value;
 
+    //@Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUB";

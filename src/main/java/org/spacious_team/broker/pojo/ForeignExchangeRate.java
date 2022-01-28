@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ public class ForeignExchangeRate {
     @Schema(description = "Дата", example = "2021-21-23", required = true)
     private final LocalDate date;
 
-    @NotNull
+    @NotEmpty
     @JsonProperty("currency-pair")
     @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", required = true)
     private final String currencyPair;

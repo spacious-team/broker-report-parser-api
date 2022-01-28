@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -45,7 +46,7 @@ public class SecurityEventCashFlow {
     @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
     private final Integer id;
 
-    @NotNull
+    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String portfolio;
 
@@ -70,6 +71,7 @@ public class SecurityEventCashFlow {
     @Schema(description = "Сумма", example = "100.20", required = true)
     private final BigDecimal value;
 
+    //@Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUR";

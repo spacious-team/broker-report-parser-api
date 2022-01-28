@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -36,7 +37,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Счет")
 public class Portfolio {
-    @NotNull
+    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String id;
 
