@@ -70,8 +70,13 @@ public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
     }
 
     @Override
-    public BrokerReport create(String excelFileName, InputStream is) {
-        return  super.create(expectedFileNamePattern, excelFileName, is, MyBrokerReport::new);
+    public boolean canCreate(String reportFileName, InputStream is) {
+        return super.canCreate(expectedFileNamePattern, reportFileName, is);
+    }
+    
+    @Override
+    public BrokerReport create(String reportFileName, InputStream is) {
+        return  super.create(reportFileName, is, MyBrokerReport::new);
     }
 }
 ```
@@ -79,7 +84,11 @@ public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
 Пример реализации класса `ReportTables` доступен по
 [ссылке](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/foreignmarket/PsbForeignMarketReportTables.java)
 ```java
-public class MyReportTables extends AbstractReportTables {
+public class MyReportTables extends AbstractReportTables<MyBrokerReport> {
+
+    public MyReportTables(MyBrokerReport report) {
+        super(report);
+    }
 
     @Override
     public ReportTable<Security> getSecuritiesTable() {
@@ -91,10 +100,10 @@ public class MyReportTables extends AbstractReportTables {
 [доступе](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/SecuritiesTable.java).
 
 Обратите внимание, ответ брокера может не содержать всей информации, например если брокер не предоставляет информации
-о котировках, можно вернуть заглушку `EmptyReportTable`. На первом этапе вы можете парсить из отчета
-брокера только часть информации, для информации, которую не парсите просто верните `EmptyReportTable`.
+о котировках, можно вернуть заглушку `emptyTable()`. На первом этапе вы можете парсить из отчета
+брокера только часть информации, для информации, которую не парсите просто верните заглушку.
 
-Когда клас `ReportTables` реализован, нужно создать для него фабричный класс
+Когда интерфейс `ReportTables` реализован, нужно создать для него фабричный класс
 ```java
 public class MyReportTablesFactory implements ReportTablesFactory {
     @Override

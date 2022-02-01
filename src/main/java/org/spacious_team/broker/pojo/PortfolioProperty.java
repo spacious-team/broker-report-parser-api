@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
@@ -41,7 +42,7 @@ public class PortfolioProperty {
     @Schema(description = "Внутренний идентификатор записи", example = "111", nullable = true)
     private final Integer id;
 
-    @NotNull
+    @NotEmpty
     @Schema(description = "Номер счета", example = "10200I", required = true)
     private final String portfolio;
 
