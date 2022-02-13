@@ -26,6 +26,7 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -45,6 +46,7 @@ public class Security {
     private final SecurityType type;
 
     //@Nullable
+    @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
     private final String isin;
 
