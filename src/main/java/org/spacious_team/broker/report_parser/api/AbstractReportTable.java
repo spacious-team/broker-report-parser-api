@@ -25,6 +25,7 @@ import org.spacious_team.table_wrapper.api.TableRow;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -38,8 +39,11 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     private final String tableName;
     private final String namelessTableFirstLine;
     private final String tableFooter;
+    private final Predicate<Object> tableNameFinder;
+    private final Predicate<Object> tableFooterFinder;
     private final Class<? extends TableColumnDescription> headerDescription;
     private final int headersRowCount;
+    private final CreateMode createMode;
 
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
@@ -54,9 +58,35 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   Class<? extends TableColumnDescription> headerDescription,
                                   int headersRowCount) {
         super(report);
+        this.createMode = CreateMode.TABLE_BY_PREFIX;
         this.tableName = tableName;
         this.namelessTableFirstLine = null;
         this.tableFooter = tableFooter;
+        this.tableNameFinder = null;
+        this.tableFooterFinder = null;
+        this.headerDescription = headerDescription;
+        this.headersRowCount = headersRowCount;
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  Predicate<String> tableNameFinder,
+                                  Predicate<String> tableFooterFinder,
+                                  Class<? extends TableColumnDescription> headerDescription) {
+        this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  Predicate<String> tableNameFinder,
+                                  Predicate<String> tableFooterFinder,
+                                  Class<? extends TableColumnDescription> headerDescription,
+                                  int headersRowCount) {
+        super(report);
+        this.createMode = CreateMode.TABLE_BY_PREDICATE;
+        this.tableName = null;
+        this.namelessTableFirstLine = null;
+        this.tableFooter = null;
+        this.tableNameFinder = (cell) -> (cell instanceof String) && tableNameFinder.test(cell.toString());
+        this.tableFooterFinder = (cell) -> (cell instanceof String) && tableFooterFinder.test(cell.toString());
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
@@ -76,9 +106,37 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   Class<? extends TableColumnDescription> headerDescription,
                                   int headersRowCount) {
         super(report);
+        this.createMode = CreateMode.NAMELESS_TABLE_BY_PREFIX;
         this.tableName = providedTableName;
         this.namelessTableFirstLine = namelessTableFirstLine;
         this.tableFooter = tableFooter;
+        this.tableNameFinder = null;
+        this.tableFooterFinder = null;
+        this.headerDescription = headerDescription;
+        this.headersRowCount = headersRowCount;
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  Predicate<String> namelessTableFirstLineFinder,
+                                  Predicate<String> tableFooterFinder,
+                                  Class<? extends TableColumnDescription> headerDescription) {
+        this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
+    }
+
+    protected AbstractReportTable(BrokerReport report,
+                                  String providedTableName,
+                                  Predicate<String> namelessTableFirstLineFinder,
+                                  Predicate<String> tableFooterFinder,
+                                  Class<? extends TableColumnDescription> headerDescription,
+                                  int headersRowCount) {
+        super(report);
+        this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
+        this.tableName = providedTableName;
+        this.namelessTableFirstLine = null;
+        this.tableFooter = null;
+        this.tableNameFinder = (cell) -> (cell instanceof String) && namelessTableFirstLineFinder.test(cell.toString());
+        this.tableFooterFinder = (cell) -> (cell instanceof String) && tableFooterFinder.test(cell.toString());
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
@@ -87,23 +145,33 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected Collection<RowType> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
-            Table table;
-            if (namelessTableFirstLine == null) {
-                table = (tableFooter != null && !tableFooter.isEmpty()) ?
-                        reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.create(tableName, headerDescription, headersRowCount);
-            } else {
-                table = (tableFooter != null && !tableFooter.isEmpty()) ?
-                        reportPage.createNameless(
-                                tableName, namelessTableFirstLine, tableFooter, headerDescription, headersRowCount)
-                                .excludeTotalRow() :
-                        reportPage.createNameless(
-                                tableName, namelessTableFirstLine, headerDescription, headersRowCount);
-            }
+            Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при парсинге таблицы '" + tableName + "' в отчете " + getReport(), e);
         }
+    }
+
+    private Table createTable(ReportPage reportPage) {
+        switch (createMode) {
+            case TABLE_BY_PREFIX:
+                return (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.create(tableName, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.create(tableName, headerDescription, headersRowCount);
+            case TABLE_BY_PREDICATE:
+                return (tableFooterFinder != null) ?
+                    reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
+                    reportPage.create(tableNameFinder, headerDescription, headersRowCount);
+            case NAMELESS_TABLE_BY_PREFIX:
+                return (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.createNameless(tableName, namelessTableFirstLine, tableFooter, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.createNameless(tableName, namelessTableFirstLine, headerDescription, headersRowCount);
+            case NAMELESS_TABLE_BY_PREDICATE:
+                return (tableFooter != null && !tableFooter.isEmpty()) ?
+                        reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
+        }
+        throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
 
     protected Collection<RowType> parseTable(Table table) {
@@ -125,5 +193,12 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
 
     protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {
         return Arrays.asList(oldObject, newObject);
+    }
+
+    private enum CreateMode {
+        TABLE_BY_PREFIX,
+        TABLE_BY_PREDICATE,
+        NAMELESS_TABLE_BY_PREFIX,
+        NAMELESS_TABLE_BY_PREDICATE
     }
 }
