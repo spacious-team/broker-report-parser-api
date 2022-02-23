@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
 
-    private final String providedTableName;
+    private String tableName;
     private final Predicate<Object> tableNameFinder;
     private final Predicate<Object> tableFooterFinder;
     private final Class<? extends TableColumnDescription> headerDescription;
@@ -49,6 +49,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   String tableFooter,
                                   Class<? extends TableColumnDescription> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
+        this.tableName = tableName;
     }
 
     protected AbstractReportTable(BrokerReport report,
@@ -57,6 +58,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   Class<? extends TableColumnDescription> headerDescription,
                                   int headersRowCount) {
         this(report, getPrefixPredicate(tableName), getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
+        this.tableName = tableName;
     }
 
     protected AbstractReportTable(BrokerReport report,
@@ -73,7 +75,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
-        this.providedTableName = null;
+        this.tableName = null;
         this.tableNameFinder = requireNonNull(cast(tableNameFinder));
         this.tableFooterFinder = cast(tableFooterFinder);
         this.headerDescription = headerDescription;
@@ -114,7 +116,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
-        this.providedTableName = providedTableName;
+        this.tableName = providedTableName;
         this.tableNameFinder = requireNonNull(cast(namelessTableFirstLineFinder));
         this.tableFooterFinder = cast(tableFooterFinder);
         this.headerDescription = headerDescription;
@@ -139,7 +141,8 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
             Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы '" + providedTableName + "' в отчете " + getReport(), e);
+            throw new RuntimeException("Ошибка при парсинге таблицы" + (tableName == null ? "" : " '" + tableName +"'")
+                    + " в отчете " + getReport(), e);
         }
     }
 
@@ -151,8 +154,8 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                     reportPage.create(tableNameFinder, headerDescription, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
                 return (tableFooterFinder != null) ?
-                        reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.createNameless(providedTableName, tableNameFinder, headerDescription, headersRowCount);
+                        reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
         }
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
