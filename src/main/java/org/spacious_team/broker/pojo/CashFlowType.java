@@ -47,6 +47,6 @@ public enum CashFlowType {
                 return e;
             }
         }
-        throw new IllegalArgumentException("Не верный тип события: " + type);
+        throw new IllegalArgumentException("Invalid cash flow event type: " + type);
     }
 }
