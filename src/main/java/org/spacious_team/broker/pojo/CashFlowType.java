@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,6 +47,6 @@ public enum CashFlowType {
                 return e;
             }
         }
-        throw new IllegalArgumentException("Не верный тип события: " + type);
+        throw new IllegalArgumentException("Invalid cash flow event type: " + type);
     }
 }

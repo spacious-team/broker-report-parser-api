@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
+ * Copyright (C) 2022  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,23 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.spacious_team.broker.report_parser.api;
+package org.spacious_team.broker.pojo;
 
-import lombok.Getter;
+import org.junit.jupiter.api.Test;
 
-public abstract class AbstractReportTables<T extends BrokerReport> implements ReportTables {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Getter
-    protected final T report;
-    private final EmptyReportTable<?> emptyReportTable;
+class CashFlowTypeTest {
 
-    protected AbstractReportTables(T report) {
-        this.report = report;
-        this.emptyReportTable = EmptyReportTable.of(report);
+    @Test
+    void valueOf() {
+        int i =0;
+        for (CashFlowType expected : CashFlowType.values()) {
+            CashFlowType actual = CashFlowType.valueOf(i);
+            assertSame(expected, actual);
+            assertEquals(expected.getId(), i);
+            i++;
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    protected <E> EmptyReportTable<E> emptyTable() {
-        return (EmptyReportTable<E>) emptyReportTable;
+    @Test
+    void valueOfThrowable() {
+        assertThrows(IllegalArgumentException.class, () -> CashFlowType.valueOf(-1));
+        assertThrows(IllegalArgumentException.class, () -> CashFlowType.valueOf(14));
     }
 }
