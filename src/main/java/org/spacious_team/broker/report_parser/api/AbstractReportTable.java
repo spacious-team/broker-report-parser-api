@@ -20,7 +20,7 @@ package org.spacious_team.broker.report_parser.api;
 
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
-import org.spacious_team.table_wrapper.api.TableColumnDescription;
+import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 import org.spacious_team.table_wrapper.api.TableRow;
 
 import java.util.Arrays;
@@ -35,19 +35,20 @@ import static java.util.Objects.requireNonNull;
  * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
  * {@link #parseRowToCollection(TableRow)} methods.
  */
-public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
+public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHeaderColumn>
+        extends InitializableReportTable<RowType> {
 
     private String tableName;
     private final Predicate<Object> tableNameFinder;
     private final Predicate<Object> tableFooterFinder;
-    private final Class<? extends TableColumnDescription> headerDescription;
+    private final Class<T> headerDescription;
     private final int headersRowCount;
     private final CreateMode createMode;
 
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
                                   String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+                                  Class<T> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
         this.tableName = tableName;
     }
@@ -55,7 +56,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
                                   String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription,
+                                  Class<T> headerDescription,
                                   int headersRowCount) {
         this(report, getPrefixPredicate(tableName), getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
         this.tableName = tableName;
@@ -64,14 +65,14 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
     protected AbstractReportTable(BrokerReport report,
                                   Predicate<String> tableNameFinder,
                                   Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+                                  Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
     protected AbstractReportTable(BrokerReport report,
                                   Predicate<String> tableNameFinder,
                                   Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription,
+                                  Class<T> headerDescription,
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
@@ -86,7 +87,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   String providedTableName,
                                   String namelessTableFirstLine,
                                   String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+                                  Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
     }
 
@@ -94,7 +95,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   String providedTableName,
                                   String namelessTableFirstLine,
                                   String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription,
+                                  Class<T> headerDescription,
                                   int headersRowCount) {
         this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine), getPrefixPredicate(tableFooter),
                 headerDescription, headersRowCount);
@@ -104,7 +105,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   String providedTableName,
                                   Predicate<String> namelessTableFirstLineFinder,
                                   Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+                                  Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
 
@@ -112,7 +113,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
                                   String providedTableName,
                                   Predicate<String> namelessTableFirstLineFinder,
                                   Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription,
+                                  Class<T> headerDescription,
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
@@ -141,7 +142,7 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
             Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы" + (tableName == null ? "" : " '" + tableName +"'")
+            throw new RuntimeException("Ошибка при парсинге таблицы" + (tableName == null ? "" : " '" + tableName + "'")
                     + " в отчете " + getReport(), e);
         }
     }
@@ -150,8 +151,8 @@ public abstract class AbstractReportTable<RowType> extends InitializableReportTa
         switch (createMode) {
             case TABLE_BY_PREDICATE:
                 return (tableFooterFinder != null) ?
-                    reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                    reportPage.create(tableNameFinder, headerDescription, headersRowCount);
+                        reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.create(tableNameFinder, headerDescription, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
                 return (tableFooterFinder != null) ?
                         reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
