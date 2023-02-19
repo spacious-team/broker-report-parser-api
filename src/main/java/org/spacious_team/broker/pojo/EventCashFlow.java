@@ -25,13 +25,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -43,7 +44,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по счету", description = "Ввод и вывод ДС, налоги, комиссии, а также выплаты по инструментам другого счета")
 public class EventCashFlow {
-    //@Nullable // autoincrement
+    @Nullable // autoincrement
     @Schema(description = "Идентификатор записи", example = "123", nullable = true)
     private final Integer id;
 
@@ -51,47 +52,46 @@ public class EventCashFlow {
     @Schema(description = "Номер счета", example = "10200I", required = true)
     private final String portfolio;
 
-    @NotNull
     @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", required = true)
     private final Instant timestamp;
 
-    @NotNull
     @JsonProperty("event-type")
     @Schema(description = "Тип события", example = "CASH", required = true)
     private final CashFlowType eventType;
 
-    @NotNull
     @Schema(description = "Значение", example = "100.50", required = true)
     private final BigDecimal value;
 
-    //@Nullable
+    @Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUB";
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Описание события", example = "Внесение наличных", nullable = true)
     private final String description;
 
     /**
      * Checks DB unique index constraint
      */
+    @SuppressWarnings("unused")
     public static boolean checkEquality(EventCashFlow cash1, EventCashFlow cash2) {
-        return cash1.getPortfolio().equals(cash2.getPortfolio()) &&
-                cash1.getTimestamp().equals(cash2.getTimestamp()) &&
-                cash1.getEventType().equals(cash2.getEventType()) &&
-                cash1.getValue().equals(cash2.getValue()) &&
-                cash1.getCurrency().equals(cash2.getCurrency());
+        return Objects.equals(cash1.getPortfolio(), cash2.getPortfolio()) &&
+                Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
+                Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
+                Objects.equals(cash1.getValue(), cash2.getValue()) &&
+                Objects.equals(cash1.getCurrency(), cash2.getCurrency());
     }
 
     /**
      * Merge information of two objects with equals by {@link #checkEquality(EventCashFlow, EventCashFlow)}
      */
+    @SuppressWarnings("unused")
     public static Collection<EventCashFlow> mergeDuplicates(EventCashFlow cash1, EventCashFlow cash2) {
         StringJoiner joiner = new StringJoiner("; ");
         if (cash1.getDescription() != null) joiner.add(cash1.getDescription());
         if (cash2.getDescription() != null) joiner.add(cash2.getDescription());
-        String description = (joiner.length() == 0) ? null : joiner.toString();
+        @Nullable String description = (joiner.length() == 0) ? null : joiner.toString();
         return Collections.singletonList(cash1.toBuilder()
                 .value(cash1.getValue().add(cash2.getValue()))
                 .description((description == null) ? null : description.substring(0, Math.min(500, description.length())))

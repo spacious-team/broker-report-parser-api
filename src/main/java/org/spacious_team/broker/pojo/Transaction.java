@@ -25,9 +25,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -39,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Сделка")
 public class Transaction {
-    //@Nullable // autoincrement
+    @Nullable // autoincrement
     @Schema(description = "Внутренний идентификатор сделки", example = "123", nullable = true)
     private final Integer id;
 
@@ -52,15 +52,12 @@ public class Transaction {
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String portfolio;
 
-    @NotNull
     @Schema(description = "Инструмент", example = "123", required = true)
     private final int security;
 
-    @NotNull
     @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", required = true)
     private final Instant timestamp;
 
-    @NotNull
     @Schema(description = "Количество бумаг (контрактов), шт", example = "10", required = true)
     private final int count;
 }

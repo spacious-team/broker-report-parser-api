@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
@@ -25,6 +26,7 @@ import org.spacious_team.table_wrapper.api.TableRow;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
@@ -35,19 +37,20 @@ import static java.util.Objects.requireNonNull;
  * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
  * {@link #parseRowToCollection(TableRow)} methods.
  */
+@SuppressWarnings("unused")
 public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHeaderColumn>
         extends InitializableReportTable<RowType> {
 
-    private String tableName;
+    private @Nullable String tableName;
     private final Predicate<Object> tableNameFinder;
-    private final Predicate<Object> tableFooterFinder;
+    private final @Nullable Predicate<Object> tableFooterFinder;
     private final Class<T> headerDescription;
     private final int headersRowCount;
     private final CreateMode createMode;
 
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
-                                  String tableFooter,
+                                  @Nullable String tableFooter,
                                   Class<T> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
         this.tableName = tableName;
@@ -55,28 +58,30 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
 
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
-                                  String tableFooter,
+                                  @Nullable String tableFooter,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
-        this(report, getPrefixPredicate(tableName), getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
+        this(report, requireNonNull(getPrefixPredicate(tableName)), getPrefixPredicate(tableFooter),
+                headerDescription, headersRowCount);
         this.tableName = tableName;
     }
 
     protected AbstractReportTable(BrokerReport report,
                                   Predicate<String> tableNameFinder,
-                                  Predicate<String> tableFooterFinder,
+                                  @Nullable Predicate<String> tableFooterFinder,
                                   Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
     protected AbstractReportTable(BrokerReport report,
                                   Predicate<String> tableNameFinder,
-                                  Predicate<String> tableFooterFinder,
+                                  @Nullable Predicate<String> tableFooterFinder,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
         this.tableName = null;
+        //noinspection ConstantConditions
         this.tableNameFinder = requireNonNull(cast(tableNameFinder));
         this.tableFooterFinder = cast(tableFooterFinder);
         this.headerDescription = headerDescription;
@@ -86,7 +91,7 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   String namelessTableFirstLine,
-                                  String tableFooter,
+                                  @Nullable String tableFooter,
                                   Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
     }
@@ -94,17 +99,17 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   String namelessTableFirstLine,
-                                  String tableFooter,
+                                  @Nullable String tableFooter,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
-        this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine), getPrefixPredicate(tableFooter),
-                headerDescription, headersRowCount);
+        this(report, providedTableName, requireNonNull(getPrefixPredicate(namelessTableFirstLine)),
+                getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
     }
 
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   Predicate<String> namelessTableFirstLineFinder,
-                                  Predicate<String> tableFooterFinder,
+                                  @Nullable Predicate<String> tableFooterFinder,
                                   Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
@@ -112,25 +117,27 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   Predicate<String> namelessTableFirstLineFinder,
-                                  Predicate<String> tableFooterFinder,
+                                  @Nullable Predicate<String> tableFooterFinder,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
         this.tableName = providedTableName;
+        //noinspection ConstantConditions
         this.tableNameFinder = requireNonNull(cast(namelessTableFirstLineFinder));
         this.tableFooterFinder = cast(tableFooterFinder);
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
 
-    private static Predicate<String> getPrefixPredicate(String prefix) {
+    private static @Nullable Predicate<String> getPrefixPredicate(@Nullable String prefix) {
         if (prefix == null || prefix.isEmpty()) return null;
         String lowercasePrefix = prefix.trim().toLowerCase();
+        //noinspection ConstantConditions
         return (cell) -> (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
     }
 
-    private static Predicate<Object> cast(Predicate<String> predicate) {
+    private static @Nullable Predicate<Object> cast(@Nullable Predicate<String> predicate) {
         if (predicate == null) return null;
         return (cell) -> (cell instanceof String) && predicate.test(cell.toString());
     }
@@ -154,6 +161,8 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
                         reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
                         reportPage.create(tableNameFinder, headerDescription, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
+                //noinspection ConstantConditions
+                requireNonNull(tableName);
                 return (tableFooterFinder != null) ?
                         reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
                         reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
@@ -166,16 +175,16 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
     }
 
     protected Collection<RowType> parseRowToCollection(TableRow row) {
-        RowType data = parseRow(row);
+        @Nullable RowType data = parseRow(row);
         return (data == null) ? emptyList() : singleton(data);
     }
 
-    protected RowType parseRow(TableRow row) {
+    protected @Nullable RowType parseRow(TableRow row) {
         return null;
     }
 
     protected boolean checkEquality(RowType object1, RowType object2) {
-        return object1.equals(object2);
+        return Objects.equals(object1, object2);
     }
 
     protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {

@@ -24,8 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-
-import javax.validation.constraints.NotNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -36,15 +35,15 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Свойства инструмента", description = "Информация об инструменте")
 public class SecurityDescription {
-    @NotNull
+
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
     private final int security;
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
     private final String sector;
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Эмитент (опционально)", example = "7736207543", nullable = true)
     private final Integer issuer;
 }

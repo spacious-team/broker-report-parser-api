@@ -27,7 +27,6 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -40,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Официальный обменный курс")
 public class ForeignExchangeRate {
-    @NotNull
+
     @Schema(description = "Дата", example = "2021-21-23", required = true)
     private final LocalDate date;
 
@@ -49,7 +48,6 @@ public class ForeignExchangeRate {
     @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", required = true)
     private final String currencyPair;
 
-    @NotNull
     @Schema(description = "Значение обменного курса", example = "75.67", required = true)
     private final BigDecimal rate;
 }

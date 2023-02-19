@@ -24,9 +24,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -37,11 +37,11 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Эмитент")
 public class Issuer {
-    //@Nullable
+    @Nullable
     @Schema(description = "Внутренний идентификатор эмитента", nullable = true)
     private final Integer id;
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Идентификатор налогоплательщика (Россия - ИНН, США - EIN и т.д.)",
             example = "7736050003", nullable = true)
     private final Long taxpayerId;

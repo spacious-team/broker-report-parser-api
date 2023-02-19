@@ -24,8 +24,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -37,24 +37,23 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
 public class Security {
-    //@Nullable // autoincrement
+    @Nullable // autoincrement
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
     private final Integer id;
 
-    @NotNull
     @Schema(description = "Тип ценной бумаги", example = "STOCK", required = true)
     private final SecurityType type;
 
-    //@Nullable
+    @Nullable
     @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
     private final String isin;
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Тикер (опционально)", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
     private final String ticker;
 
-    //@Nullable
+    @Nullable
     @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
     private final String name;
 }

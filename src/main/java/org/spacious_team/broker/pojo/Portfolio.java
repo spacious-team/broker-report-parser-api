@@ -26,7 +26,6 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -41,7 +40,6 @@ public class Portfolio {
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
     private final String id;
 
-    @NotNull
     @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
             required = true)
     @Builder.Default
