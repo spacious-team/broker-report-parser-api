@@ -45,7 +45,7 @@ public class Security {
     private final SecurityType type;
 
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
-    private final @Nullable @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$") String isin;
+    private final @Nullable @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}\\d$") String isin;
 
     @Schema(description = "Тикер (опционально)", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
     private final @Nullable String ticker;

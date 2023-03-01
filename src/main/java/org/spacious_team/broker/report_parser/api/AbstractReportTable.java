@@ -40,8 +40,8 @@ import static java.util.Objects.requireNonNull;
  * {@link #parseRowToCollection(TableRow)} methods.
  */
 @SuppressWarnings("unused")
-public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHeaderColumn>
-        extends InitializableReportTable<RowType> {
+public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColumn>
+        extends InitializableReportTable<R> {
 
     private @Nullable String tableName;
     private final Predicate<Object> tableNameFinder;
@@ -145,7 +145,7 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
     }
 
     @Override
-    protected Collection<RowType> parseTable() {
+    protected Collection<R> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
             Table table = createTable(reportPage);
@@ -172,25 +172,25 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
 
-    @DefaultQualifier(NonNull.class)
-    protected Collection<RowType> parseTable(Table table) {
+    @DefaultQualifier(NonNull.class)  // checkerframework bug fix
+    protected Collection<R> parseTable(Table table) {
         return table.getDataCollection(getReport(), this::parseRowToCollection, this::checkEquality, this::mergeDuplicates);
     }
 
-    protected Collection<RowType> parseRowToCollection(TableRow row) {
-        @Nullable RowType data = parseRow(row);
+    protected Collection<R> parseRowToCollection(TableRow row) {
+        @Nullable R data = parseRow(row);
         return (data == null) ? emptyList() : singleton(data);
     }
 
-    protected @Nullable RowType parseRow(TableRow row) {
+    protected @Nullable R parseRow(TableRow row) {
         return null;
     }
 
-    protected boolean checkEquality(RowType object1, RowType object2) {
+    protected boolean checkEquality(R object1, R object2) {
         return Objects.equals(object1, object2);
     }
 
-    protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {
+    protected Collection<R> mergeDuplicates(R oldObject, R newObject) {
         return Arrays.asList(oldObject, newObject);
     }
 
