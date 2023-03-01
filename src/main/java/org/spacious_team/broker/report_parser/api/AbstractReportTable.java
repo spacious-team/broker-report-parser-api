@@ -18,7 +18,9 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
@@ -170,6 +172,7 @@ public abstract class AbstractReportTable<RowType, T extends Enum<T> & TableHead
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
 
+    @DefaultQualifier(NonNull.class)
     protected Collection<RowType> parseTable(Table table) {
         return table.getDataCollection(getReport(), this::parseRowToCollection, this::checkEquality, this::mergeDuplicates);
     }
