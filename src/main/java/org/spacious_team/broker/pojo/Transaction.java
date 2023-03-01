@@ -39,18 +39,16 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Сделка")
 public class Transaction {
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор сделки", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @JsonProperty("trade-id")
     @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", required = true)
-    private final String tradeId;
+    private final @NotEmpty String tradeId;
 
-    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String portfolio;
+    private final @NotEmpty String portfolio;
 
     @Schema(description = "Инструмент", example = "123", required = true)
     private final int security;

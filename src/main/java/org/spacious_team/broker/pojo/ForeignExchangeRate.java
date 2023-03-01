@@ -43,10 +43,9 @@ public class ForeignExchangeRate {
     @Schema(description = "Дата", example = "2021-21-23", required = true)
     private final LocalDate date;
 
-    @NotEmpty
     @JsonProperty("currency-pair")
     @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", required = true)
-    private final String currencyPair;
+    private final @NotEmpty String currencyPair;
 
     @Schema(description = "Значение обменного курса", example = "75.67", required = true)
     private final BigDecimal rate;

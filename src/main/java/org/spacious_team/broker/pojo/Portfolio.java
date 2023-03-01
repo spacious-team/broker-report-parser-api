@@ -36,9 +36,9 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Счет")
 public class Portfolio {
-    @NotEmpty
+
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String id;
+    private final @NotEmpty String id;
 
     @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
             required = true)

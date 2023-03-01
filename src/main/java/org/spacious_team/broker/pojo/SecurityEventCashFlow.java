@@ -43,13 +43,12 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
 public class SecurityEventCashFlow {
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String portfolio;
+    private final @NotEmpty String portfolio;
 
     @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
@@ -67,10 +66,9 @@ public class SecurityEventCashFlow {
     @Schema(description = "Сумма", example = "100.20", required = true)
     private final BigDecimal value;
 
-    @Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final String currency = "RUR";
+    private final @Nullable String currency = "RUR";
 
     /**
      * Checks DB unique index constraint

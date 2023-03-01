@@ -39,11 +39,9 @@ public class SecurityDescription {
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
     private final int security;
 
-    @Nullable
     @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
-    private final String sector;
+    private final @Nullable String sector;
 
-    @Nullable
     @Schema(description = "Эмитент (опционально)", example = "7736207543", nullable = true)
-    private final Integer issuer;
+    private final @Nullable Integer issuer;
 }

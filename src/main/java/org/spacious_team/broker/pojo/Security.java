@@ -37,23 +37,19 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
 public class Security {
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
     @Schema(description = "Тип ценной бумаги", example = "STOCK", required = true)
     private final SecurityType type;
 
-    @Nullable
-    @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
-    private final String isin;
+    private final @Nullable @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$") String isin;
 
-    @Nullable
     @Schema(description = "Тикер (опционально)", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
-    private final String ticker;
+    private final @Nullable String ticker;
 
-    @Nullable
     @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
-    private final String name;
+    private final @Nullable String name;
 }

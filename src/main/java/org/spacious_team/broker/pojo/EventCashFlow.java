@@ -44,13 +44,12 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по счету", description = "Ввод и вывод ДС, налоги, комиссии, а также выплаты по инструментам другого счета")
 public class EventCashFlow {
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Идентификатор записи", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @Schema(description = "Номер счета", example = "10200I", required = true)
-    private final String portfolio;
+    private final @NotEmpty String portfolio;
 
     @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", required = true)
     private final Instant timestamp;
@@ -62,14 +61,12 @@ public class EventCashFlow {
     @Schema(description = "Значение", example = "100.50", required = true)
     private final BigDecimal value;
 
-    @Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final String currency = "RUB";
+    private final @Nullable String currency = "RUB";
 
-    @Nullable
     @Schema(description = "Описание события", example = "Внесение наличных", nullable = true)
-    private final String description;
+    private final @Nullable String description;
 
     /**
      * Checks DB unique index constraint
@@ -91,10 +88,10 @@ public class EventCashFlow {
         StringJoiner joiner = new StringJoiner("; ");
         if (cash1.getDescription() != null) joiner.add(cash1.getDescription());
         if (cash2.getDescription() != null) joiner.add(cash2.getDescription());
-        @Nullable String description = (joiner.length() == 0) ? null : joiner.toString();
+        String description = joiner.toString();
         return Collections.singletonList(cash1.toBuilder()
                 .value(cash1.getValue().add(cash2.getValue()))
-                .description((description == null) ? null : description.substring(0, Math.min(500, description.length())))
+                .description(description.isEmpty() ? null : description.substring(0, Math.min(500, description.length())))
                 .build());
     }
 }

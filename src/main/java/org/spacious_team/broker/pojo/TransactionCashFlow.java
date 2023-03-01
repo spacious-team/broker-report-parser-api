@@ -39,9 +39,9 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "1", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
     @JsonProperty("transaction-id")
     @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
@@ -54,8 +54,7 @@ public class TransactionCashFlow {
     @Schema(description = "Сумма по событию", example = "1000.20", required = true)
     private final BigDecimal value;
 
-    @Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final String currency = "RUB";
+    private final @Nullable String currency = "RUB";
 }

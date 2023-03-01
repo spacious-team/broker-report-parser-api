@@ -41,9 +41,9 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Котировка")
 public class SecurityQuote {
 
-    @Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "333", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
     @Schema(description = "Инструмент", example = "123", required = true)
     private final int security;
@@ -54,20 +54,17 @@ public class SecurityQuote {
     @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", required = true)
     private final BigDecimal quote; // for stock, currency pair and asset in currency, for bond - in percent, for derivative - in quote
 
-    @Nullable
     @Schema(description = "Котировка (в валюте, только для облигаций и деривативов)", example = "1020.30", nullable = true)
-    private final BigDecimal price; // for bond and derivative - in currency, for others is null
+    private final @Nullable BigDecimal price; // for bond and derivative - in currency, for others is null
 
-    @Nullable
     @JsonProperty("accrued-interest")
     @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
-    private final BigDecimal accruedInterest; // for bond in currency, for others is null
+    private final @Nullable BigDecimal accruedInterest; // for bond in currency, for others is null
 
-    @Nullable
     @JsonProperty("currency")
     @Schema(description = "Валюта котировки для акций, облигаций, произвольных активов и опционально для деривативов",
             example = "RUB", nullable = true)
-    private final String currency;
+    private final @Nullable String currency;
 
     /**
      * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
