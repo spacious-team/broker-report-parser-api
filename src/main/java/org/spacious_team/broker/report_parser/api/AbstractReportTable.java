@@ -63,7 +63,7 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
                                   @Nullable String tableFooter,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
-        this(report, requireNonNull(getPrefixPredicate(tableName)), getPrefixPredicate(tableFooter),
+        this(report, getPrefixPredicate(tableName), getPrefixPredicateOrNull(tableFooter),
                 headerDescription, headersRowCount);
         this.tableName = tableName;
     }
@@ -83,9 +83,8 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
         this.tableName = null;
-        //noinspection ConstantConditions
-        this.tableNameFinder = requireNonNull(cast(tableNameFinder));
-        this.tableFooterFinder = cast(tableFooterFinder);
+        this.tableNameFinder = cast(tableNameFinder);
+        this.tableFooterFinder = castOrNull(tableFooterFinder);
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
@@ -104,8 +103,8 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
                                   @Nullable String tableFooter,
                                   Class<T> headerDescription,
                                   int headersRowCount) {
-        this(report, providedTableName, requireNonNull(getPrefixPredicate(namelessTableFirstLine)),
-                getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
+        this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine),
+                getPrefixPredicateOrNull(tableFooter), headerDescription, headersRowCount);
     }
 
     protected AbstractReportTable(BrokerReport report,
@@ -125,22 +124,29 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
         this.tableName = providedTableName;
-        //noinspection ConstantConditions
-        this.tableNameFinder = requireNonNull(cast(namelessTableFirstLineFinder));
-        this.tableFooterFinder = cast(tableFooterFinder);
+        this.tableNameFinder = cast(namelessTableFirstLineFinder);
+        this.tableFooterFinder = castOrNull(tableFooterFinder);
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
 
-    private static @Nullable Predicate<String> getPrefixPredicate(@Nullable String prefix) {
-        if (prefix == null || prefix.isEmpty()) return null;
-        String lowercasePrefix = prefix.trim().toLowerCase();
-        //noinspection ConstantConditions
-        return (cell) -> (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
+    private static @Nullable Predicate<String> getPrefixPredicateOrNull(@Nullable String prefix) {
+        return (prefix == null || prefix.isEmpty()) ? null : getPrefixPredicate(prefix);
     }
 
-    private static @Nullable Predicate<Object> cast(@Nullable Predicate<String> predicate) {
-        if (predicate == null) return null;
+    private static Predicate<String> getPrefixPredicate(String prefix) {
+        String lowercasePrefix = prefix.trim().toLowerCase();
+        @SuppressWarnings("ConstantConditions")
+        Predicate<String> stringPredicate = (cell) ->
+                (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
+        return requireNonNull(stringPredicate);
+    }
+
+    private static @Nullable Predicate<Object> castOrNull(@Nullable Predicate<String> predicate) {
+        return (predicate == null) ? null : cast(predicate);
+    }
+
+    private static Predicate<Object> cast(Predicate<String> predicate) {
         return (cell) -> (cell instanceof String) && predicate.test(cell.toString());
     }
 
@@ -163,8 +169,8 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
                         reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
                         reportPage.create(tableNameFinder, headerDescription, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
-                //noinspection ConstantConditions
-                requireNonNull(tableName);
+                @SuppressWarnings({"nullness", "ConstantConditions"})
+                String tableName = requireNonNull(this.tableName);
                 return (tableFooterFinder != null) ?
                         reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
                         reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
