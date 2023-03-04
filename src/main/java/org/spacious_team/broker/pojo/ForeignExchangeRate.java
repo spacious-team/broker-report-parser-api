@@ -47,6 +47,13 @@ public class ForeignExchangeRate {
     @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", required = true)
     private final @NotEmpty String currencyPair;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Значение обменного курса", example = "75.67", required = true)
     private final BigDecimal rate;
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getRateForEquals() {
+        return (rate == null) ? null : rate.stripTrailingZeros();
+    }
 }

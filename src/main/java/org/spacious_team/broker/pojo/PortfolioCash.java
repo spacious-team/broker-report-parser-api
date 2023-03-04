@@ -55,9 +55,16 @@ public class PortfolioCash {
     @Schema(description = "Рынок", example = "Фондовый", required = true)
     private final String market;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Остаток денежных средств", example = "102.30", required = true)
     private final BigDecimal value;
 
     @Schema(description = "Валюта", example = "RUB", required = true)
     private final @NotEmpty String currency;
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

@@ -51,10 +51,17 @@ public class TransactionCashFlow {
     @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", required = true)
     private final CashFlowType eventType;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Сумма по событию", example = "1000.20", required = true)
     private final BigDecimal value;
 
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final @Nullable String currency = "RUB";
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

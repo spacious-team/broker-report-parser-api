@@ -35,22 +35,25 @@ import java.util.Optional;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
-@SuperBuilder(toBuilder = true)
 @ToString
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
-    protected static final BigDecimal minValue = BigDecimal.valueOf(0.01);
     protected final Integer id;
     protected final String tradeId;
     protected final String portfolio;
     protected final int security;
     protected final Instant timestamp;
     protected final int count;
-    protected final BigDecimal value; // стоиомсть в валюце цены
-    protected final BigDecimal commission;
+    @EqualsAndHashCode.Exclude
+    protected final BigDecimal value; // стоимость в валюте цены
+    @EqualsAndHashCode.Exclude
+    protected final BigDecimal fee;
     protected final String valueCurrency; // валюта платежа
-    protected final String commissionCurrency; // валюта коммиссии
+    protected final String feeCurrency; // валюта комиссии
 
+
+    @SuppressWarnings("unused")
     public Transaction getTransaction() {
         return Transaction.builder()
                 .id(id)
@@ -62,6 +65,7 @@ public abstract class AbstractTransaction {
                 .build();
     }
 
+    @SuppressWarnings("unused")
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
@@ -70,7 +74,8 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        if (value != null && value.abs().compareTo(minValue) >= 0) {
+        //noinspection ConstantConditions
+        if (value != null && Math.abs(fee.floatValue()) >= 0.0001) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
                 .eventType(type)
@@ -82,15 +87,28 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getCommissionCashFlow() {
-        if (commission != null && commission.abs().compareTo(minValue) >= 0) {
+        //noinspection ConstantConditions
+        if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.COMMISSION)
-                    .value(commission)
-                    .currency(commissionCurrency)
+                    .eventType(CashFlowType.FEE)
+                    .value(fee)
+                    .currency(feeCurrency)
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getFeeForEquals() {
+        return (fee == null) ? null : fee.stripTrailingZeros();
     }
 
     public abstract AbstractTransactionBuilder<? extends AbstractTransaction, ? extends AbstractTransactionBuilder<?, ?>> toBuilder();

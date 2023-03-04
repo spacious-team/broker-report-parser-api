@@ -63,6 +63,7 @@ public class SecurityEventCashFlow {
     @Schema(description = "Тип события", example = "DIVIDEND", required = true)
     private final CashFlowType eventType;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Сумма", example = "100.20", required = true)
     private final BigDecimal value;
 
@@ -75,10 +76,10 @@ public class SecurityEventCashFlow {
      */
     @SuppressWarnings("unused")
     public static boolean checkEquality(SecurityEventCashFlow cash1, SecurityEventCashFlow cash2) {
-        return Objects.equals(cash1.getPortfolio(), cash2.getPortfolio()) &&
-                Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
+        return cash1.getSecurity() == cash2.getSecurity() &&
                 Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
-                cash1.getSecurity() == cash2.getSecurity();
+                Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
+                Objects.equals(cash1.getPortfolio(), cash2.getPortfolio());
     }
 
     /**
@@ -96,5 +97,11 @@ public class SecurityEventCashFlow {
         return Collections.singletonList(cash1.toBuilder()
                 .value(cash1.getValue().add(cash2.getValue()))
                 .build());
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
     }
 }

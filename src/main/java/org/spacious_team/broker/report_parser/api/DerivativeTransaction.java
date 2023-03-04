@@ -37,7 +37,8 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class DerivativeTransaction extends AbstractTransaction {
-    private static final String QUOTE_CURRENCY = "PNT"; // point
+    public static final String QUOTE_CURRENCY = "PNT";  // point
+    @EqualsAndHashCode.Exclude
     private final BigDecimal valueInPoints;
 
     public List<TransactionCashFlow> getTransactionCashFlows() {
@@ -49,6 +50,7 @@ public class DerivativeTransaction extends AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
+        //noinspection ConstantConditions
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -62,6 +64,7 @@ public class DerivativeTransaction extends AbstractTransaction {
 
     @Override
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
+        //noinspection ConstantConditions
         if (value != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -71,5 +74,11 @@ public class DerivativeTransaction extends AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueInPointsForEquals() {
+        return (valueInPoints == null) ? null : valueInPoints.stripTrailingZeros();
     }
 }

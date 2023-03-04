@@ -24,8 +24,9 @@ import lombok.experimental.SuperBuilder;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
-@SuperBuilder(toBuilder = true)
+@SuppressWarnings("unused")
 @ToString(callSuper = true)
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class ForeignExchangeTransaction extends AbstractTransaction {
 

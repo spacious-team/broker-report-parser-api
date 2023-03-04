@@ -51,12 +51,15 @@ public class SecurityQuote {
     @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", required = true)
     private final BigDecimal quote; // for stock, currency pair and asset in currency, for bond - in percent, for derivative - in quote
 
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Котировка (в валюте, только для облигаций и деривативов)", example = "1020.30", nullable = true)
     private final @Nullable BigDecimal price; // for bond and derivative - in currency, for others is null
 
+    @EqualsAndHashCode.Exclude
     @JsonProperty("accrued-interest")
     @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
     private final @Nullable BigDecimal accruedInterest; // for bond in currency, for others is null
@@ -90,5 +93,23 @@ public class SecurityQuote {
     public @Nullable BigDecimal getDirtyPriceInCurrency(boolean isDerivative) {
         @Nullable BigDecimal cleanPrice = getCleanPriceInCurrency(isDerivative);
         return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getQuoteForEquals() {
+        return (quote == null) ? null : quote.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getPriceForEquals() {
+        return (price == null) ? null : price.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getAccruedInterestForEquals() {
+        return (accruedInterest == null) ? null : accruedInterest.stripTrailingZeros();
     }
 }
