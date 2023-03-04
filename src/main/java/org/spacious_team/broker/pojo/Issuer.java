@@ -43,7 +43,7 @@ public class Issuer {
 
     @Schema(description = "Идентификатор налогоплательщика (Россия - ИНН, США - EIN и т.д.)",
             example = "7736050003", nullable = true)
-    private final @Nullable Long taxpayerId;
+    private final @Nullable String taxpayerId;
 
     @Schema(description = "Наименование", example = "ПАО Газпром")
     private final @NotEmpty String name;
