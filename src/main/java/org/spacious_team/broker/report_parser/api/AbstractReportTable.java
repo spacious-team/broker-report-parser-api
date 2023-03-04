@@ -137,7 +137,7 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
     private static Predicate<String> getPrefixPredicate(String prefix) {
         String lowercasePrefix = prefix.trim().toLowerCase();
         @SuppressWarnings("ConstantConditions")
-        Predicate<String> stringPredicate = (cell) ->
+        Predicate<String> stringPredicate = cell ->
                 (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
         return requireNonNull(stringPredicate);
     }
@@ -147,7 +147,7 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
     }
 
     private static Predicate<Object> cast(Predicate<String> predicate) {
-        return (cell) -> (cell instanceof String) && predicate.test(cell.toString());
+        return cell -> (cell instanceof CharSequence) && predicate.test(cell.toString());
     }
 
     @Override
@@ -170,10 +170,10 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
                         reportPage.create(tableNameFinder, headerDescription, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
                 @SuppressWarnings({"nullness", "ConstantConditions"})
-                String tableName = requireNonNull(this.tableName);
+                String providedTableName = requireNonNull(tableName);
                 return (tableFooterFinder != null) ?
-                        reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
+                        reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
+                        reportPage.createNameless(providedTableName, tableNameFinder, headerDescription, headersRowCount);
         }
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
