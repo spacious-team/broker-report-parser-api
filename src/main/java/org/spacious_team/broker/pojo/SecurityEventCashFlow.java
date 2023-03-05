@@ -31,9 +31,9 @@ import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -87,16 +87,16 @@ public class SecurityEventCashFlow {
      */
     @SuppressWarnings("unused")
     public static Collection<SecurityEventCashFlow> mergeDuplicates(SecurityEventCashFlow cash1, SecurityEventCashFlow cash2) {
-        if (!String.valueOf(cash1.getCurrency())
-                .equals(String.valueOf(cash2.getCurrency()))) {
+        if (!Objects.equals(cash1.getCurrency(), cash2.getCurrency())) {
             throw new RuntimeException("Не могу объединить выплаты по ЦБ, разные валюты: " + cash1 + " и " + cash2);
-        } else if (!String.valueOf(cash1.getCount())
-                .equals(String.valueOf(cash2.getCount()))) {
+        } else if (!Objects.equals(cash1.getCount(), cash2.getCount())) {
             throw new RuntimeException("Не могу объединить выплаты по ЦБ, разное количество ЦБ: " + cash1 + " и " + cash2);
         }
-        return Collections.singletonList(cash1.toBuilder()
-                .value(cash1.getValue().add(cash2.getValue()))
-                .build());
+        BigDecimal summedValue = cash1.getValue().add(cash2.getValue());
+        return singletonList(
+                cash1.toBuilder()
+                        .value(summedValue)
+                        .build());
     }
 
     @EqualsAndHashCode.Include

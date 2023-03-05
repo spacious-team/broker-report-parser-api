@@ -38,8 +38,8 @@ class EventCashFlowTest {
             .eventType(CASH)
             .value(new BigDecimal("100.0")) // scale = 1
             .currency("RUB")
-            .id(0)
             // different
+            .id(0)
             .description("desc1")
             .build();
 

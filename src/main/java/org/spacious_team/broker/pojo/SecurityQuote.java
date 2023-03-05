@@ -70,7 +70,7 @@ public class SecurityQuote {
     private final @Nullable String currency;
 
     /**
-     * Returns price in currency (not a quote), bond price accounted without accrued interest. May be null if unknown.
+     * Returns price in currency, bond price accounted without accrued interest. May be null if unknown.
      */
     @JsonIgnore
     @Schema(hidden = true)
@@ -92,7 +92,7 @@ public class SecurityQuote {
     @SuppressWarnings("unused")
     public @Nullable BigDecimal getDirtyPriceInCurrency(boolean isDerivative) {
         @Nullable BigDecimal cleanPrice = getCleanPriceInCurrency(isDerivative);
-        return (cleanPrice == null || accruedInterest == null) ? cleanPrice : cleanPrice.add(accruedInterest);
+        return (cleanPrice == null || accruedInterest == null || isDerivative) ? cleanPrice : cleanPrice.add(accruedInterest);
     }
 
     @EqualsAndHashCode.Include
