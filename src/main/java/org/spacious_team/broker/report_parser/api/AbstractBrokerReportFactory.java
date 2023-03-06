@@ -21,8 +21,8 @@ package org.spacious_team.broker.report_parser.api;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.FilterInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -37,13 +37,13 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
     }
 
     /**
-     * Checks input stream and returns broker report if it's possible, otherwise reset input stream mark to original position
-     * and returns null.
+     * Checks input stream and returns broker report if it's possible.
+     * Resets input stream to marked position.
      *
-     * @return broker report if it's possible parse or null
+     * @return broker report if parse is possible
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    protected @Nullable BrokerReport create(String fileName,
+    protected Optional<BrokerReport> create(String fileName,
                                             InputStream is,
                                             BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
         if (!is.markSupported()) {
@@ -53,10 +53,10 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
         is.mark(Integer.MAX_VALUE);
         @Nullable Exception exception = null;
         try {
-            return brokerReportProvider.apply(fileName, is);
+            return Optional.of(brokerReportProvider.apply(fileName, is));
         } catch (Exception e) {
             exception = e;
-            return null;
+            return Optional.empty();
         } finally {
             resetInputStream(is, exception);
         }
@@ -65,11 +65,11 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
     private static void resetInputStream(InputStream is, @Nullable Throwable t) {
         try {
             is.reset();
-        } catch (IOException ioe) {
+        } catch (Throwable rt) {
             if (t != null) {
-                ioe.addSuppressed(t);
+                rt.addSuppressed(t);
             }
-            throw new RuntimeException("Can't reset input stream", ioe);
+            throw new RuntimeException("Can't reset input stream", rt);
         }
     }
 
