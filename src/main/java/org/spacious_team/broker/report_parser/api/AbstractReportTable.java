@@ -50,12 +50,17 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
     private final int headersRowCount;
     private final CreateMode createMode;
 
+    /**
+     * Finds and creates a table in a report, whose title case-insensitive matches to {@code "^<tableName>.*"}.
+     * Table last row locates before the row, which case-insensitive matches to {@code "^<tableFooter>.*"}.
+     * If tableFooter is null, when table last row locates before empty row.
+     * If tableFooter is null and empty row not found, when table ends with report last row.
+     */
     protected AbstractReportTable(BrokerReport report,
                                   String tableName,
                                   @Nullable String tableFooter,
                                   Class<T> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
-        this.tableName = tableName;
     }
 
     protected AbstractReportTable(BrokerReport report,
@@ -68,6 +73,12 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         this.tableName = tableName;
     }
 
+    /**
+     * Finds and creates a table in a report, whose title matches to tableNameFinder predicate.
+     * Table last row locates before the row, which matches to tableFooterFinder.
+     * If tableFooterFinder is null, when table last row locates before empty row.
+     * If tableFooterFinder is null and empty row not found, when table ends with report last row.
+     */
     protected AbstractReportTable(BrokerReport report,
                                   Predicate<String> tableNameFinder,
                                   @Nullable Predicate<String> tableFooterFinder,
@@ -89,6 +100,12 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         this.headersRowCount = headersRowCount;
     }
 
+    /**
+     * Finds and creates a table without title, whose first header row case-insensitive matches to {@code "^<namelessTableFirstLine>.*"}.
+     * Table last row locates before the row, which case-insensitive matches to {@code "^<tableFooter>.*"}.
+     * If tableFooter is null, when table last row locates before empty row.
+     * If tableFooter is null and empty row not found, when table ends with report last row.
+     */
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   String namelessTableFirstLine,
@@ -107,6 +124,12 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
                 getPrefixPredicateOrNull(tableFooter), headerDescription, headersRowCount);
     }
 
+    /**
+     * Finds and creates a table without title, whose first header row matches to namelessTableFirstLineFinder predicate.
+     * Table last row locates before the row, which matches to tableFooterFinder predicate.
+     * If tableFooterFinder is null, when table last row locates before empty row.
+     * If tableFooterFinder is null and empty row not found, when table ends with report last row.
+     */
     protected AbstractReportTable(BrokerReport report,
                                   String providedTableName,
                                   Predicate<String> namelessTableFirstLineFinder,
@@ -157,7 +180,7 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
             Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы" + (tableName == null ? "" : " '" + tableName + "'")
+            throw new RuntimeException("Ошибка при разборе таблицы" + ((tableName == null) ? "" : " '" + tableName + "'")
                     + " в отчете " + getReport(), e);
         }
     }
