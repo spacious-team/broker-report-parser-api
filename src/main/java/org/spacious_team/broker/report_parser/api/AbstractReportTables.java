@@ -31,7 +31,7 @@ public abstract class AbstractReportTables<T extends BrokerReport> implements Re
         this.emptyReportTable = EmptyReportTable.of(report);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
     protected <E> EmptyReportTable<E> emptyTable() {
         return (EmptyReportTable<E>) emptyReportTable;
     }

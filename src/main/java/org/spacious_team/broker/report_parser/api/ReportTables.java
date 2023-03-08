@@ -26,6 +26,7 @@ import org.spacious_team.broker.pojo.Security;
 import org.spacious_team.broker.pojo.SecurityEventCashFlow;
 import org.spacious_team.broker.pojo.SecurityQuote;
 
+@SuppressWarnings("unused")
 public interface ReportTables {
     BrokerReport getReport();
 

@@ -31,10 +31,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_PRICE;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_QUOTE;
 
 @Getter
-@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class DerivativeTransaction extends AbstractTransaction {
     public static final String QUOTE_CURRENCY = "PNT";  // point
@@ -44,8 +46,8 @@ public class DerivativeTransaction extends AbstractTransaction {
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueInPointsCashFlow().ifPresent(list::add);
-        getValueCashFlow(CashFlowType.DERIVATIVE_PRICE).ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getValueCashFlow(DERIVATIVE_PRICE).ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
@@ -54,7 +56,7 @@ public class DerivativeTransaction extends AbstractTransaction {
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.DERIVATIVE_QUOTE)
+                    .eventType(DERIVATIVE_QUOTE)
                     .value(valueInPoints)
                     .currency(QUOTE_CURRENCY)
                     .build());

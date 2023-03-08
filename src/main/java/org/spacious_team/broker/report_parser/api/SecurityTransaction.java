@@ -44,7 +44,7 @@ public class SecurityTransaction extends AbstractTransaction {
         List<TransactionCashFlow> list = new ArrayList<>(3);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
         getAccruedInterestCashFlow().ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 

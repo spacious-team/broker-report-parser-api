@@ -32,12 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
-
 @Getter
 @ToString
+@EqualsAndHashCode
 @SuperBuilder(toBuilder = true)
-@EqualsAndHashCode(cacheStrategy = LAZY)
 public abstract class AbstractTransaction {
     protected final Integer id;
     protected final String tradeId;
@@ -69,13 +67,13 @@ public abstract class AbstractTransaction {
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
         //noinspection ConstantConditions
-        if (value != null && Math.abs(fee.floatValue()) >= 0.0001) {
+        if (value != null && Math.abs(value.floatValue()) >= 0.0001) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
                 .eventType(type)
@@ -86,7 +84,7 @@ public abstract class AbstractTransaction {
         return Optional.empty();
     }
 
-    protected Optional<TransactionCashFlow> getCommissionCashFlow() {
+    protected Optional<TransactionCashFlow> getFeeCashFlow() {
         //noinspection ConstantConditions
         if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
