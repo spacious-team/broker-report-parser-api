@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.spacious_team.broker.pojo.CashFlowType.FEE;
+import static org.spacious_team.broker.pojo.CashFlowType.PRICE;
+
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -66,7 +69,7 @@ public abstract class AbstractTransaction {
     @SuppressWarnings("unused")
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
-        getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
+        getValueCashFlow(PRICE).ifPresent(list::add);
         getFeeCashFlow().ifPresent(list::add);
         return list;
     }
@@ -89,7 +92,7 @@ public abstract class AbstractTransaction {
         if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.FEE)
+                    .eventType(FEE)
                     .value(fee)
                     .currency(feeCurrency)
                     .build());

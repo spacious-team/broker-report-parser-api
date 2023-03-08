@@ -32,9 +32,9 @@ import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.spacious_team.broker.pojo.CashFlowType.*;
 
-class DerivativeTransactionTest {
+class SecurityTransactionTest {
 
-    DerivativeTransaction tr = DerivativeTransaction.builder()
+    SecurityTransaction tr = SecurityTransaction.builder()
             .id(1)
             .tradeId("t123")
             .portfolio("a123")
@@ -42,8 +42,8 @@ class DerivativeTransactionTest {
             .timestamp(Instant.MIN)
             .count(3)
             .value(BigDecimal.TEN)
+            .accruedInterest(BigDecimal.valueOf(2))
             .valueCurrency("USD")
-            .valueInPoints(BigDecimal.valueOf(2))
             .fee(BigDecimal.ONE)
             .feeCurrency("RUB")
             .build();
@@ -64,26 +64,25 @@ class DerivativeTransactionTest {
     @Test
     void getTransactionCashFlows() {
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
                 getValueCashFlow(tr),
+                getAccruedInterestCashFlow(tr),
                 getFeeCashFlow(tr));
     }
 
     @Test
-    void getTransactionCashFlows_valueInPointsIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
-                .valueInPoints(BigDecimal.ZERO)
+    void getTransactionCashFlows_accruedInterestIsZero() {
+        SecurityTransaction tr = this.tr.toBuilder()
+                .accruedInterest(BigDecimal.ZERO)
                 .build();
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
                 getValueCashFlow(tr),
                 getFeeCashFlow(tr));
     }
 
     @Test
-    void getTransactionCashFlows_valueInPointsIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
-                .valueInPoints(null)
+    void getTransactionCashFlows_accruedInterestIsNull() {
+        SecurityTransaction tr = this.tr.toBuilder()
+                .accruedInterest(null)
                 .build();
         expectedCashFlows(tr,
                 getValueCashFlow(tr),
@@ -92,67 +91,66 @@ class DerivativeTransactionTest {
 
     @Test
     void getTransactionCashFlows_valueIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        SecurityTransaction tr = this.tr.toBuilder()
                 .value(BigDecimal.ZERO)
                 .build();
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr),
+                getAccruedInterestCashFlow(tr),
                 getFeeCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_valueIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        SecurityTransaction tr = this.tr.toBuilder()
                 .value(null)
                 .build();
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
+                getAccruedInterestCashFlow(tr),
                 getFeeCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_feeIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        SecurityTransaction tr = this.tr.toBuilder()
                 .fee(BigDecimal.ZERO)
                 .build();
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr));
+                getValueCashFlow(tr),
+                getAccruedInterestCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_feeIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        SecurityTransaction tr = this.tr.toBuilder()
                 .fee(null)
                 .build();
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr));
+                getValueCashFlow(tr),
+                getAccruedInterestCashFlow(tr));
     }
 
     @NonNull
-    private TransactionCashFlow getValueInPointsCashFlow(DerivativeTransaction transaction) {
+    private TransactionCashFlow getAccruedInterestCashFlow(SecurityTransaction transaction) {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
-                .eventType(DERIVATIVE_QUOTE)
-                .value(transaction.getValueInPoints())
-                .currency(DerivativeTransaction.QUOTE_CURRENCY)
+                .eventType(ACCRUED_INTEREST)
+                .value(transaction.getAccruedInterest())
+                .currency(transaction.getValueCurrency())
                 .build();
     }
 
     @NonNull
-    private TransactionCashFlow getValueCashFlow(DerivativeTransaction transaction) {
+    private TransactionCashFlow getValueCashFlow(SecurityTransaction transaction) {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
-                .eventType(DERIVATIVE_PRICE)
+                .eventType(PRICE)
                 .value(transaction.getValue())
                 .currency(transaction.getValueCurrency())
                 .build();
     }
 
     @NonNull
-    private TransactionCashFlow getFeeCashFlow(DerivativeTransaction transaction) {
+    private TransactionCashFlow getFeeCashFlow(SecurityTransaction transaction) {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(FEE)
@@ -161,7 +159,7 @@ class DerivativeTransactionTest {
                 .build();
     }
 
-    private void expectedCashFlows(DerivativeTransaction transaction, TransactionCashFlow... flows) {
+    private void expectedCashFlows(SecurityTransaction transaction, TransactionCashFlow... flows) {
         assertEquals(
                 List.of(flows),
                 transaction.getTransactionCashFlows());
@@ -170,17 +168,17 @@ class DerivativeTransactionTest {
     @Test
     void testEqualsAndHashCode() {
         EqualsVerifier
-                .forClass(DerivativeTransaction.class)
+                .forClass(SecurityTransaction.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .withLombokCachedHashCode(DerivativeTransaction.builder().build())
+                .withLombokCachedHashCode(SecurityTransaction.builder().build())
                 .verify();
     }
 
     @Test
     void testToString() {
-        assertEquals("DerivativeTransaction(super=AbstractTransaction(id=1, tradeId=t123, portfolio=a123," +
-                        " security=2, timestamp=-1000000000-01-01T00:00:00Z, count=3, value=10, fee=1," +
-                        " valueCurrency=USD, feeCurrency=RUB), valueInPoints=2)",
+        assertEquals("SecurityTransaction(super=AbstractTransaction(id=1, tradeId=t123, portfolio=a123, " +
+                        "security=2, timestamp=-1000000000-01-01T00:00:00Z, count=3, " +
+                        "value=10, fee=1, valueCurrency=USD, feeCurrency=RUB), accruedInterest=2)",
                 tr.toString());
     }
 }

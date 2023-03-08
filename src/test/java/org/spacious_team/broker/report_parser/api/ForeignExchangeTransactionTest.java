@@ -30,11 +30,12 @@ import java.util.List;
 
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.spacious_team.broker.pojo.CashFlowType.*;
+import static org.spacious_team.broker.pojo.CashFlowType.FEE;
+import static org.spacious_team.broker.pojo.CashFlowType.PRICE;
 
-class DerivativeTransactionTest {
+class ForeignExchangeTransactionTest {
 
-    DerivativeTransaction tr = DerivativeTransaction.builder()
+    ForeignExchangeTransaction tr = ForeignExchangeTransaction.builder()
             .id(1)
             .tradeId("t123")
             .portfolio("a123")
@@ -43,7 +44,6 @@ class DerivativeTransactionTest {
             .count(3)
             .value(BigDecimal.TEN)
             .valueCurrency("USD")
-            .valueInPoints(BigDecimal.valueOf(2))
             .fee(BigDecimal.ONE)
             .feeCurrency("RUB")
             .build();
@@ -64,95 +64,54 @@ class DerivativeTransactionTest {
     @Test
     void getTransactionCashFlows() {
         expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr),
-                getFeeCashFlow(tr));
-    }
-
-    @Test
-    void getTransactionCashFlows_valueInPointsIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
-                .valueInPoints(BigDecimal.ZERO)
-                .build();
-        expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr),
-                getFeeCashFlow(tr));
-    }
-
-    @Test
-    void getTransactionCashFlows_valueInPointsIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
-                .valueInPoints(null)
-                .build();
-        expectedCashFlows(tr,
                 getValueCashFlow(tr),
                 getFeeCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_valueIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        ForeignExchangeTransaction tr = this.tr.toBuilder()
                 .value(BigDecimal.ZERO)
                 .build();
-        expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr),
-                getFeeCashFlow(tr));
+        expectedCashFlows(tr, getFeeCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_valueIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        ForeignExchangeTransaction tr = this.tr.toBuilder()
                 .value(null)
                 .build();
-        expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getFeeCashFlow(tr));
+        expectedCashFlows(tr, getFeeCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_feeIsZero() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        ForeignExchangeTransaction tr = this.tr.toBuilder()
                 .fee(BigDecimal.ZERO)
                 .build();
-        expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr));
+        expectedCashFlows(tr, getValueCashFlow(tr));
     }
 
     @Test
     void getTransactionCashFlows_feeIsNull() {
-        DerivativeTransaction tr = this.tr.toBuilder()
+        ForeignExchangeTransaction tr = this.tr.toBuilder()
                 .fee(null)
                 .build();
-        expectedCashFlows(tr,
-                getValueInPointsCashFlow(tr),
-                getValueCashFlow(tr));
+        expectedCashFlows(tr, getValueCashFlow(tr));
     }
 
     @NonNull
-    private TransactionCashFlow getValueInPointsCashFlow(DerivativeTransaction transaction) {
+    private TransactionCashFlow getValueCashFlow(ForeignExchangeTransaction transaction) {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
-                .eventType(DERIVATIVE_QUOTE)
-                .value(transaction.getValueInPoints())
-                .currency(DerivativeTransaction.QUOTE_CURRENCY)
-                .build();
-    }
-
-    @NonNull
-    private TransactionCashFlow getValueCashFlow(DerivativeTransaction transaction) {
-        return TransactionCashFlow.builder()
-                .transactionId(transaction.getId())
-                .eventType(DERIVATIVE_PRICE)
+                .eventType(PRICE)
                 .value(transaction.getValue())
                 .currency(transaction.getValueCurrency())
                 .build();
     }
 
     @NonNull
-    private TransactionCashFlow getFeeCashFlow(DerivativeTransaction transaction) {
+    private TransactionCashFlow getFeeCashFlow(ForeignExchangeTransaction transaction) {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(FEE)
@@ -161,7 +120,7 @@ class DerivativeTransactionTest {
                 .build();
     }
 
-    private void expectedCashFlows(DerivativeTransaction transaction, TransactionCashFlow... flows) {
+    private void expectedCashFlows(ForeignExchangeTransaction transaction, TransactionCashFlow... flows) {
         assertEquals(
                 List.of(flows),
                 transaction.getTransactionCashFlows());
@@ -170,17 +129,17 @@ class DerivativeTransactionTest {
     @Test
     void testEqualsAndHashCode() {
         EqualsVerifier
-                .forClass(DerivativeTransaction.class)
+                .forClass(ForeignExchangeTransaction.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .withLombokCachedHashCode(DerivativeTransaction.builder().build())
+                .withLombokCachedHashCode(ForeignExchangeTransaction.builder().build())
                 .verify();
     }
 
     @Test
     void testToString() {
-        assertEquals("DerivativeTransaction(super=AbstractTransaction(id=1, tradeId=t123, portfolio=a123," +
-                        " security=2, timestamp=-1000000000-01-01T00:00:00Z, count=3, value=10, fee=1," +
-                        " valueCurrency=USD, feeCurrency=RUB), valueInPoints=2)",
+        assertEquals("ForeignExchangeTransaction(super=AbstractTransaction(id=1, tradeId=t123, portfolio=a123, " +
+                        "security=2, timestamp=-1000000000-01-01T00:00:00Z, count=3, " +
+                        "value=10, fee=1, valueCurrency=USD, feeCurrency=RUB))",
                 tr.toString());
     }
 }
