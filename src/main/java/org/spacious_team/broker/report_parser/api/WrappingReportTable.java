@@ -68,6 +68,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         return reportTable.getData();
     }
 
+
     @Getter
     private static class EagerWrappingReportTable<RowType> implements ReportTable<RowType> {
         private final BrokerReport report;
@@ -83,6 +84,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
             this.data = Collections.unmodifiableList(data);
         }
     }
+
 
     private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
