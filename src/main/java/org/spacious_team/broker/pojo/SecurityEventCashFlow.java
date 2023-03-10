@@ -88,9 +88,9 @@ public class SecurityEventCashFlow {
     @SuppressWarnings("unused")
     public static Collection<SecurityEventCashFlow> mergeDuplicates(SecurityEventCashFlow cash1, SecurityEventCashFlow cash2) {
         if (!Objects.equals(cash1.getCurrency(), cash2.getCurrency())) {
-            throw new RuntimeException("Не могу объединить выплаты по ЦБ, разные валюты: " + cash1 + " и " + cash2);
+            throw new IllegalArgumentException("Can't merge events with different currencies: " + cash1 + " and " + cash2);
         } else if (!Objects.equals(cash1.getCount(), cash2.getCount())) {
-            throw new RuntimeException("Не могу объединить выплаты по ЦБ, разное количество ЦБ: " + cash1 + " и " + cash2);
+            throw new IllegalArgumentException("Can't merge events with different 'count' fields: " + cash1 + " and " + cash2);
         }
         BigDecimal summedValue = cash1.getValue().add(cash2.getValue());
         return singletonList(

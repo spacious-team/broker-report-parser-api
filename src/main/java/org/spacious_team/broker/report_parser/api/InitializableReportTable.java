@@ -49,7 +49,7 @@ public abstract class InitializableReportTable<RowType> implements ReportTable<R
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге отчета " + report, e);
+            throw new BrokerReportParseException("Can't parse report " + report, e);
         }
     }
 

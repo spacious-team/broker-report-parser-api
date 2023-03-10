@@ -116,7 +116,7 @@ class SecurityEventCashFlowTest {
                 .count(4)
                 .build();
 
-        assertThrows(RuntimeException.class, () -> SecurityEventCashFlow.mergeDuplicates(flow, mergingFlow));
+        assertThrows(IllegalArgumentException.class, () -> SecurityEventCashFlow.mergeDuplicates(flow, mergingFlow));
     }
 
     @Test
@@ -125,7 +125,7 @@ class SecurityEventCashFlowTest {
                 .currency("RUB")
                 .build();
 
-        assertThrows(RuntimeException.class, () -> SecurityEventCashFlow.mergeDuplicates(flow, mergingFlow));
+        assertThrows(IllegalArgumentException.class, () -> SecurityEventCashFlow.mergeDuplicates(flow, mergingFlow));
     }
 
     @Test

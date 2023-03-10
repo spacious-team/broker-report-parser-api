@@ -70,7 +70,7 @@ class AbstractReportTableTest {
                 .thenThrow(IllegalArgumentException.class);
         ReportTable reportTable = new ReportTable(brokerReport, "table1", null);
 
-        assertThrows(RuntimeException.class, reportTable::parseTable);
+        assertThrows(BrokerReportParseException.class, reportTable::parseTable);
     }
 
     @Test

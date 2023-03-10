@@ -110,7 +110,7 @@ class AbstractBrokerReportFactoryTest {
         };
         is.read();
 
-        Exception e = assertThrows(RuntimeException.class, () -> factory.create("file", is));
+        Exception e = assertThrows(BrokerReportParseException.class, () -> factory.create("file", is));
         assertEquals("Can't reset input stream", e.getMessage());
         Throwable cause = e.getCause();
         assertSame(resetError, cause.getMessage());

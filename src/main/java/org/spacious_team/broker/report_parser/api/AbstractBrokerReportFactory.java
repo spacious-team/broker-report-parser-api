@@ -41,7 +41,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
      * Resets input stream to marked position.
      *
      * @return broker report if parse is possible
-     * @throws IllegalArgumentException if InputStream is not supports mark
+     * @throws IllegalArgumentException if InputStream does not support mark
      */
     protected Optional<BrokerReport> create(String fileName,
                                             InputStream is,
@@ -62,14 +62,14 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
         }
     }
 
-    private static void resetInputStream(InputStream is, @Nullable Throwable t) {
+    private static void resetInputStream(InputStream is, @Nullable Exception exception) {
         try {
             is.reset();
-        } catch (Throwable rt) {
-            if (t != null) {
-                rt.addSuppressed(t);
+        } catch (Exception e) {
+            if (exception != null) {
+                e.addSuppressed(exception);
             }
-            throw new RuntimeException("Can't reset input stream", rt);
+            throw new BrokerReportParseException("Can't reset input stream", e);
         }
     }
 

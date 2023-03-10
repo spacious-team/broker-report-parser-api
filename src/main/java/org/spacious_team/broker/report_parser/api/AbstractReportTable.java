@@ -180,8 +180,8 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
             Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при разборе таблицы" + ((tableName == null) ? "" : " '" + tableName + "'")
-                    + " в отчете " + getReport(), e);
+            String displayTableName = (tableName == null) ? " " : " '" + tableName + "' ";
+            throw new BrokerReportParseException("Can't parse table" + displayTableName + "in report " + getReport(), e);
         }
     }
 
