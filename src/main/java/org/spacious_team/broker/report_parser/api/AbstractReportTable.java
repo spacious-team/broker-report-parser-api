@@ -40,13 +40,12 @@ import static java.util.Objects.requireNonNull;
  * {@link #parseRowToCollection(TableRow)} methods.
  */
 @SuppressWarnings("unused")
-public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColumn>
-        extends InitializableReportTable<R> {
+public abstract class AbstractReportTable<R> extends InitializableReportTable<R> {
 
     private @Nullable String tableName;
     private final Predicate<Object> tableNameFinder;
     private final @Nullable Predicate<Object> tableFooterFinder;
-    private final Class<T> headerDescription;
+    private final Class<?> headerDescription;  // <? extends Enum<T> & TableHeaderColumn>
     private final int headersRowCount;
     private final CreateMode createMode;
 
@@ -56,18 +55,20 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
      * If tableFooter is null, when table last row locates before empty row.
      * If tableFooter is null and empty row not found, when table ends with report last row.
      */
-    protected AbstractReportTable(BrokerReport report,
-                                  String tableName,
-                                  @Nullable String tableFooter,
-                                  Class<T> headerDescription) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String tableName,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String tableName,
-                                  @Nullable String tableFooter,
-                                  Class<T> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String tableName,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         this(report, getPrefixPredicate(tableName), getPrefixPredicateOrNull(tableFooter),
                 headerDescription, headersRowCount);
         this.tableName = tableName;
@@ -79,18 +80,20 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
      * If tableFooterFinder is null, when table last row locates before empty row.
      * If tableFooterFinder is null and empty row not found, when table ends with report last row.
      */
-    protected AbstractReportTable(BrokerReport report,
-                                  Predicate<String> tableNameFinder,
-                                  @Nullable Predicate<String> tableFooterFinder,
-                                  Class<T> headerDescription) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        Predicate<String> tableNameFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
+                        Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  Predicate<String> tableNameFinder,
-                                  @Nullable Predicate<String> tableFooterFinder,
-                                  Class<T> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        Predicate<String> tableNameFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
         this.tableName = null;
@@ -106,20 +109,22 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
      * If tableFooter is null, when table last row locates before empty row.
      * If tableFooter is null and empty row not found, when table ends with report last row.
      */
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  String namelessTableFirstLine,
-                                  @Nullable String tableFooter,
-                                  Class<T> headerDescription) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        String namelessTableFirstLine,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  String namelessTableFirstLine,
-                                  @Nullable String tableFooter,
-                                  Class<T> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        String namelessTableFirstLine,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine),
                 getPrefixPredicateOrNull(tableFooter), headerDescription, headersRowCount);
     }
@@ -130,20 +135,22 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
      * If tableFooterFinder is null, when table last row locates before empty row.
      * If tableFooterFinder is null and empty row not found, when table ends with report last row.
      */
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  Predicate<String> namelessTableFirstLineFinder,
-                                  @Nullable Predicate<String> tableFooterFinder,
-                                  Class<T> headerDescription) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        Predicate<String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
+                        Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  Predicate<String> namelessTableFirstLineFinder,
-                                  @Nullable Predicate<String> tableFooterFinder,
-                                  Class<T> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        Predicate<String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
         this.tableName = providedTableName;
@@ -185,18 +192,21 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         }
     }
 
-    private Table createTable(ReportPage reportPage) {
+    private <T extends Enum<T> & TableHeaderColumn>
+    Table createTable(ReportPage reportPage) {
+        @SuppressWarnings("unchecked")
+        Class<T> headerDesc = (Class<T>) headerDescription;
         switch (createMode) {
             case TABLE_BY_PREDICATE:
                 return (tableFooterFinder != null) ?
-                        reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.create(tableNameFinder, headerDescription, headersRowCount);
+                        reportPage.create(tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                        reportPage.create(tableNameFinder, headerDesc, headersRowCount);
             case NAMELESS_TABLE_BY_PREDICATE:
                 @SuppressWarnings({"nullness", "ConstantConditions"})
                 String providedTableName = requireNonNull(tableName);
                 return (tableFooterFinder != null) ?
-                        reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.createNameless(providedTableName, tableNameFinder, headerDescription, headersRowCount);
+                        reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                        reportPage.createNameless(providedTableName, tableNameFinder, headerDesc, headersRowCount);
         }
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }

@@ -257,7 +257,7 @@ class AbstractReportTableTest {
     }
 
 
-    static class ReportTable extends AbstractReportTable<Object, TableHeader> {
+    static class ReportTable extends AbstractReportTable<Object> {
 
         ReportTable(BrokerReport report, String tableName, @Nullable String tableFooter) {
             super(report, tableName, tableFooter, TableHeader.class);
