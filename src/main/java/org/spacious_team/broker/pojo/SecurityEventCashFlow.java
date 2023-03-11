@@ -25,14 +25,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Objects;
 
+import static java.util.Collections.singletonList;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -42,63 +43,65 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
 public class SecurityEventCashFlow {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String portfolio;
+    private final @NotEmpty String portfolio;
 
-    @NotNull
     @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", required = true)
     private final Instant timestamp;
 
-    @NotNull
     @Schema(description = "Инструмент", example = "123", required = true)
     private final int security;
 
-    @NotNull
     @Schema(description = "Количество бумаг (контрактов)", example = "10", required = true)
     private final Integer count;
 
-    @NotNull
     @JsonProperty("event-type")
     @Schema(description = "Тип события", example = "DIVIDEND", required = true)
     private final CashFlowType eventType;
 
-    @NotNull
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Сумма", example = "100.20", required = true)
     private final BigDecimal value;
 
-    //@Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final String currency = "RUR";
+    private final @Nullable String currency = "RUR";
 
     /**
      * Checks DB unique index constraint
      */
+    @SuppressWarnings("unused")
     public static boolean checkEquality(SecurityEventCashFlow cash1, SecurityEventCashFlow cash2) {
-        return cash1.getPortfolio().equals(cash2.getPortfolio()) &&
-                cash1.getTimestamp().equals(cash2.getTimestamp()) &&
-                cash1.getEventType().equals(cash2.getEventType()) &&
-                cash1.getSecurity() == cash2.getSecurity();
+        return cash1.getSecurity() == cash2.getSecurity() &&
+                Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
+                Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
+                Objects.equals(cash1.getPortfolio(), cash2.getPortfolio());
     }
 
     /**
      * Merge information of two objects with equals by {@link #checkEquality(SecurityEventCashFlow, SecurityEventCashFlow)}
      */
+    @SuppressWarnings("unused")
     public static Collection<SecurityEventCashFlow> mergeDuplicates(SecurityEventCashFlow cash1, SecurityEventCashFlow cash2) {
-        if (!String.valueOf(cash1.getCurrency())
-                .equals(String.valueOf(cash2.getCurrency()))) {
-            throw new RuntimeException("Не могу объединить выплаты по ЦБ, разные валюты: " + cash1 + " и " + cash2);
-        } else if (!String.valueOf(cash1.getCount())
-                .equals(String.valueOf(cash2.getCount()))) {
-            throw new RuntimeException("Не могу объединить выплаты по ЦБ, разное количество ЦБ: " + cash1 + " и " + cash2);
+        if (!Objects.equals(cash1.getCurrency(), cash2.getCurrency())) {
+            throw new IllegalArgumentException("Can't merge events with different currencies: " + cash1 + " and " + cash2);
+        } else if (!Objects.equals(cash1.getCount(), cash2.getCount())) {
+            throw new IllegalArgumentException("Can't merge events with different 'count' fields: " + cash1 + " and " + cash2);
         }
-        return Collections.singletonList(cash1.toBuilder()
-                .value(cash1.getValue().add(cash2.getValue()))
-                .build());
+        BigDecimal summedValue = cash1.getValue().add(cash2.getValue());
+        return singletonList(
+                cash1.toBuilder()
+                        .value(summedValue)
+                        .build());
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
     }
 }

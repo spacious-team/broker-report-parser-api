@@ -37,19 +37,21 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {
+    @EqualsAndHashCode.Exclude
     private final BigDecimal accruedInterest; // НКД, в валюте бумаги
 
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(3);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
         getAccruedInterestCashFlow().ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
     private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
         // for securities accrued interest = 0
-        if (accruedInterest != null && accruedInterest.abs().compareTo(minValue) >= 0) {
+        //noinspection ConstantConditions
+        if (accruedInterest != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(CashFlowType.ACCRUED_INTEREST)
@@ -58,5 +60,11 @@ public class SecurityTransaction extends AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getAccruedInterestForEquals() {
+        return (accruedInterest == null) ? null : accruedInterest.stripTrailingZeros();
     }
 }

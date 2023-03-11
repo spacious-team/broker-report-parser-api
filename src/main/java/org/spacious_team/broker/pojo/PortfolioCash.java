@@ -25,9 +25,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -42,27 +42,29 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(name = "Остаток денежных средств")
 public class PortfolioCash {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String portfolio;
+    private final @NotEmpty String portfolio;
 
-    @NotNull
     @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", required = true)
     private final Instant timestamp;
 
-    @NotNull
     @Schema(description = "Рынок", example = "Фондовый", required = true)
     private final String market;
 
-    @NotNull
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Остаток денежных средств", example = "102.30", required = true)
     private final BigDecimal value;
 
-    @NotEmpty
     @Schema(description = "Валюта", example = "RUB", required = true)
-    private final String currency;
+    private final @NotEmpty String currency;
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

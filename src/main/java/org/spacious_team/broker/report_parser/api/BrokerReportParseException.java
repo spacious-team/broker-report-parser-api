@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
+ * Copyright (C) 2023  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,21 +18,9 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.Getter;
+public class BrokerReportParseException extends RuntimeException {
 
-public abstract class AbstractReportTables<T extends BrokerReport> implements ReportTables {
-
-    @Getter
-    protected final T report;
-    private final EmptyReportTable<?> emptyReportTable;
-
-    protected AbstractReportTables(T report) {
-        this.report = report;
-        this.emptyReportTable = EmptyReportTable.of(report);
-    }
-
-    @SuppressWarnings({"unchecked", "unused"})
-    protected <E> EmptyReportTable<E> emptyTable() {
-        return (EmptyReportTable<E>) emptyReportTable;
+    public BrokerReportParseException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

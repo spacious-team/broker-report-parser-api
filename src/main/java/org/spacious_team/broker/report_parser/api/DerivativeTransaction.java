@@ -31,28 +31,32 @@ import java.util.List;
 import java.util.Optional;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_PRICE;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_QUOTE;
 
 @Getter
-@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class DerivativeTransaction extends AbstractTransaction {
-    private static final String QUOTE_CURRENCY = "PNT"; // point
+    public static final String QUOTE_CURRENCY = "PNT";  // point
+    @EqualsAndHashCode.Exclude
     private final BigDecimal valueInPoints;
 
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueInPointsCashFlow().ifPresent(list::add);
-        getValueCashFlow(CashFlowType.DERIVATIVE_PRICE).ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getValueCashFlow(DERIVATIVE_PRICE).ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
     protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
+        //noinspection ConstantConditions
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.DERIVATIVE_QUOTE)
+                    .eventType(DERIVATIVE_QUOTE)
                     .value(valueInPoints)
                     .currency(QUOTE_CURRENCY)
                     .build());
@@ -62,6 +66,7 @@ public class DerivativeTransaction extends AbstractTransaction {
 
     @Override
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
+        //noinspection ConstantConditions
         if (value != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -71,5 +76,11 @@ public class DerivativeTransaction extends AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueInPointsForEquals() {
+        return (valueInPoints == null) ? null : valueInPoints.stripTrailingZeros();
     }
 }

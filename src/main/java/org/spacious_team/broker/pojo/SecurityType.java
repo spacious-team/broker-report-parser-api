@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public enum SecurityType {
 
     STOCK("акция"),

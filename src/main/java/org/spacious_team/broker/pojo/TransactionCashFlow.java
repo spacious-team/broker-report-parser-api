@@ -26,8 +26,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -39,26 +39,29 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "1", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotNull
     @JsonProperty("transaction-id")
     @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
     private final int transactionId;
 
-    @NotNull
     @JsonProperty("event-type")
     @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", required = true)
     private final CashFlowType eventType;
 
-    @NotNull
+    @EqualsAndHashCode.Exclude
     @Schema(description = "Сумма по событию", example = "1000.20", required = true)
     private final BigDecimal value;
 
-    //@Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final String currency = "RUB";
+    private final @Nullable String currency = "RUB";
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

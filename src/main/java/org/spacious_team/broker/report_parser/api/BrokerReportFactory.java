@@ -19,6 +19,7 @@
 package org.spacious_team.broker.report_parser.api;
 
 import java.io.InputStream;
+import java.util.Optional;
 
 public interface BrokerReportFactory {
 
@@ -36,7 +37,8 @@ public interface BrokerReportFactory {
      * @return broker report if can parse or null
      * @throws IllegalArgumentException if InputStream is not supports mark
      */
-    BrokerReport create(String fileName, InputStream is);
+    Optional<BrokerReport> create(String fileName, InputStream is);
 
+    @SuppressWarnings("unused")
     String getBrokerName();
 }
