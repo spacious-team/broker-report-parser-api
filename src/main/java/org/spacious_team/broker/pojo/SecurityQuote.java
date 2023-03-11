@@ -85,7 +85,7 @@ public class SecurityQuote {
     }
 
     /**
-     * Returns price in currency (not a quote), bond price accounted with accrued interest. May be null if unknown.
+     * Returns price in currency, bond price accounted with accrued interest. May be null if unknown.
      */
     @JsonIgnore
     @Schema(hidden = true)

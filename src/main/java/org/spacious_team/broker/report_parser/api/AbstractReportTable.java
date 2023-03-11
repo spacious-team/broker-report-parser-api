@@ -26,8 +26,8 @@ import org.spacious_team.table_wrapper.api.Table;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 import org.spacious_team.table_wrapper.api.TableRow;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -219,8 +219,18 @@ public abstract class AbstractReportTable<R, T extends Enum<T> & TableHeaderColu
         return Objects.equals(object1, object2);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Collection<R> mergeDuplicates(R oldObject, R newObject) {
-        return Arrays.asList(oldObject, newObject);
+        try {
+            return List.of(oldObject, newObject);
+        } catch (NullPointerException ignore) {
+            if (oldObject == null && newObject == null) {
+                return List.of();
+            } else if (oldObject == null) {
+                return List.of(newObject);
+            }
+            return List.of(oldObject);
+        }
     }
 
     private enum CreateMode {

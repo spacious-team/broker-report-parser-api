@@ -42,6 +42,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
      *
      * @return broker report if parse is possible
      * @throws IllegalArgumentException if InputStream does not support mark
+     * @throws BrokerReportParseException if InputStream.reset() fails
      */
     protected Optional<BrokerReport> create(String fileName,
                                             InputStream is,

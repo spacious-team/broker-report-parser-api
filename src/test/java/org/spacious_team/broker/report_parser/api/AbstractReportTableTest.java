@@ -32,8 +32,8 @@ import org.spacious_team.table_wrapper.api.TableColumn;
 import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 import org.spacious_team.table_wrapper.api.TableRow;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -238,6 +238,7 @@ class AbstractReportTableTest {
         assertFalse(reportTable.checkEquality(row1, row2));
         assertFalse(reportTable.checkEquality(row1, null));
         assertFalse(reportTable.checkEquality(null, row2));
+        assertTrue(reportTable.checkEquality(null, null));
     }
 
     @Test
@@ -248,10 +249,11 @@ class AbstractReportTableTest {
         ReportTable reportTable = mock(ReportTable.class);
         when(reportTable.mergeDuplicates(any(), any())).thenCallRealMethod();
 
-        assertEquals(Arrays.asList(row1, row1), reportTable.mergeDuplicates(row1, row1));
-        assertEquals(Arrays.asList(row1, row2), reportTable.mergeDuplicates(row1, row2));
-        assertEquals(Arrays.asList(row1, null), reportTable.mergeDuplicates(row1, null));
-        assertEquals(Arrays.asList(null, row2), reportTable.mergeDuplicates(null, row2));
+        assertEquals(List.of(row1, row1), reportTable.mergeDuplicates(row1, row1));
+        assertEquals(List.of(row1, row2), reportTable.mergeDuplicates(row1, row2));
+        assertEquals(List.of(row1), reportTable.mergeDuplicates(row1, null));
+        assertEquals(List.of(row2), reportTable.mergeDuplicates(null, row2));
+        assertEquals(List.of(), reportTable.mergeDuplicates(null, null));
     }
 
 
