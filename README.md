@@ -79,7 +79,7 @@ public class MyBrokerReportFactory extends AbstractBrokerReportFactory {
     }
     
     @Override
-    public BrokerReport create(String reportFileName, InputStream is) {
+    public Optional<BrokerReport> create(String reportFileName, InputStream is) {
         return  super.create(reportFileName, is, MyBrokerReport::new);
     }
 }
@@ -99,6 +99,7 @@ public class MyReportTables extends AbstractReportTables<MyBrokerReport> {
         return emptyTable();
     }
     // другие методы ...
+}
 ```
 Пример реализации `ReportTable` также в свободном
 [доступе](https://github.com/spacious-team/investbook/blob/develop/src/main/java/ru/investbook/parser/psb/SecuritiesTable.java).
