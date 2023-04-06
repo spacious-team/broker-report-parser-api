@@ -43,8 +43,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractReportTable<R> extends InitializableReportTable<R> {
 
     private @Nullable String tableName;
-    private final Predicate<Object> tableNameFinder;
-    private final @Nullable Predicate<Object> tableFooterFinder;
+    private final Predicate<@Nullable Object> tableNameFinder;
+    private final @Nullable Predicate<@Nullable Object> tableFooterFinder;
     private final Class<?> headerDescription;  // <? extends Enum<T> & TableHeaderColumn>
     private final int headersRowCount;
     private final CreateMode createMode;
@@ -82,16 +82,16 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
      */
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
-                        Predicate<String> tableNameFinder,
-                        @Nullable Predicate<String> tableFooterFinder,
+                        Predicate<@Nullable String> tableNameFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
                         Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
-                        Predicate<String> tableNameFinder,
-                        @Nullable Predicate<String> tableFooterFinder,
+                        Predicate<@Nullable String> tableNameFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
                         Class<T> headerDescription,
                         int headersRowCount) {
         super(report);
@@ -138,8 +138,8 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
                         String providedTableName,
-                        Predicate<String> namelessTableFirstLineFinder,
-                        @Nullable Predicate<String> tableFooterFinder,
+                        Predicate<@Nullable String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
                         Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
@@ -147,8 +147,8 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
                         String providedTableName,
-                        Predicate<String> namelessTableFirstLineFinder,
-                        @Nullable Predicate<String> tableFooterFinder,
+                        Predicate<@Nullable String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
                         Class<T> headerDescription,
                         int headersRowCount) {
         super(report);
@@ -160,23 +160,22 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
         this.headersRowCount = headersRowCount;
     }
 
-    private static @Nullable Predicate<String> getPrefixPredicateOrNull(@Nullable String prefix) {
+    private static @Nullable Predicate<@Nullable String> getPrefixPredicateOrNull(@Nullable String prefix) {
         return (prefix == null || prefix.isEmpty()) ? null : getPrefixPredicate(prefix);
     }
 
-    private static Predicate<String> getPrefixPredicate(String prefix) {
+    private static Predicate<@Nullable String> getPrefixPredicate(String prefix) {
         String lowercasePrefix = prefix.trim().toLowerCase();
-        @SuppressWarnings("ConstantConditions")
-        Predicate<String> stringPredicate = cell ->
+        Predicate<@Nullable String> stringPredicate = cell ->
                 (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
         return requireNonNull(stringPredicate);
     }
 
-    private static @Nullable Predicate<Object> castOrNull(@Nullable Predicate<String> predicate) {
+    private static @Nullable Predicate<@Nullable Object> castOrNull(@Nullable Predicate<@Nullable String> predicate) {
         return (predicate == null) ? null : cast(predicate);
     }
 
-    private static Predicate<Object> cast(Predicate<String> predicate) {
+    private static Predicate<@Nullable Object> cast(Predicate<@Nullable String> predicate) {
         return cell -> (cell instanceof CharSequence) && predicate.test(cell.toString());
     }
 
