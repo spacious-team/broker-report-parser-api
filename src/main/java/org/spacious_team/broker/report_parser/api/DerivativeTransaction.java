@@ -43,6 +43,7 @@ public class DerivativeTransaction extends AbstractTransaction {
     @EqualsAndHashCode.Exclude
     private final BigDecimal valueInPoints;
 
+    @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueInPointsCashFlow().ifPresent(list::add);

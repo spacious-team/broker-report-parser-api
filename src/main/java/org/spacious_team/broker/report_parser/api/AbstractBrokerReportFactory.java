@@ -26,13 +26,13 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("unused")
 public abstract class AbstractBrokerReportFactory implements BrokerReportFactory {
 
     /**
      * @param expectedFileNamePattern used for fast report check without input stream reading
      */
-    protected boolean canCreate(Pattern expectedFileNamePattern, String fileName, InputStream is) {
+    protected boolean canCreate(Pattern expectedFileNamePattern, String fileName,
+                                @SuppressWarnings("unused") InputStream is) {
         return expectedFileNamePattern.matcher(fileName).matches();
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
      * Resets input stream to marked position.
      *
      * @return broker report if parse is possible
-     * @throws IllegalArgumentException if InputStream does not support mark
+     * @throws IllegalArgumentException   if InputStream does not support mark
      * @throws BrokerReportParseException if InputStream.reset() fails
      */
     protected Optional<BrokerReport> create(String fileName,
@@ -79,6 +79,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
             super(in);
         }
 
+        @Override
         public void close() {
             // Does nothing and ignores closing the wrapped stream
         }

@@ -76,12 +76,12 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
 
         @SafeVarargs
         public EagerWrappingReportTable(BrokerReport report, Collection<? extends RowType>... dataset) {
-            List<RowType> data = new ArrayList<>();
+            List<RowType> rows = new ArrayList<>();
             for (Collection<? extends RowType> d : dataset) {
-                data.addAll(d);
+                rows.addAll(d);
             }
             this.report = report;
-            this.data = Collections.unmodifiableList(data);
+            this.data = Collections.unmodifiableList(rows);
         }
     }
 

@@ -40,6 +40,7 @@ public class SecurityTransaction extends AbstractTransaction {
     @EqualsAndHashCode.Exclude
     private final BigDecimal accruedInterest; // НКД, в валюте бумаги
 
+    @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(3);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);

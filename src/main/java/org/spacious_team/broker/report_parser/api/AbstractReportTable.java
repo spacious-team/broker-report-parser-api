@@ -195,17 +195,16 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     Table createTable(ReportPage reportPage) {
         @SuppressWarnings("unchecked")
         Class<T> headerDesc = (Class<T>) headerDescription;
-        switch (createMode) {
-            case TABLE_BY_PREDICATE:
-                return (tableFooterFinder != null) ?
-                        reportPage.create(tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
-                        reportPage.create(tableNameFinder, headerDesc, headersRowCount);
-            case NAMELESS_TABLE_BY_PREDICATE:
-                @SuppressWarnings({"nullness", "ConstantConditions"})
-                String providedTableName = requireNonNull(tableName);
-                return (tableFooterFinder != null) ?
-                        reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
-                        reportPage.createNameless(providedTableName, tableNameFinder, headerDesc, headersRowCount);
+        if (createMode == CreateMode.TABLE_BY_PREDICATE) {
+            return (tableFooterFinder != null) ?
+                    reportPage.create(tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                    reportPage.create(tableNameFinder, headerDesc, headersRowCount);
+        } else if (createMode == CreateMode.NAMELESS_TABLE_BY_PREDICATE) {
+            @SuppressWarnings({"nullness", "ConstantConditions"})
+            String providedTableName = requireNonNull(tableName);
+            return (tableFooterFinder != null) ?
+                    reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                    reportPage.createNameless(providedTableName, tableNameFinder, headerDesc, headersRowCount);
         }
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
