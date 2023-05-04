@@ -69,7 +69,7 @@ public class SecurityEventCashFlow {
 
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final @Nullable String currency = "RUR";
+    private final String currency = "RUR";
 
     /**
      * Checks DB unique index constraint

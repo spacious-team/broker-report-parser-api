@@ -57,7 +57,7 @@ public class TransactionCashFlow {
 
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final @Nullable String currency = "RUB";
+    private final String currency = "RUB";
 
     @EqualsAndHashCode.Include
     @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
