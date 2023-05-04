@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
@@ -41,7 +42,7 @@ import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_QUOTE;
 public class DerivativeTransaction extends AbstractTransaction {
     public static final String QUOTE_CURRENCY = "PNT";  // point
     @EqualsAndHashCode.Exclude
-    private final BigDecimal valueInPoints;
+    private final @Nullable BigDecimal valueInPoints;
 
     @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
@@ -53,7 +54,6 @@ public class DerivativeTransaction extends AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueInPointsCashFlow() {
-        //noinspection ConstantConditions
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -67,7 +67,6 @@ public class DerivativeTransaction extends AbstractTransaction {
 
     @Override
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        //noinspection ConstantConditions
         if (value != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -80,8 +79,8 @@ public class DerivativeTransaction extends AbstractTransaction {
     }
 
     @EqualsAndHashCode.Include
-    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
-    private BigDecimal getValueInPointsForEquals() {
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getValueInPointsForEquals() {
         return (valueInPoints == null) ? null : valueInPoints.stripTrailingZeros();
     }
 }

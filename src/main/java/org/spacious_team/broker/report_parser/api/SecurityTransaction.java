@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
@@ -38,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {
     @EqualsAndHashCode.Exclude
-    private final BigDecimal accruedInterest; // НКД, в валюте бумаги
+    private final @Nullable BigDecimal accruedInterest; // НКД, в валюте бумаги
 
     @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
@@ -51,7 +52,6 @@ public class SecurityTransaction extends AbstractTransaction {
 
     private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
         // for securities accrued interest = 0
-        //noinspection ConstantConditions
         if (accruedInterest != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -64,8 +64,8 @@ public class SecurityTransaction extends AbstractTransaction {
     }
 
     @EqualsAndHashCode.Include
-    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
-    private BigDecimal getAccruedInterestForEquals() {
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getAccruedInterestForEquals() {
         return (accruedInterest == null) ? null : accruedInterest.stripTrailingZeros();
     }
 }

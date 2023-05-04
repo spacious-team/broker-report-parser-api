@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.Transaction;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
@@ -47,9 +48,9 @@ public abstract class AbstractTransaction {
     protected final Instant timestamp;
     protected final int count;
     @EqualsAndHashCode.Exclude
-    protected final BigDecimal value; // стоимость в валюте цены
+    protected final @Nullable BigDecimal value; // стоимость в валюте цены, null для зачисления и списания ЦБ
     @EqualsAndHashCode.Exclude
-    protected final BigDecimal fee;
+    protected final @Nullable BigDecimal fee;
     protected final String valueCurrency; // валюта платежа
     protected final String feeCurrency; // валюта комиссии
 
@@ -75,7 +76,6 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        //noinspection ConstantConditions
         if (value != null && Math.abs(value.floatValue()) >= 0.0001) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
@@ -88,7 +88,6 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getFeeCashFlow() {
-        //noinspection ConstantConditions
         if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
@@ -101,14 +100,14 @@ public abstract class AbstractTransaction {
     }
 
     @EqualsAndHashCode.Include
-    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
-    private BigDecimal getValueForEquals() {
+    @SuppressWarnings("unused")
+    private  @Nullable BigDecimal getValueForEquals() {
         return (value == null) ? null : value.stripTrailingZeros();
     }
 
     @EqualsAndHashCode.Include
-    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
-    private BigDecimal getFeeForEquals() {
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getFeeForEquals() {
         return (fee == null) ? null : fee.stripTrailingZeros();
     }
 
