@@ -63,8 +63,8 @@ public class EventCashFlow {
     private final BigDecimal value;
 
     @Builder.Default
-    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
-    private final @Nullable String currency = "RUB";
+    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB")
+    private final String currency = "RUB";
 
     @Schema(description = "Описание события", example = "Внесение наличных", nullable = true)
     private final @Nullable String description;
