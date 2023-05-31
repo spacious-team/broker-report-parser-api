@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2020  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,9 @@
 
 package org.spacious_team.broker.report_parser.api;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +29,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+import static java.util.Objects.requireNonNull;
+import static lombok.AccessLevel.PRIVATE;
+
+@RequiredArgsConstructor(access = PRIVATE)
 public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     private final ReportTable<RowType> reportTable;
 
@@ -65,6 +68,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         return reportTable.getData();
     }
 
+
     @Getter
     private static class EagerWrappingReportTable<RowType> implements ReportTable<RowType> {
         private final BrokerReport report;
@@ -72,20 +76,21 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
 
         @SafeVarargs
         public EagerWrappingReportTable(BrokerReport report, Collection<? extends RowType>... dataset) {
-            List<RowType> data = new ArrayList<>();
+            List<RowType> rows = new ArrayList<>();
             for (Collection<? extends RowType> d : dataset) {
-                data.addAll(d);
+                rows.addAll(d);
             }
             this.report = report;
-            this.data = Collections.unmodifiableList(data);
+            this.data = Collections.unmodifiableList(rows);
         }
     }
+
 
     private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
         private final BrokerReport report;
-        private volatile ReportTable<? extends RowType>[] tables;
-        private volatile List<RowType> data;
+        private volatile ReportTable<? extends RowType> @Nullable[] tables;
+        private volatile @Nullable List<RowType> data;
 
         @SafeVarargs
         private LazyWrappingReportTable(BrokerReport report, ReportTable<? extends RowType>... tables) {
@@ -98,7 +103,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
             if (data == null) {
                 synchronized (this) {
                     if (data == null) {
-                        data = Arrays.stream(tables)
+                        data = Arrays.stream(requireNonNull(tables))
                                 .map(ReportTable::getData)
                                 .flatMap(Collection::stream)
                                 .collect(Collectors.toUnmodifiableList());
@@ -106,7 +111,8 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
                     }
                 }
             }
-            return data;
+            //noinspection ConstantConditions
+            return requireNonNull(data);
         }
     }
 }

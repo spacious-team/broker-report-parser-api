@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2020  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@ public abstract class InitializableReportTable<RowType> implements ReportTable<R
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге отчета " + report, e);
+            throw new BrokerReportParseException("Can't parse report " + report, e);
         }
     }
 

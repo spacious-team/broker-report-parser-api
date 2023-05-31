@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotNull;
-
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -36,15 +36,13 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Свойства инструмента", description = "Информация об инструменте")
 public class SecurityDescription {
-    @NotNull
-    @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
+
+    @Schema(description = "Внутренний идентификатор инструмента", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    //@Nullable
     @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
-    private final String sector;
+    private final @Nullable String sector;
 
-    //@Nullable
-    @Schema(description = "Эмитент (опционально)", example = "7736207543", nullable = true)
-    private final Integer issuer;
+    @Schema(description = "Внутренний идентификатор эмитента (опционально)", example = "10", nullable = true)
+    private final @Nullable Integer issuer;
 }

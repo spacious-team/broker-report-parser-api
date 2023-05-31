@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2020  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,17 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.spacious_team.table_wrapper.api.ReportPage;
 import org.spacious_team.table_wrapper.api.Table;
-import org.spacious_team.table_wrapper.api.TableColumnDescription;
+import org.spacious_team.table_wrapper.api.TableHeaderColumn;
 import org.spacious_team.table_wrapper.api.TableRow;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
@@ -35,150 +39,206 @@ import static java.util.Objects.requireNonNull;
  * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
  * {@link #parseRowToCollection(TableRow)} methods.
  */
-public abstract class AbstractReportTable<RowType> extends InitializableReportTable<RowType> {
+@SuppressWarnings("unused")
+public abstract class AbstractReportTable<R> extends InitializableReportTable<R> {
 
-    private String tableName;
-    private final Predicate<Object> tableNameFinder;
-    private final Predicate<Object> tableFooterFinder;
-    private final Class<? extends TableColumnDescription> headerDescription;
+    private @Nullable String tableName;
+    private final Predicate<@Nullable Object> tableNameFinder;
+    private final @Nullable Predicate<@Nullable Object> tableFooterFinder;
+    private final Class<?> headerDescription;  // <? extends Enum<T> & TableHeaderColumn>
     private final int headersRowCount;
     private final CreateMode createMode;
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String tableName,
-                                  String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+    /**
+     * Finds and creates a table in a report, whose title case-insensitive matches to {@code "^<tableName>.*"}.
+     * Table last row locates before the row, which case-insensitive matches to {@code "^<tableFooter>.*"}.
+     * If tableFooter is null, when table last row locates before empty row.
+     * If tableFooter is null and empty row not found, when table ends with report last row.
+     */
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String tableName,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription) {
         this(report, tableName, tableFooter, headerDescription, 1);
+    }
+
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String tableName,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
+        this(report, getPrefixPredicate(tableName), getPrefixPredicateOrNull(tableFooter),
+                headerDescription, headersRowCount);
         this.tableName = tableName;
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String tableName,
-                                  String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription,
-                                  int headersRowCount) {
-        this(report, getPrefixPredicate(tableName), getPrefixPredicate(tableFooter), headerDescription, headersRowCount);
-        this.tableName = tableName;
-    }
-
-    protected AbstractReportTable(BrokerReport report,
-                                  Predicate<String> tableNameFinder,
-                                  Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+    /**
+     * Finds and creates a table in a report, whose title matches to tableNameFinder predicate.
+     * Table last row locates before the row, which matches to tableFooterFinder.
+     * If tableFooterFinder is null, when table last row locates before empty row.
+     * If tableFooterFinder is null and empty row not found, when table ends with report last row.
+     */
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        Predicate<@Nullable String> tableNameFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  Predicate<String> tableNameFinder,
-                                  Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        Predicate<@Nullable String> tableNameFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
         this.tableName = null;
-        this.tableNameFinder = requireNonNull(cast(tableNameFinder));
-        this.tableFooterFinder = cast(tableFooterFinder);
+        this.tableNameFinder = cast(tableNameFinder);
+        this.tableFooterFinder = castOrNull(tableFooterFinder);
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  String namelessTableFirstLine,
-                                  String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+    /**
+     * Finds and creates a table without title, whose first header row case-insensitive matches to {@code "^<namelessTableFirstLine>.*"}.
+     * Table last row locates before the row, which case-insensitive matches to {@code "^<tableFooter>.*"}.
+     * If tableFooter is null, when table last row locates before empty row.
+     * If tableFooter is null and empty row not found, when table ends with report last row.
+     */
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        String namelessTableFirstLine,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLine, tableFooter, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  String namelessTableFirstLine,
-                                  String tableFooter,
-                                  Class<? extends TableColumnDescription> headerDescription,
-                                  int headersRowCount) {
-        this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine), getPrefixPredicate(tableFooter),
-                headerDescription, headersRowCount);
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        String namelessTableFirstLine,
+                        @Nullable String tableFooter,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
+        this(report, providedTableName, getPrefixPredicate(namelessTableFirstLine),
+                getPrefixPredicateOrNull(tableFooter), headerDescription, headersRowCount);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  Predicate<String> namelessTableFirstLineFinder,
-                                  Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription) {
+    /**
+     * Finds and creates a table without title, whose first header row matches to namelessTableFirstLineFinder predicate.
+     * Table last row locates before the row, which matches to tableFooterFinder predicate.
+     * If tableFooterFinder is null, when table last row locates before empty row.
+     * If tableFooterFinder is null and empty row not found, when table ends with report last row.
+     */
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        Predicate<@Nullable String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
 
-    protected AbstractReportTable(BrokerReport report,
-                                  String providedTableName,
-                                  Predicate<String> namelessTableFirstLineFinder,
-                                  Predicate<String> tableFooterFinder,
-                                  Class<? extends TableColumnDescription> headerDescription,
-                                  int headersRowCount) {
+    protected <T extends Enum<T> & TableHeaderColumn>
+    AbstractReportTable(BrokerReport report,
+                        String providedTableName,
+                        Predicate<@Nullable String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Class<T> headerDescription,
+                        int headersRowCount) {
         super(report);
         this.createMode = CreateMode.NAMELESS_TABLE_BY_PREDICATE;
         this.tableName = providedTableName;
-        this.tableNameFinder = requireNonNull(cast(namelessTableFirstLineFinder));
-        this.tableFooterFinder = cast(tableFooterFinder);
+        this.tableNameFinder = cast(namelessTableFirstLineFinder);
+        this.tableFooterFinder = castOrNull(tableFooterFinder);
         this.headerDescription = headerDescription;
         this.headersRowCount = headersRowCount;
     }
 
-    private static Predicate<String> getPrefixPredicate(String prefix) {
-        if (prefix == null || prefix.isEmpty()) return null;
-        String lowercasePrefix = prefix.trim().toLowerCase();
-        return (cell) -> (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
+    private static @Nullable Predicate<@Nullable String> getPrefixPredicateOrNull(@Nullable String prefix) {
+        return (prefix == null || prefix.isEmpty()) ? null : getPrefixPredicate(prefix);
     }
 
-    private static Predicate<Object> cast(Predicate<String> predicate) {
-        if (predicate == null) return null;
-        return (cell) -> (cell instanceof String) && predicate.test(cell.toString());
+    private static Predicate<@Nullable String> getPrefixPredicate(String prefix) {
+        String lowercasePrefix = prefix.trim().toLowerCase();
+        Predicate<@Nullable String> stringPredicate = cell ->
+                (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
+        return requireNonNull(stringPredicate);
+    }
+
+    private static @Nullable Predicate<@Nullable Object> castOrNull(@Nullable Predicate<@Nullable String> predicate) {
+        return (predicate == null) ? null : cast(predicate);
+    }
+
+    private static Predicate<@Nullable Object> cast(Predicate<@Nullable String> predicate) {
+        return cell -> (cell instanceof CharSequence) && predicate.test(cell.toString());
     }
 
     @Override
-    protected Collection<RowType> parseTable() {
+    protected Collection<R> parseTable() {
         try {
             ReportPage reportPage = getReport().getReportPage();
             Table table = createTable(reportPage);
             return parseTable(table);
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при парсинге таблицы" + (tableName == null ? "" : " '" + tableName +"'")
-                    + " в отчете " + getReport(), e);
+            String displayTableName = (tableName == null) ? " " : " '" + tableName + "' ";
+            throw new BrokerReportParseException("Can't parse table" + displayTableName + "in report " + getReport(), e);
         }
     }
 
-    private Table createTable(ReportPage reportPage) {
-        switch (createMode) {
-            case TABLE_BY_PREDICATE:
-                return (tableFooterFinder != null) ?
-                    reportPage.create(tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                    reportPage.create(tableNameFinder, headerDescription, headersRowCount);
-            case NAMELESS_TABLE_BY_PREDICATE:
-                return (tableFooterFinder != null) ?
-                        reportPage.createNameless(tableName, tableNameFinder, tableFooterFinder, headerDescription, headersRowCount).excludeTotalRow() :
-                        reportPage.createNameless(tableName, tableNameFinder, headerDescription, headersRowCount);
+    private <T extends Enum<T> & TableHeaderColumn>
+    Table createTable(ReportPage reportPage) {
+        @SuppressWarnings("unchecked")
+        Class<T> headerDesc = (Class<T>) headerDescription;
+        if (createMode == CreateMode.TABLE_BY_PREDICATE) {
+            return (tableFooterFinder != null) ?
+                    reportPage.create(tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                    reportPage.create(tableNameFinder, headerDesc, headersRowCount);
+        } else if (createMode == CreateMode.NAMELESS_TABLE_BY_PREDICATE) {
+            @SuppressWarnings({"nullness", "ConstantConditions"})
+            String providedTableName = requireNonNull(tableName);
+            return (tableFooterFinder != null) ?
+                    reportPage.createNameless(providedTableName, tableNameFinder, tableFooterFinder, headerDesc, headersRowCount).excludeTotalRow() :
+                    reportPage.createNameless(providedTableName, tableNameFinder, headerDesc, headersRowCount);
         }
         throw new IllegalArgumentException("Unexpected create mode = " + createMode);
     }
 
-    protected Collection<RowType> parseTable(Table table) {
+    @DefaultQualifier(NonNull.class)  // checkerframework bug fix
+    protected Collection<R> parseTable(Table table) {
         return table.getDataCollection(getReport(), this::parseRowToCollection, this::checkEquality, this::mergeDuplicates);
     }
 
-    protected Collection<RowType> parseRowToCollection(TableRow row) {
-        RowType data = parseRow(row);
+    protected Collection<R> parseRowToCollection(TableRow row) {
+        @Nullable R data = parseRow(row);
         return (data == null) ? emptyList() : singleton(data);
     }
 
-    protected RowType parseRow(TableRow row) {
+    protected @Nullable R parseRow(TableRow row) {
         return null;
     }
 
-    protected boolean checkEquality(RowType object1, RowType object2) {
-        return object1.equals(object2);
+    protected boolean checkEquality(R object1, R object2) {
+        return Objects.equals(object1, object2);
     }
 
-    protected Collection<RowType> mergeDuplicates(RowType oldObject, RowType newObject) {
-        return Arrays.asList(oldObject, newObject);
+    @SuppressWarnings("ConstantConditions")
+    protected Collection<R> mergeDuplicates(R oldObject, R newObject) {
+        try {
+            return List.of(oldObject, newObject);
+        } catch (NullPointerException ignore) {
+            if (oldObject == null && newObject == null) {
+                return List.of();
+            } else if (oldObject == null) {
+                return List.of(newObject);
+            }
+            return List.of(oldObject);
+        }
     }
 
     private enum CreateMode {

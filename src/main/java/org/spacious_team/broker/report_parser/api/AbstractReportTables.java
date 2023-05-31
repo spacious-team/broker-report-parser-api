@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,7 @@ public abstract class AbstractReportTables<T extends BrokerReport> implements Re
         this.emptyReportTable = EmptyReportTable.of(report);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "unused"})
     protected <E> EmptyReportTable<E> emptyTable() {
         return (EmptyReportTable<E>) emptyReportTable;
     }

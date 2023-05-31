@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.Transaction;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
@@ -32,25 +33,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+import static org.spacious_team.broker.pojo.CashFlowType.FEE;
+import static org.spacious_team.broker.pojo.CashFlowType.PRICE;
 
 @Getter
-@SuperBuilder(toBuilder = true)
 @ToString
-@EqualsAndHashCode(cacheStrategy = LAZY)
+@EqualsAndHashCode
+@SuperBuilder(toBuilder = true)
 public abstract class AbstractTransaction {
-    protected static final BigDecimal minValue = BigDecimal.valueOf(0.01);
     protected final Integer id;
     protected final String tradeId;
     protected final String portfolio;
     protected final int security;
     protected final Instant timestamp;
     protected final int count;
-    protected final BigDecimal value; // стоиомсть в валюце цены
-    protected final BigDecimal commission;
+    @EqualsAndHashCode.Exclude
+    protected final @Nullable BigDecimal value; // стоимость в валюте цены, null для зачисления и списания ЦБ
+    @EqualsAndHashCode.Exclude
+    protected final @Nullable BigDecimal fee;
     protected final String valueCurrency; // валюта платежа
-    protected final String commissionCurrency; // валюта коммиссии
+    protected final String feeCurrency; // валюта комиссии
 
+
+    @SuppressWarnings("unused")
     public Transaction getTransaction() {
         return Transaction.builder()
                 .id(id)
@@ -62,15 +67,16 @@ public abstract class AbstractTransaction {
                 .build();
     }
 
+    @SuppressWarnings("unused")
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
-        getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getValueCashFlow(PRICE).ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        if (value != null && value.abs().compareTo(minValue) >= 0) {
+        if (value != null && Math.abs(value.floatValue()) >= 0.0001) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
                 .eventType(type)
@@ -81,16 +87,28 @@ public abstract class AbstractTransaction {
         return Optional.empty();
     }
 
-    protected Optional<TransactionCashFlow> getCommissionCashFlow() {
-        if (commission != null && commission.abs().compareTo(minValue) >= 0) {
+    protected Optional<TransactionCashFlow> getFeeCashFlow() {
+        if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.COMMISSION)
-                    .value(commission)
-                    .currency(commissionCurrency)
+                    .eventType(FEE)
+                    .value(fee)
+                    .currency(feeCurrency)
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings("unused")
+    private  @Nullable BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getFeeForEquals() {
+        return (fee == null) ? null : fee.stripTrailingZeros();
     }
 
     public abstract AbstractTransactionBuilder<? extends AbstractTransaction, ? extends AbstractTransactionBuilder<?, ?>> toBuilder();

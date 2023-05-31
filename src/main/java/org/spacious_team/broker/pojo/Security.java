@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,15 +19,15 @@
 package org.spacious_team.broker.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -35,26 +35,21 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс или опцион")
+@Schema(name = "Инструмент", description = "Акция, облигация, валютная пара, фьючерс, опцион или произвольный актив")
 public class Security {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotNull
-    @Schema(description = "Тип ценной бумаги", example = "STOCK", required = true)
+    @Schema(description = "Тип ценной бумаги", example = "STOCK", requiredMode = REQUIRED)
     private final SecurityType type;
 
-    //@Nullable
-    @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
-    private final String isin;
+    private final @Nullable @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}\\d$") String isin;
 
-    //@Nullable
     @Schema(description = "Тикер (опционально)", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
-    private final String ticker;
+    private final @Nullable String ticker;
 
-    //@Nullable
     @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
-    private final String name;
+    private final @Nullable String name;
 }

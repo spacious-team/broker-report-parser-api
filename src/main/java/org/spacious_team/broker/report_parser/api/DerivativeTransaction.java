@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
@@ -31,20 +32,24 @@ import java.util.List;
 import java.util.Optional;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_PRICE;
+import static org.spacious_team.broker.pojo.CashFlowType.DERIVATIVE_QUOTE;
 
 @Getter
-@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class DerivativeTransaction extends AbstractTransaction {
-    private static final String QUOTE_CURRENCY = "PNT"; // point
-    private final BigDecimal valueInPoints;
+    public static final String QUOTE_CURRENCY = "PNT";  // point
+    @EqualsAndHashCode.Exclude
+    private final @Nullable BigDecimal valueInPoints;
 
+    @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(2);
         getValueInPointsCashFlow().ifPresent(list::add);
-        getValueCashFlow(CashFlowType.DERIVATIVE_PRICE).ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getValueCashFlow(DERIVATIVE_PRICE).ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
@@ -52,7 +57,7 @@ public class DerivativeTransaction extends AbstractTransaction {
         if (valueInPoints != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
-                    .eventType(CashFlowType.DERIVATIVE_QUOTE)
+                    .eventType(DERIVATIVE_QUOTE)
                     .value(valueInPoints)
                     .currency(QUOTE_CURRENCY)
                     .build());
@@ -71,5 +76,11 @@ public class DerivativeTransaction extends AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getValueInPointsForEquals() {
+        return (valueInPoints == null) ? null : valueInPoints.stripTrailingZeros();
     }
 }

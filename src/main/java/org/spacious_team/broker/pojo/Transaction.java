@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,16 +20,17 @@ package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -39,28 +40,23 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Сделка")
 public class Transaction {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор сделки", example = "123", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotEmpty
     @JsonProperty("trade-id")
-    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", required = true)
-    private final String tradeId;
+    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", requiredMode = REQUIRED)
+    private final @NotEmpty String tradeId;
 
-    @NotEmpty
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
-    private final String portfolio;
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
+    private final @NotEmpty String portfolio;
 
-    @NotNull
-    @Schema(description = "Инструмент", example = "123", required = true)
+    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @NotNull
-    @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", required = true)
+    @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @NotNull
-    @Schema(description = "Количество бумаг (контрактов), шт", example = "10", required = true)
+    @Schema(description = "Количество бумаг (контрактов), шт", example = "10", requiredMode = REQUIRED)
     private final int count;
 }

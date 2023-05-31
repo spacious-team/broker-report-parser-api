@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -39,26 +40,29 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Движение ДС по сделке")
 public class TransactionCashFlow {
-    //@Nullable // autoincrement
+    // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "1", nullable = true)
-    private final Integer id;
+    private final @Nullable Integer id;
 
-    @NotNull
     @JsonProperty("transaction-id")
-    @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
+    @Schema(description = "Внутренний идентификатор сделки", example = "123", requiredMode = REQUIRED)
     private final int transactionId;
 
-    @NotNull
     @JsonProperty("event-type")
-    @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", required = true)
+    @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
-    @NotNull
-    @Schema(description = "Сумма по событию", example = "1000.20", required = true)
+    @EqualsAndHashCode.Exclude
+    @Schema(description = "Сумма по событию", example = "1000.20", requiredMode = REQUIRED)
     private final BigDecimal value;
 
-    //@Nullable
     @Builder.Default
     @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUB";
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

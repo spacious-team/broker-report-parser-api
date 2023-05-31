@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2020  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2020  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,11 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.FilterInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -29,44 +31,46 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
     /**
      * @param expectedFileNamePattern used for fast report check without input stream reading
      */
-    protected boolean canCreate(Pattern expectedFileNamePattern, String fileName, InputStream is) {
+    protected boolean canCreate(Pattern expectedFileNamePattern, String fileName,
+                                @SuppressWarnings("unused") InputStream is) {
         return expectedFileNamePattern.matcher(fileName).matches();
     }
 
     /**
-     * Checks input stream and returns broker report if can, otherwise reset input stream mark to original position
-     * and returns null.
+     * Checks input stream and returns broker report if it's possible.
+     * Resets input stream to marked position.
      *
-     * @return broker report if can parse or null
-     * @throws IllegalArgumentException if InputStream is not supports mark
+     * @return broker report if parse is possible
+     * @throws IllegalArgumentException   if InputStream does not support mark
+     * @throws BrokerReportParseException if InputStream.reset() fails
      */
-    protected BrokerReport create(String fileName,
-                                  InputStream is,
-                                  BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
+    protected Optional<BrokerReport> create(String fileName,
+                                            InputStream is,
+                                            BiFunction<String, InputStream, BrokerReport> brokerReportProvider) {
         if (!is.markSupported()) {
             throw new IllegalArgumentException("Provided input stream doesn't supports mark");
         }
         is = new CloseIgnoringInputStream(is); // do not close stream
         is.mark(Integer.MAX_VALUE);
-        Exception exception = null;
+        @Nullable Exception exception = null;
         try {
-            return brokerReportProvider.apply(fileName, is);
+            return Optional.of(brokerReportProvider.apply(fileName, is));
         } catch (Exception e) {
             exception = e;
-            return null;
+            return Optional.empty();
         } finally {
             resetInputStream(is, exception);
         }
     }
 
-    private static void resetInputStream(InputStream is, Throwable t) {
+    private static void resetInputStream(InputStream is, @Nullable Exception exception) {
         try {
             is.reset();
-        } catch (IOException ioe) {
-            if (t != null) {
-                ioe.addSuppressed(t);
+        } catch (Exception e) {
+            if (exception != null) {
+                e.addSuppressed(exception);
             }
-            throw new RuntimeException("Can't reset input stream", ioe);
+            throw new BrokerReportParseException("Can't reset input stream", e);
         }
     }
 
@@ -75,6 +79,7 @@ public abstract class AbstractBrokerReportFactory implements BrokerReportFactory
             super(in);
         }
 
+        @Override
         public void close() {
             // Does nothing and ignores closing the wrapped stream
         }

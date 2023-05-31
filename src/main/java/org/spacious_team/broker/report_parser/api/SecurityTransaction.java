@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spacious_team.broker.pojo.CashFlowType;
 import org.spacious_team.broker.pojo.TransactionCashFlow;
 
@@ -37,19 +38,21 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {
-    private final BigDecimal accruedInterest; // НКД, в валюте бумаги
+    @EqualsAndHashCode.Exclude
+    private final @Nullable BigDecimal accruedInterest; // НКД, в валюте бумаги
 
+    @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
         List<TransactionCashFlow> list = new ArrayList<>(3);
         getValueCashFlow(CashFlowType.PRICE).ifPresent(list::add);
         getAccruedInterestCashFlow().ifPresent(list::add);
-        getCommissionCashFlow().ifPresent(list::add);
+        getFeeCashFlow().ifPresent(list::add);
         return list;
     }
 
     private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
         // for securities accrued interest = 0
-        if (accruedInterest != null && accruedInterest.abs().compareTo(minValue) >= 0) {
+        if (accruedInterest != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(CashFlowType.ACCRUED_INTEREST)
@@ -58,5 +61,11 @@ public class SecurityTransaction extends AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings("unused")
+    private @Nullable BigDecimal getAccruedInterestForEquals() {
+        return (accruedInterest == null) ? null : accruedInterest.stripTrailingZeros();
     }
 }

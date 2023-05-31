@@ -1,6 +1,6 @@
 /*
  * Broker Report Parser API
- * Copyright (C) 2021  Vitalii Ananev <spacious-team@ya.ru>
+ * Copyright (C) 2021  Spacious Team <spacious-team@ya.ru>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,13 @@
 package org.spacious_team.broker.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -37,16 +36,14 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Эмитент")
 public class Issuer {
-    //@Nullable
-    @Schema(description = "Внутренний идентификатор эмитента", nullable = true)
-    private final Integer id;
 
-    //@Nullable
+    @Schema(description = "Внутренний идентификатор эмитента", nullable = true)
+    private final @Nullable Integer id;
+
     @Schema(description = "Идентификатор налогоплательщика (Россия - ИНН, США - EIN и т.д.)",
             example = "7736050003", nullable = true)
-    private final Long taxpayerId;
+    private final @Nullable String taxpayerId;
 
-    @NotEmpty
     @Schema(description = "Наименование", example = "ПАО Газпром")
-    private final String name;
+    private final @NotEmpty String name;
 }
