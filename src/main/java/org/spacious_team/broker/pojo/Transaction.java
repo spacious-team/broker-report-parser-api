@@ -20,6 +20,7 @@ package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,9 +28,9 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -44,18 +45,18 @@ public class Transaction {
     private final @Nullable Integer id;
 
     @JsonProperty("trade-id")
-    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", required = true)
+    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", requiredMode = REQUIRED)
     private final @NotEmpty String tradeId;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String portfolio;
 
-    @Schema(description = "Инструмент", example = "123", required = true)
+    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", required = true)
+    @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Количество бумаг (контрактов), шт", example = "10", required = true)
+    @Schema(description = "Количество бумаг (контрактов), шт", example = "10", requiredMode = REQUIRED)
     private final int count;
 }

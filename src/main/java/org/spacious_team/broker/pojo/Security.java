@@ -19,6 +19,7 @@
 package org.spacious_team.broker.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,8 +27,7 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.Pattern;
-
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -41,7 +41,7 @@ public class Security {
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Тип ценной бумаги", example = "STOCK", required = true)
+    @Schema(description = "Тип ценной бумаги", example = "STOCK", requiredMode = REQUIRED)
     private final SecurityType type;
 
     @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)

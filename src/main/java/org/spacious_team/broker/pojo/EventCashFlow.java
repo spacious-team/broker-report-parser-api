@@ -20,6 +20,7 @@ package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +28,6 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -48,18 +49,18 @@ public class EventCashFlow {
     @Schema(description = "Идентификатор записи", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета", example = "10200I", required = true)
+    @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String portfolio;
 
-    @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", required = true)
+    @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
     @JsonProperty("event-type")
-    @Schema(description = "Тип события", example = "CASH", required = true)
+    @Schema(description = "Тип события", example = "CASH", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Значение", example = "100.50", required = true)
+    @Schema(description = "Значение", example = "100.50", requiredMode = REQUIRED)
     private final BigDecimal value;
 
     @Builder.Default

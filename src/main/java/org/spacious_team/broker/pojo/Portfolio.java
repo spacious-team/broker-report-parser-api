@@ -19,14 +19,14 @@
 package org.spacious_team.broker.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.validation.constraints.NotEmpty;
-
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -37,11 +37,11 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Счет")
 public class Portfolio {
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String id;
 
     @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
-            required = true)
+            requiredMode = REQUIRED)
     @Builder.Default
     private final boolean enabled = true;
 }

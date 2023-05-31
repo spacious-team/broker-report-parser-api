@@ -19,14 +19,13 @@
 package org.spacious_team.broker.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import javax.validation.constraints.NotEmpty;
 
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 

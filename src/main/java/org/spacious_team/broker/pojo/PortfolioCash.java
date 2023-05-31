@@ -20,6 +20,7 @@ package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,10 +28,10 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 
@@ -46,20 +47,20 @@ public class PortfolioCash {
     @Schema(description = "Внутренний идентификатор", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String portfolio;
 
-    @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", required = true)
+    @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Рынок", example = "Фондовый", required = true)
+    @Schema(description = "Рынок", example = "Фондовый", requiredMode = REQUIRED)
     private final String market;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Остаток денежных средств", example = "102.30", required = true)
+    @Schema(description = "Остаток денежных средств", example = "102.30", requiredMode = REQUIRED)
     private final BigDecimal value;
 
-    @Schema(description = "Валюта", example = "RUB", required = true)
+    @Schema(description = "Валюта", example = "RUB", requiredMode = REQUIRED)
     private final @NotEmpty String currency;
 
     @EqualsAndHashCode.Include

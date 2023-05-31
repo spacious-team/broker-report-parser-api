@@ -20,6 +20,7 @@ package org.spacious_team.broker.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,12 +28,12 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static java.util.Collections.singletonList;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
@@ -47,24 +48,24 @@ public class SecurityEventCashFlow {
     @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", required = true)
+    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String portfolio;
 
-    @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", required = true)
+    @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Инструмент", example = "123", required = true)
+    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Количество бумаг (контрактов)", example = "10", required = true)
+    @Schema(description = "Количество бумаг (контрактов)", example = "10", requiredMode = REQUIRED)
     private final Integer count;
 
     @JsonProperty("event-type")
-    @Schema(description = "Тип события", example = "DIVIDEND", required = true)
+    @Schema(description = "Тип события", example = "DIVIDEND", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Сумма", example = "100.20", required = true)
+    @Schema(description = "Сумма", example = "100.20", requiredMode = REQUIRED)
     private final BigDecimal value;
 
     @Builder.Default
