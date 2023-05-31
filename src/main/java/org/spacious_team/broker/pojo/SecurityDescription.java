@@ -26,6 +26,7 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -36,7 +37,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Свойства инструмента", description = "Информация об инструменте")
 public class SecurityDescription {
 
-    @Schema(description = "Внутренний идентификатор инструмента", example = "123", required = true)
+    @Schema(description = "Внутренний идентификатор инструмента", example = "123", requiredMode = REQUIRED)
     private final int security;
 
     @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)

@@ -30,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.math.BigDecimal;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -44,15 +45,15 @@ public class TransactionCashFlow {
     private final @Nullable Integer id;
 
     @JsonProperty("transaction-id")
-    @Schema(description = "Внутренний идентификатор сделки", example = "123", required = true)
+    @Schema(description = "Внутренний идентификатор сделки", example = "123", requiredMode = REQUIRED)
     private final int transactionId;
 
     @JsonProperty("event-type")
-    @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", required = true)
+    @Schema(description = "Тип события (стоимость бумаг без НКД, НКД, комиссия)", example = "PRICE", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Сумма по событию", example = "1000.20", required = true)
+    @Schema(description = "Сумма по событию", example = "1000.20", requiredMode = REQUIRED)
     private final BigDecimal value;
 
     @Builder.Default

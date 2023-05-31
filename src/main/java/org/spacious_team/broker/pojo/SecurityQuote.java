@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -45,14 +46,14 @@ public class SecurityQuote {
     @Schema(description = "Внутренний идентификатор записи", example = "333", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Инструмент", example = "123", required = true)
+    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", required = true)
+    @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", required = true)
+    @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", requiredMode = REQUIRED)
     private final BigDecimal quote; // for stock, currency pair and asset in currency, for bond - in percent, for derivative - in quote
 
     @EqualsAndHashCode.Exclude
