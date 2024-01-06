@@ -51,8 +51,8 @@ public abstract class AbstractTransaction {
     protected final @Nullable BigDecimal value; // стоимость в валюте цены, null для зачисления и списания ЦБ
     @EqualsAndHashCode.Exclude
     protected final @Nullable BigDecimal fee;
-    protected final String valueCurrency; // валюта платежа
-    protected final String feeCurrency; // валюта комиссии
+    protected final @Nullable String valueCurrency; // валюта платежа. Обязателен, если заполнен value
+    protected final @Nullable String feeCurrency; // валюта комиссии. Обязателен, если заполнен fee
 
 
     @SuppressWarnings("unused")
@@ -76,7 +76,7 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        if (value != null && Math.abs(value.floatValue()) >= 0.0001) {
+        if (value != null && valueCurrency != null && Math.abs(value.floatValue()) >= 0.0001) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
                 .eventType(type)
@@ -88,7 +88,7 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getFeeCashFlow() {
-        if (fee != null && Math.abs(fee.floatValue()) >= 0.0001) {
+        if (fee != null && feeCurrency != null && Math.abs(fee.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(FEE)

@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.spacious_team.broker.pojo.CashFlowType.*;
@@ -83,6 +84,7 @@ class SecurityTransactionTest {
     void getTransactionCashFlows_accruedInterestIsNull() {
         SecurityTransaction tr = this.tr.toBuilder()
                 .accruedInterest(null)
+                .valueCurrency(null)
                 .build();
         expectedCashFlows(tr,
                 getValueCashFlow(tr),
@@ -103,6 +105,7 @@ class SecurityTransactionTest {
     void getTransactionCashFlows_valueIsNull() {
         SecurityTransaction tr = this.tr.toBuilder()
                 .value(null)
+                .valueCurrency(null)
                 .build();
         expectedCashFlows(tr,
                 getAccruedInterestCashFlow(tr),
@@ -123,6 +126,7 @@ class SecurityTransactionTest {
     void getTransactionCashFlows_feeIsNull() {
         SecurityTransaction tr = this.tr.toBuilder()
                 .fee(null)
+                .feeCurrency(null)
                 .build();
         expectedCashFlows(tr,
                 getValueCashFlow(tr),
@@ -134,8 +138,8 @@ class SecurityTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(ACCRUED_INTEREST)
-                .value(transaction.getAccruedInterest())
-                .currency(transaction.getValueCurrency())
+                .value(requireNonNull(transaction.getAccruedInterest()))
+                .currency(requireNonNull(transaction.getValueCurrency()))
                 .build();
     }
 
@@ -144,8 +148,8 @@ class SecurityTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(PRICE)
-                .value(transaction.getValue())
-                .currency(transaction.getValueCurrency())
+                .value(requireNonNull(transaction.getValue()))
+                .currency(requireNonNull(transaction.getValueCurrency()))
                 .build();
     }
 
@@ -154,8 +158,8 @@ class SecurityTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(FEE)
-                .value(transaction.getFee())
-                .currency(transaction.getFeeCurrency())
+                .value(requireNonNull(transaction.getFee()))
+                .currency(requireNonNull(transaction.getFeeCurrency()))
                 .build();
     }
 

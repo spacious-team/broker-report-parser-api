@@ -39,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(callSuper = true, cacheStrategy = LAZY)
 public class SecurityTransaction extends AbstractTransaction {
     @EqualsAndHashCode.Exclude
-    private final @Nullable BigDecimal accruedInterest; // НКД, в валюте бумаги
+    private final @Nullable BigDecimal accruedInterest; // НКД, в валюте бумаги. Если задано, то поле currency обязательно
 
     @Override
     public List<TransactionCashFlow> getTransactionCashFlows() {
@@ -52,7 +52,7 @@ public class SecurityTransaction extends AbstractTransaction {
 
     private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
         // for securities accrued interest = 0
-        if (accruedInterest != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
+        if (accruedInterest != null && valueCurrency != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(CashFlowType.ACCRUED_INTEREST)

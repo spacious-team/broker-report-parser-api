@@ -46,8 +46,8 @@
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.28</lombok.version>
-        <checkerframework.version>3.34.0</checkerframework.version>
+        <lombok.version>1.18.30</lombok.version>
+        <checkerframework.version>3.42.0</checkerframework.version>
     </properties>
 
     <repositories>
