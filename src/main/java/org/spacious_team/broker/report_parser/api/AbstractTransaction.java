@@ -100,7 +100,7 @@ public abstract class AbstractTransaction {
     }
 
     protected boolean isNotZero(BigDecimal value) {
-        return Math.abs(value.floatValue()) >= 0.0001;
+        return Math.abs(value.floatValue()) > 0.000_000_99f;
     }
 
     @EqualsAndHashCode.Include
