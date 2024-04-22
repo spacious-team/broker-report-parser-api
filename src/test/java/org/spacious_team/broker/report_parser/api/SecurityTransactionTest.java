@@ -84,7 +84,7 @@ class SecurityTransactionTest {
     void getTransactionCashFlows_accruedInterestIsNull() {
         SecurityTransaction tr = this.tr.toBuilder()
                 .accruedInterest(null)
-                .valueCurrency(null)
+                // can't set "valueCurrency(null)", "valueCurrency" is used by not null "value" field
                 .build();
         expectedCashFlows(tr,
                 getValueCashFlow(tr),
@@ -105,7 +105,7 @@ class SecurityTransactionTest {
     void getTransactionCashFlows_valueIsNull() {
         SecurityTransaction tr = this.tr.toBuilder()
                 .value(null)
-                .valueCurrency(null)
+                // can't set "valueCurrency(null)", "valueCurrency" is used by not null "accruedInterest" field
                 .build();
         expectedCashFlows(tr,
                 getAccruedInterestCashFlow(tr),
