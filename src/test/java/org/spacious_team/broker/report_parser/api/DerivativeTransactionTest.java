@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.spacious_team.broker.pojo.CashFlowType.*;
@@ -105,6 +106,7 @@ class DerivativeTransactionTest {
     void getTransactionCashFlows_valueIsNull() {
         DerivativeTransaction tr = this.tr.toBuilder()
                 .value(null)
+                .valueCurrency(null)
                 .build();
         expectedCashFlows(tr,
                 getValueInPointsCashFlow(tr),
@@ -125,6 +127,7 @@ class DerivativeTransactionTest {
     void getTransactionCashFlows_feeIsNull() {
         DerivativeTransaction tr = this.tr.toBuilder()
                 .fee(null)
+                .feeCurrency(null)
                 .build();
         expectedCashFlows(tr,
                 getValueInPointsCashFlow(tr),
@@ -136,7 +139,7 @@ class DerivativeTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(DERIVATIVE_QUOTE)
-                .value(transaction.getValueInPoints())
+                .value(requireNonNull(transaction.getValueInPoints()))
                 .currency(DerivativeTransaction.QUOTE_CURRENCY)
                 .build();
     }
@@ -146,8 +149,8 @@ class DerivativeTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(DERIVATIVE_PRICE)
-                .value(transaction.getValue())
-                .currency(transaction.getValueCurrency())
+                .value(requireNonNull(transaction.getValue()))
+                .currency(requireNonNull(transaction.getValueCurrency()))
                 .build();
     }
 
@@ -156,8 +159,8 @@ class DerivativeTransactionTest {
         return TransactionCashFlow.builder()
                 .transactionId(transaction.getId())
                 .eventType(FEE)
-                .value(transaction.getFee())
-                .currency(transaction.getFeeCurrency())
+                .value(requireNonNull(transaction.getFee()))
+                .currency(requireNonNull(transaction.getFeeCurrency()))
                 .build();
     }
 

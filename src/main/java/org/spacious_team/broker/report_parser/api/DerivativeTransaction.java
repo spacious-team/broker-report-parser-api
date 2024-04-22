@@ -67,11 +67,11 @@ public class DerivativeTransaction extends AbstractTransaction {
 
     @Override
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        if (value != null) {
+        if (value != null && valueCurrency != null) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(type)
-                    .value(value)
+                    .value(value)  // zero value is permitted
                     .currency(valueCurrency)
                     .build());
         }
