@@ -76,7 +76,7 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getValueCashFlow(CashFlowType type) {
-        if (value != null && valueCurrency != null && Math.abs(value.floatValue()) >= 0.0001) {
+        if (value != null && valueCurrency != null && isNotZero(value)) {
         return Optional.of(TransactionCashFlow.builder()
                 .transactionId(id)
                 .eventType(type)
@@ -88,7 +88,7 @@ public abstract class AbstractTransaction {
     }
 
     protected Optional<TransactionCashFlow> getFeeCashFlow() {
-        if (fee != null && feeCurrency != null && Math.abs(fee.floatValue()) >= 0.0001) {
+        if (fee != null && feeCurrency != null && isNotZero(fee)) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(FEE)
@@ -97,6 +97,10 @@ public abstract class AbstractTransaction {
                     .build());
         }
         return Optional.empty();
+    }
+
+    protected boolean isNotZero(BigDecimal value) {
+        return Math.abs(value.floatValue()) >= 0.0001;
     }
 
     @EqualsAndHashCode.Include

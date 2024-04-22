@@ -52,7 +52,7 @@ public class SecurityTransaction extends AbstractTransaction {
 
     private Optional<TransactionCashFlow> getAccruedInterestCashFlow() {
         // for securities accrued interest = 0
-        if (accruedInterest != null && valueCurrency != null && Math.abs(accruedInterest.floatValue()) >= 0.0001) {
+        if (accruedInterest != null && valueCurrency != null && isNotZero(accruedInterest)) {
             return Optional.of(TransactionCashFlow.builder()
                     .transactionId(id)
                     .eventType(CashFlowType.ACCRUED_INTEREST)
