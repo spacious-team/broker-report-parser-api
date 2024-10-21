@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
+import static org.spacious_team.table_wrapper.api.StringPrefixPredicate.ignoreCaseStringPrefixPredicate;
 
 /**
  * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
@@ -167,8 +168,7 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     }
 
     private static Predicate<String> getPrefixPredicate(String prefix) {
-        String lowercasePrefix = prefix.trim().toLowerCase();
-        return cell -> cell.trim().toLowerCase().startsWith(lowercasePrefix);
+        return ignoreCaseStringPrefixPredicate(prefix);
     }
 
     private static @Nullable Predicate<@Nullable Object> castOrNull(@Nullable Predicate<String> predicate) {

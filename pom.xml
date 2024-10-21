@@ -69,7 +69,7 @@
         <dependency>
             <groupId>com.github.spacious-team</groupId>
             <artifactId>table-wrapper-api</artifactId>
-            <version>f4572e7848</version>
+            <version>2c4d161426</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
