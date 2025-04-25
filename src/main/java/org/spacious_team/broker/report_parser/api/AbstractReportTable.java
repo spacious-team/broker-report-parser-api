@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -34,6 +35,7 @@ import java.util.function.Predicate;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
+import static org.spacious_team.table_wrapper.api.StringPrefixPredicate.ignoreCaseStringPrefixPredicate;
 
 /**
  * To implement override one of {@link #parseTable()}, {@link #parseRow(TableRow)} or
@@ -42,7 +44,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("unused")
 public abstract class AbstractReportTable<R> extends InitializableReportTable<R> {
 
-    private @Nullable String tableName;
+    private @MonotonicNonNull String tableName;
     private final Predicate<@Nullable Object> tableNameFinder;
     private final @Nullable Predicate<@Nullable Object> tableFooterFinder;
     private final Class<?> headerDescription;  // <? extends Enum<T> & TableHeaderColumn>
@@ -82,20 +84,21 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
      */
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
-                        Predicate<@Nullable String> tableNameFinder,
-                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Predicate<String> tableNameFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
                         Class<T> headerDescription) {
         this(report, tableNameFinder, tableFooterFinder, headerDescription, 1);
     }
 
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
-                        Predicate<@Nullable String> tableNameFinder,
-                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Predicate<String> tableNameFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
                         Class<T> headerDescription,
                         int headersRowCount) {
         super(report);
         this.createMode = CreateMode.TABLE_BY_PREDICATE;
+        //noinspection DataFlowIssue
         this.tableName = null;
         this.tableNameFinder = cast(tableNameFinder);
         this.tableFooterFinder = castOrNull(tableFooterFinder);
@@ -138,8 +141,8 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
                         String providedTableName,
-                        Predicate<@Nullable String> namelessTableFirstLineFinder,
-                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Predicate<String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
                         Class<T> headerDescription) {
         this(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, headerDescription, 1);
     }
@@ -147,8 +150,8 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
     protected <T extends Enum<T> & TableHeaderColumn>
     AbstractReportTable(BrokerReport report,
                         String providedTableName,
-                        Predicate<@Nullable String> namelessTableFirstLineFinder,
-                        @Nullable Predicate<@Nullable String> tableFooterFinder,
+                        Predicate<String> namelessTableFirstLineFinder,
+                        @Nullable Predicate<String> tableFooterFinder,
                         Class<T> headerDescription,
                         int headersRowCount) {
         super(report);
@@ -160,22 +163,19 @@ public abstract class AbstractReportTable<R> extends InitializableReportTable<R>
         this.headersRowCount = headersRowCount;
     }
 
-    private static @Nullable Predicate<@Nullable String> getPrefixPredicateOrNull(@Nullable String prefix) {
+    private static @Nullable Predicate<String> getPrefixPredicateOrNull(@Nullable String prefix) {
         return (prefix == null || prefix.isEmpty()) ? null : getPrefixPredicate(prefix);
     }
 
-    private static Predicate<@Nullable String> getPrefixPredicate(String prefix) {
-        String lowercasePrefix = prefix.trim().toLowerCase();
-        Predicate<@Nullable String> stringPredicate = cell ->
-                (cell != null) && cell.trim().toLowerCase().startsWith(lowercasePrefix);
-        return requireNonNull(stringPredicate);
+    private static Predicate<String> getPrefixPredicate(String prefix) {
+        return ignoreCaseStringPrefixPredicate(prefix);
     }
 
-    private static @Nullable Predicate<@Nullable Object> castOrNull(@Nullable Predicate<@Nullable String> predicate) {
+    private static @Nullable Predicate<@Nullable Object> castOrNull(@Nullable Predicate<String> predicate) {
         return (predicate == null) ? null : cast(predicate);
     }
 
-    private static Predicate<@Nullable Object> cast(Predicate<@Nullable String> predicate) {
+    private static Predicate<@Nullable Object> cast(Predicate<String> predicate) {
         return cell -> (cell instanceof CharSequence) && predicate.test(cell.toString());
     }
 

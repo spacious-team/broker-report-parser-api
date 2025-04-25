@@ -20,6 +20,7 @@ package org.spacious_team.broker.report_parser.api;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static lombok.AccessLevel.PRIVATE;
@@ -89,8 +91,8 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
     private static class LazyWrappingReportTable<RowType> implements ReportTable<RowType> {
         @Getter
         private final BrokerReport report;
-        private volatile ReportTable<? extends RowType> @Nullable[] tables;
-        private volatile @Nullable List<RowType> data;
+        private volatile ReportTable<? extends RowType> @Nullable [] tables;  // possibly null array of non-null elements
+        private volatile @MonotonicNonNull List<RowType> data;
 
         @SafeVarargs
         private LazyWrappingReportTable(BrokerReport report, ReportTable<? extends RowType>... tables) {
@@ -103,7 +105,9 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
             if (data == null) {
                 synchronized (this) {
                     if (data == null) {
-                        data = Arrays.stream(requireNonNull(tables))
+                        @SuppressWarnings("nullness")
+                        ReportTable<? extends RowType>[] existingTables = requireNonNull(tables);
+                        data = Stream.of(existingTables)
                                 .map(ReportTable::getData)
                                 .flatMap(Collection::stream)
                                 .collect(Collectors.toUnmodifiableList());
@@ -112,7 +116,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
                 }
             }
             //noinspection ConstantConditions
-            return requireNonNull(data);
+            return data;
         }
     }
 }
