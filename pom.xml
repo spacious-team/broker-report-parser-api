@@ -46,8 +46,8 @@
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.34</lombok.version>
-        <checkerframework.version>3.48.1</checkerframework.version>
+        <lombok.version>1.18.38</lombok.version>
+        <checkerframework.version>3.49.1</checkerframework.version>
     </properties>
 
     <repositories>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>com.github.spacious-team</groupId>
             <artifactId>table-wrapper-api</artifactId>
-            <version>2c4d161426</version>
+            <version>2025.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -81,19 +81,19 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
+            <version>3.1.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.17.2</version>
+            <version>2.18.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.22</version>
+            <version>2.2.30</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -105,19 +105,19 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.2</version>
+            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.14.2</version>
+            <version>5.17.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.17.1</version>
+            <version>3.19.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -127,7 +127,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.1</version> <!-- JUnit 5 requirement -->
+                    <version>3.5.3</version> <!-- JUnit 5 requirement -->
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -135,7 +135,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <fork>true</fork> <!-- Must fork or else JVM arguments are ignored. -->
                     <showDeprecation>true</showDeprecation>
@@ -178,7 +178,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.13</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
