@@ -38,25 +38,25 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Сделка")
+@Schema(name = "Trade")
 public class Transaction {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор сделки", example = "123", nullable = true)
+    @Schema(description = "Internal trade ID", example = "123", nullable = true)
     private final @Nullable Integer id;
 
     @JsonProperty("trade-id")
-    @Schema(description = "Номер сделки в системе учета брокера", example = "123SP", requiredMode = REQUIRED)
+    @Schema(description = "Trade ID in the broker's accounting system", example = "123SP", requiredMode = REQUIRED)
     private final @NotEmpty String tradeId;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String portfolio;
 
-    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
+    @Schema(description = "Tool", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Время сделки", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
+    @Schema(description = "Trade time", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Количество бумаг (контрактов), шт", example = "10", requiredMode = REQUIRED)
+    @Schema(description = "Number of contracts, pcs", example = "10", requiredMode = REQUIRED)
     private final int count;
 }
