@@ -21,26 +21,37 @@ package org.spacious_team.broker.pojo;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PortfolioTest {
+class AccountCashTest {
 
     @Test
     void testEqualsAndHashCode() {
         EqualsVerifier
-                .forClass(Portfolio.class)
+                .forClass(AccountCash.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .withLombokCachedHashCode(Portfolio.builder().build())
+                .withLombokCachedHashCode(AccountCash.builder().build())
                 .verify();
     }
 
     @Test
     void testToString() {
-        Portfolio portfolio = Portfolio.builder()
-                .id("123")
+        AccountCash cash = AccountCash.builder()
+                .id(1)
+                .portfolio("123")
+                .timestamp(Instant.MIN)
+                .market("forts")
+                .value(BigDecimal.ONE)
+                .currency("USD")
                 .build();
 
-        assertEquals("Portfolio(id=123, enabled=true)", portfolio.toString());
+        assertEquals(
+                "AccountCash(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                        "market=forts, value=1, currency=USD)",
+                cash.toString());
     }
 }

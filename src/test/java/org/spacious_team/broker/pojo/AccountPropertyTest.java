@@ -21,37 +21,36 @@ package org.spacious_team.broker.pojo;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.spacious_team.broker.pojo.AccountPropertyType.TOTAL_ASSETS_USD;
 
-class PortfolioCashTest {
+class AccountPropertyTest {
 
     @Test
     void testEqualsAndHashCode() {
         EqualsVerifier
-                .forClass(PortfolioCash.class)
+                .forClass(AccountProperty.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .withLombokCachedHashCode(PortfolioCash.builder().build())
+                .withLombokCachedHashCode(AccountProperty.builder().build())
                 .verify();
     }
 
     @Test
     void testToString() {
-        PortfolioCash cash = PortfolioCash.builder()
+        AccountProperty cash = AccountProperty.builder()
                 .id(1)
                 .portfolio("123")
                 .timestamp(Instant.MIN)
-                .market("forts")
-                .value(BigDecimal.ONE)
-                .currency("USD")
+                .property(TOTAL_ASSETS_USD)
+                .value("123.45")
                 .build();
 
         assertEquals(
-                "PortfolioCash(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
-                        "market=forts, value=1, currency=USD)",
+                "AccountProperty(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                        "property=TOTAL_ASSETS_USD, value=123.45)",
                 cash.toString());
     }
 }

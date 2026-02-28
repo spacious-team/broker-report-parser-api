@@ -42,7 +42,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(name = "AccountCash")
-public class PortfolioCash {
+public class AccountCash {
     // autoincrement
     @Schema(description = "Внутренний идентификатор", example = "123", nullable = true)
     private final @Nullable Integer id;

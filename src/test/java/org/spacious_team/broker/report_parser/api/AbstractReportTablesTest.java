@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.spacious_team.broker.pojo.AccountCash;
+import org.spacious_team.broker.pojo.AccountProperty;
 import org.spacious_team.broker.pojo.EventCashFlow;
 import org.spacious_team.broker.pojo.ForeignExchangeRate;
-import org.spacious_team.broker.pojo.PortfolioCash;
-import org.spacious_team.broker.pojo.PortfolioProperty;
 import org.spacious_team.broker.pojo.Security;
 import org.spacious_team.broker.pojo.SecurityEventCashFlow;
 import org.spacious_team.broker.pojo.SecurityQuote;
@@ -64,12 +64,12 @@ class AbstractReportTablesTest {
         }
 
         @Override
-        public ReportTable<PortfolioProperty> getPortfolioPropertyTable() {
+        public ReportTable<AccountProperty> getAccountPropertyTable() {
             return null;
         }
 
         @Override
-        public ReportTable<PortfolioCash> getPortfolioCashTable() {
+        public ReportTable<AccountCash> getAccountCashTable() {
             return null;
         }
 

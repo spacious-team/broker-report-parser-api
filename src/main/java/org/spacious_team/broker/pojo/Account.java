@@ -35,7 +35,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @Schema(name = "Account")
-public class Portfolio {
+public class Account {
 
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String id;
