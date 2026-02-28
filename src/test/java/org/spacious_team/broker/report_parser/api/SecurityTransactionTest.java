@@ -38,7 +38,7 @@ class SecurityTransactionTest {
     SecurityTransaction tr = SecurityTransaction.builder()
             .id(1)
             .tradeId("t123")
-            .portfolio("a123")
+            .account("a123")
             .security(2)
             .timestamp(Instant.MIN)
             .count(3)
@@ -54,7 +54,7 @@ class SecurityTransactionTest {
         Transaction expected = Transaction.builder()
                 .id(tr.getId())
                 .tradeId(tr.getTradeId())
-                .portfolio(tr.getPortfolio())
+                .account(tr.getAccount())
                 .security(tr.getSecurity())
                 .timestamp(tr.getTimestamp())
                 .count(tr.getCount())
@@ -180,7 +180,7 @@ class SecurityTransactionTest {
 
     @Test
     void testToString() {
-        assertEquals("SecurityTransaction(super=AbstractTransaction(id=1, tradeId=t123, portfolio=a123, " +
+        assertEquals("SecurityTransaction(super=AbstractTransaction(id=1, tradeId=t123, account=a123, " +
                         "security=2, timestamp=-1000000000-01-01T00:00:00Z, count=3, " +
                         "value=10, fee=1, valueCurrency=USD, feeCurrency=RUB), accruedInterest=2)",
                 tr.toString());

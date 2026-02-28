@@ -33,7 +33,7 @@ import static org.spacious_team.broker.pojo.CashFlowType.FEE;
 class EventCashFlowTest {
 
     EventCashFlow flow = EventCashFlow.builder()
-            .portfolio("1")
+            .account("1")
             .timestamp(Instant.MIN)
             .eventType(CASH)
             .value(new BigDecimal("100.0")) // scale = 1
@@ -44,7 +44,7 @@ class EventCashFlowTest {
             .build();
 
     EventCashFlow equalsFlow = EventCashFlow.builder()
-            .portfolio("1")
+            .account("1")
             .timestamp(Instant.MIN)
             .eventType(CASH)
             .value(new BigDecimal("100.00")) // scale = 2
@@ -71,7 +71,7 @@ class EventCashFlowTest {
     @Test
     void checkEquality_anotherPortfolio_notEquals() {
         EventCashFlow notEqualsFlow = flow.toBuilder()
-                .portfolio("2")
+                .account("2")
                 .build();
 
         assertFalse(EventCashFlow.checkEquality(flow, notEqualsFlow));
@@ -137,7 +137,7 @@ class EventCashFlowTest {
 
     @Test
     void testToString() {
-        assertEquals("EventCashFlow(id=0, portfolio=1, timestamp=-1000000000-01-01T00:00:00Z, eventType=CASH, " +
+        assertEquals("EventCashFlow(id=0, account=1, timestamp=-1000000000-01-01T00:00:00Z, eventType=CASH, " +
                         "value=100.0, currency=RUB, description=desc1)",
                 flow.toString());
     }

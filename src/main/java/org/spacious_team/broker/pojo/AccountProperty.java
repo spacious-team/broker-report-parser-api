@@ -44,7 +44,7 @@ public class AccountProperty {
     private final @Nullable Integer id;
 
     @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    private final @NotEmpty String account;
 
     @Schema(description = "Информация актуальна на время", example = "2021-01-01T12:00:00+03:00", nullable = true)
     private final @Nullable Instant timestamp;

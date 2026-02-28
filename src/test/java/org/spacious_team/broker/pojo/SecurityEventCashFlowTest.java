@@ -34,7 +34,7 @@ class SecurityEventCashFlowTest {
 
     SecurityEventCashFlow flow = SecurityEventCashFlow.builder()
             .id(1)
-            .portfolio("123")
+            .account("123")
             .timestamp(Instant.MIN)
             .security(2)
             .eventType(DIVIDEND)
@@ -46,7 +46,7 @@ class SecurityEventCashFlowTest {
 
     SecurityEventCashFlow equalsFlow = SecurityEventCashFlow.builder()
             .id(1)
-            .portfolio("123")
+            .account("123")
             .timestamp(Instant.MIN)
             .security(2)
             .eventType(DIVIDEND)
@@ -64,7 +64,7 @@ class SecurityEventCashFlowTest {
     @Test
     void checkEquality_anotherPortfolio_notEquals() {
         SecurityEventCashFlow notEqualsFlow = flow.toBuilder()
-                .portfolio("2")
+                .account("2")
                 .build();
 
         assertFalse(SecurityEventCashFlow.checkEquality(flow, notEqualsFlow));
@@ -140,7 +140,7 @@ class SecurityEventCashFlowTest {
     @Test
     void testToString() {
         assertEquals(
-                "SecurityEventCashFlow(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                "SecurityEventCashFlow(id=1, account=123, timestamp=-1000000000-01-01T00:00:00Z, " +
                         "security=2, count=3, eventType=DIVIDEND, value=1, currency=USD)",
                 flow.toString());
     }

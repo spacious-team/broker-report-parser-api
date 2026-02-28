@@ -49,7 +49,7 @@ public class SecurityEventCashFlow {
     private final @Nullable Integer id;
 
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    private final @NotEmpty String account;
 
     @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
@@ -80,7 +80,7 @@ public class SecurityEventCashFlow {
         return cash1.getSecurity() == cash2.getSecurity() &&
                 Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
                 Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
-                Objects.equals(cash1.getPortfolio(), cash2.getPortfolio());
+                Objects.equals(cash1.getAccount(), cash2.getAccount());
     }
 
     /**

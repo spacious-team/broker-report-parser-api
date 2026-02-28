@@ -50,7 +50,7 @@ public class EventCashFlow {
     private final @Nullable Integer id;
 
     @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    private final @NotEmpty String account;
 
     @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
@@ -80,7 +80,7 @@ public class EventCashFlow {
         //noinspection NumberEquality
         return Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
                 Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
-                Objects.equals(cash1.getPortfolio(), cash2.getPortfolio()) &&
+                Objects.equals(cash1.getAccount(), cash2.getAccount()) &&
                 Objects.equals(cash1.getCurrency(), cash2.getCurrency()) &&
                 ((value1 == value2) || (value1.compareTo(value2) == 0));
     }

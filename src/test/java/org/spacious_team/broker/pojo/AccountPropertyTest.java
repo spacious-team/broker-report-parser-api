@@ -42,14 +42,14 @@ class AccountPropertyTest {
     void testToString() {
         AccountProperty cash = AccountProperty.builder()
                 .id(1)
-                .portfolio("123")
+                .account("123")
                 .timestamp(Instant.MIN)
                 .property(TOTAL_ASSETS_USD)
                 .value("123.45")
                 .build();
 
         assertEquals(
-                "AccountProperty(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                "AccountProperty(id=1, account=123, timestamp=-1000000000-01-01T00:00:00Z, " +
                         "property=TOTAL_ASSETS_USD, value=123.45)",
                 cash.toString());
     }

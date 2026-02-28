@@ -48,7 +48,7 @@ public class AccountCash {
     private final @Nullable Integer id;
 
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    private final @NotEmpty String account;
 
     @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;

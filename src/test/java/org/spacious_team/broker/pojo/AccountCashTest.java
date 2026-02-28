@@ -42,7 +42,7 @@ class AccountCashTest {
     void testToString() {
         AccountCash cash = AccountCash.builder()
                 .id(1)
-                .portfolio("123")
+                .account("123")
                 .timestamp(Instant.MIN)
                 .market("forts")
                 .value(BigDecimal.ONE)
@@ -50,7 +50,7 @@ class AccountCashTest {
                 .build();
 
         assertEquals(
-                "AccountCash(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                "AccountCash(id=1, account=123, timestamp=-1000000000-01-01T00:00:00Z, " +
                         "market=forts, value=1, currency=USD)",
                 cash.toString());
     }

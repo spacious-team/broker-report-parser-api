@@ -49,7 +49,7 @@ public class Transaction {
     private final @NotEmpty String tradeId;
 
     @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    private final @NotEmpty String account;
 
     @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
     private final int security;
