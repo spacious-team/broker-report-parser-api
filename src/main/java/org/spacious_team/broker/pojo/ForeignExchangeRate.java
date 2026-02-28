@@ -38,7 +38,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Официальный обменный курс")
+@Schema(name = "ForeignExchangeRate")
 public class ForeignExchangeRate {
 
     @Schema(description = "Дата", example = "2021-21-23", requiredMode = REQUIRED)

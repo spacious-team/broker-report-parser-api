@@ -42,7 +42,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
+@Schema(name = "SecurityEventCashFlow", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
 public class SecurityEventCashFlow {
     // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)

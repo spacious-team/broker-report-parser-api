@@ -34,7 +34,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Эмитент")
+@Schema(name = "Issuer")
 public class Issuer {
 
     @Schema(description = "Внутренний идентификатор эмитента", nullable = true)

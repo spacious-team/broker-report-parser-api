@@ -41,7 +41,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Schema(name = "Остаток денежных средств")
+@Schema(name = "AccountCash")
 public class PortfolioCash {
     // autoincrement
     @Schema(description = "Внутренний идентификатор", example = "123", nullable = true)

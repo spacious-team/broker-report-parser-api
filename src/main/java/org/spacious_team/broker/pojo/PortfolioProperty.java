@@ -37,7 +37,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Свойства счета")
+@Schema(name = "AccountProperty")
 public class PortfolioProperty {
     // autoincrement
     @Schema(description = "Внутренний идентификатор записи", example = "111", nullable = true)

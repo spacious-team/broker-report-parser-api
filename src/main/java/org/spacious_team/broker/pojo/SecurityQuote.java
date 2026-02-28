@@ -39,7 +39,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Котировка")
+@Schema(name = "SecurityQuote")
 public class SecurityQuote {
 
     // autoincrement

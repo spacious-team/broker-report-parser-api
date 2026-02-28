@@ -34,7 +34,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Свойства инструмента", description = "Информация об инструменте")
+@Schema(name = "SecurityDescription", description = "Информация об инструменте")
 public class SecurityDescription {
 
     @Schema(description = "Внутренний идентификатор инструмента", example = "123", requiredMode = REQUIRED)
