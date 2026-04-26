@@ -44,23 +44,23 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "AccountCash")
 public class AccountCash {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор", example = "123", nullable = true)
+    @Schema(description = "Record ID", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String account;
 
-    @Schema(description = "Значение актуально на дату", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
+    @Schema(description = "Date and time", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Рынок", example = "Фондовый", requiredMode = REQUIRED)
+    @Schema(description = "Market", example = "Stock market", requiredMode = REQUIRED)
     private final String market;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Остаток денежных средств", example = "102.30", requiredMode = REQUIRED)
+    @Schema(description = "Cash balance", example = "102.30", requiredMode = REQUIRED)
     private final BigDecimal value;
 
-    @Schema(description = "Валюта", example = "RUB", requiredMode = REQUIRED)
+    @Schema(description = "Currency", example = "RUB", requiredMode = REQUIRED)
     private final @NotEmpty String currency;
 
     @EqualsAndHashCode.Include

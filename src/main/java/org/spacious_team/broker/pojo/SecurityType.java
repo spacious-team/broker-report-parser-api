@@ -25,12 +25,12 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public enum SecurityType {
 
-    STOCK("акция"),
-    BOND("облигация"),
-    STOCK_OR_BOND("акция/облигация"), // not exactly known: STOCK or BOND
-    DERIVATIVE("срочный контракт"),
-    CURRENCY_PAIR("валютная пара"),
-    ASSET("произвольный актив");
+    STOCK("stock"),
+    BOND("bond"),
+    STOCK_OR_BOND("stock or bond"), // not exactly known: STOCK or BOND
+    DERIVATIVE("derivative"),
+    CURRENCY_PAIR("currency pair"),
+    ASSET("asset");
 
     @Getter
     private final String description;

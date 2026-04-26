@@ -35,21 +35,21 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Security", description = "Акция, облигация, валютная пара, фьючерс, опцион или произвольный актив")
+@Schema(name = "Security", description = "Stocks, bonds, futures, options, currency pairs and custom assets")
 public class Security {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор инструмента", example = "123", nullable = true)
+    @Schema(description = "Record ID", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Тип ценной бумаги", example = "STOCK", requiredMode = REQUIRED)
+    @Schema(description = "Security type", example = "STOCK", requiredMode = REQUIRED)
     private final SecurityType type;
 
-    @Schema(description = "ISIN акций и облигаций (опционально)", example = "NL0009805522", nullable = true)
+    @Schema(description = "ISIN of stocks and bonds", example = "NL0009805522", nullable = true)
     private final @Nullable @Pattern(regexp = "^[A-Z]{2}[A-Z0-9]{9}\\d$") String isin;
 
-    @Schema(description = "Тикер (опционально)", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
+    @Schema(description = "Ticker", example = "YNDX, USDRUB_TOM или Si-12.21", nullable = true)
     private final @Nullable String ticker;
 
-    @Schema(description = "Наименование (опционально)", example = "Yandex clA", nullable = true)
+    @Schema(description = "Asset name", example = "Apple Inc", nullable = true)
     private final @Nullable String name;
 }

@@ -34,15 +34,15 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "SecurityDescription", description = "Информация об инструменте")
+@Schema(name = "SecurityDescription")
 public class SecurityDescription {
 
-    @Schema(description = "Внутренний идентификатор инструмента", example = "123", requiredMode = REQUIRED)
+    @Schema(description = "Security record ID", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Сектор экономики (опционально)", example = "Финансы", nullable = true)
+    @Schema(description = "Industry sector", example = "Information Technology", nullable = true)
     private final @Nullable String sector;
 
-    @Schema(description = "Внутренний идентификатор эмитента (опционально)", example = "10", nullable = true)
+    @Schema(description = "Issuer record ID", example = "10", nullable = true)
     private final @Nullable Integer issuer;
 }

@@ -39,7 +39,7 @@ class SecurityDescriptionTest {
     void testToString() {
         SecurityDescription description = SecurityDescription.builder()
                 .security(1)
-                .sector("Финансы")
+                .sector("Information Technology")
                 .issuer(10)
                 .build();
 

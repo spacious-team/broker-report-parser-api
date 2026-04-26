@@ -37,13 +37,13 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Issuer")
 public class Issuer {
 
-    @Schema(description = "Внутренний идентификатор эмитента", nullable = true)
+    @Schema(description = "Record ID", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Идентификатор налогоплательщика (Россия - ИНН, США - EIN и т.д.)",
+    @Schema(description = "Taxpayer identification number (Russia: INN, US: EIN, etc.)",
             example = "7736050003", nullable = true)
     private final @Nullable String taxpayerId;
 
-    @Schema(description = "Наименование", example = "ПАО Газпром")
+    @Schema(description = "Issuer name", example = "Apple Inc.")
     private final @NotEmpty String name;
 }

@@ -37,11 +37,10 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "Account")
 public class Account {
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String id;
 
-    @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
-            requiredMode = REQUIRED)
+    @Schema(description = "Active account flag: if false, the account is archived", requiredMode = REQUIRED)
     @Builder.Default
     private final boolean enabled = true;
 }

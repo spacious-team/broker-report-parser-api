@@ -43,31 +43,31 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "EventCashFlow", description = "Ввод и вывод ДС, налоги, комиссии, а также выплаты по инструментам другого счета")
+@Schema(name = "EventCashFlow", description = "Cash deposits and withdrawals, taxes, fees, and payouts on instruments from another account")
 public class EventCashFlow {
     // autoincrement
-    @Schema(description = "Идентификатор записи", example = "123", nullable = true)
+    @Schema(description = "Record ID", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String account;
 
-    @Schema(description = "Время события", example = "2021-01-01T12:00:00+03:00", requiredMode = REQUIRED)
+    @Schema(description = "Event time", example = "2021-01-01T12:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
     @JsonProperty("event-type")
-    @Schema(description = "Тип события", example = "CASH", requiredMode = REQUIRED)
+    @Schema(description = "Event type", example = "CASH", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Значение", example = "100.50", requiredMode = REQUIRED)
+    @Schema(description = "Amount", example = "100.50", requiredMode = REQUIRED)
     private final BigDecimal value;
 
     @Builder.Default
-    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB")
+    @Schema(description = "Currency", example = "RUB", defaultValue = "RUB")
     private final String currency = "RUB";
 
-    @Schema(description = "Описание события", example = "Внесение наличных", nullable = true)
+    @Schema(description = "Description", example = "Deposit", nullable = true)
     private final @Nullable String description;
 
     /**

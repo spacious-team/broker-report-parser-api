@@ -40,18 +40,18 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "AccountProperty")
 public class AccountProperty {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор записи", example = "111", nullable = true)
+    @Schema(description = "Record ID", example = "111", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
     private final @NotEmpty String account;
 
-    @Schema(description = "Информация актуальна на время", example = "2021-01-01T12:00:00+03:00", nullable = true)
+    @Schema(description = "Date and time", example = "2021-01-01T12:00:00+03:00", nullable = true)
     private final @Nullable Instant timestamp;
 
-    @Schema(description = "Свойство портфеля", example = "TOTAL_ASSETS_RUB", requiredMode = REQUIRED)
+    @Schema(description = "Property", example = "TOTAL_ASSETS_RUB", requiredMode = REQUIRED)
     private final AccountPropertyType property;
 
-    @Schema(description = "Значение свойства", example = "100.20", requiredMode = REQUIRED)
+    @Schema(description = "Value", example = "100.20", requiredMode = REQUIRED)
     private final String value;
 }
