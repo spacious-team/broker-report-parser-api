@@ -65,8 +65,8 @@ class AbstractReportTableTest {
     }
 
     @Test
-    void createExceptionally() {
-        when(reportPage.create(any(Predicate.class), eq(TableHeader.class), eq(1)))
+    void createTable_exception() {
+        when(reportPage.createTable(any(Predicate.class), eq(1), eq(null), eq(TableHeader.class), eq(1)))
                 .thenThrow(IllegalArgumentException.class);
         ReportTable reportTable = new ReportTable(brokerReport, "table1", null);
 
@@ -74,34 +74,35 @@ class AbstractReportTableTest {
     }
 
     @Test
-    void createTableByPrefixAndWithoutFooter() {
-        when(reportPage.create(any(Predicate.class), eq(TableHeader.class), eq(1))).thenReturn(table);
+    void createTable_byPrefixAndWithoutFooter() {
+        when(reportPage.createTable(any(Predicate.class), eq(1), eq(null), eq(TableHeader.class), eq(1))).thenReturn(table);
         ReportTable reportTable = new ReportTable(brokerReport, "table1", null);
 
         reportTable.parseTable();
 
-        verify(table, never()).excludeTotalRow();
+        verify(table, never()).excludeLastRow();
         verify(table).getDataCollection(eq(brokerReport), any(), any(), any());
-        verify(reportPage).create(tableNamePredicateCaptor.capture(), eq(TableHeader.class), eq(1));
+        verify(reportPage).createTable(tableNamePredicateCaptor.capture(), eq(1), eq(null), eq(TableHeader.class), eq(1));
         Predicate<Object> tableNameFinder = tableNamePredicateCaptor.getValue();
         matches(tableNameFinder, "table1", "TABLE1", " table1 ", "table12");
         notMatches(tableNameFinder, "table2", "table", "", new Object(), null);
     }
 
     @Test
-    void createTableByPrefixAndFooter() {
-        when(reportPage.create(any(Predicate.class), any(Predicate.class), eq(TableHeader.class), eq(1)))
+    void createTable_byPrefixAndFooter() {
+        when(reportPage.createTable(any(Predicate.class), eq(1), any(Predicate.class), eq(TableHeader.class), eq(1)))
                 .thenReturn(table);
-        when(table.excludeTotalRow()).thenReturn(tableWithoutTotal);
+        when(table.excludeLastRow()).thenReturn(tableWithoutTotal);
         ReportTable reportTable = new ReportTable(brokerReport, "table1", "total1");
 
         reportTable.parseTable();
 
-        verify(table).excludeTotalRow();
+        verify(table).excludeLastRow();
         verify(table, never()).getDataCollection(any(), any(), any(), any());
         verify(tableWithoutTotal).getDataCollection(eq(brokerReport), any(), any(), any());
-        verify(reportPage).create(
+        verify(reportPage).createTable(
                 tableNamePredicateCaptor.capture(),
+                eq(1),
                 tableFooterPredicateCaptor.capture(),
                 eq(TableHeader.class),
                 eq(1));
@@ -114,7 +115,7 @@ class AbstractReportTableTest {
     }
 
     @Test
-    void createTableByPredicateAndWithoutFooter() {
+    void createTable_byPredicateAndWithoutFooter() {
         Predicate<String> tableNameFinder = v -> Objects.equals(v, "table1");
         Predicate<String> tableFooterFinder = v -> Objects.equals(v, "total1");
 
@@ -124,38 +125,38 @@ class AbstractReportTableTest {
     }
 
     @Test
-    void createNamelessTableByPrefixAndWithoutFooter() {
-        when(reportPage.createNameless(eq("providedName"), any(Predicate.class), eq(TableHeader.class), eq(1)))
+    void createNamelessTable_byPrefixAndWithoutFooter() {
+        when(reportPage.createNamelessTable(eq("providedName"), any(Predicate.class), eq(null), eq(TableHeader.class), eq(1)))
                 .thenReturn(table);
         ReportTable reportTable =
                 new ReportTable(brokerReport, "providedName", "row1", null);
 
         reportTable.parseTable();
 
-        verify(table, never()).excludeTotalRow();
+        verify(table, never()).excludeLastRow();
         verify(table).getDataCollection(eq(brokerReport), any(), any(), any());
-        verify(reportPage).createNameless(
-                eq("providedName"), tableNamePredicateCaptor.capture(), eq(TableHeader.class), eq(1));
+        verify(reportPage).createNamelessTable(
+                eq("providedName"), tableNamePredicateCaptor.capture(), eq(null), eq(TableHeader.class), eq(1));
         Predicate<Object> tableFirstLineFinder = tableNamePredicateCaptor.getValue();
         matches(tableFirstLineFinder, "row1", "ROW1", " row1 ", "row12");
         notMatches(tableFirstLineFinder, "row2", "row", "", new Object(), null);
     }
 
     @Test
-    void createNamelessTableByPrefixAndFooter() {
-        when(reportPage.createNameless(
+    void createNamelessTable_byPrefixAndFooter() {
+        when(reportPage.createNamelessTable(
                 eq("providedName"), any(Predicate.class), any(Predicate.class), eq(TableHeader.class), eq(1)))
                 .thenReturn(table);
-        when(table.excludeTotalRow()).thenReturn(tableWithoutTotal);
+        when(table.excludeLastRow()).thenReturn(tableWithoutTotal);
         ReportTable reportTable =
                 new ReportTable(brokerReport, "providedName", "row1", "total1");
 
         reportTable.parseTable();
 
-        verify(table).excludeTotalRow();
+        verify(table).excludeLastRow();
         verify(table, never()).getDataCollection(any(), any(), any(), any());
         verify(tableWithoutTotal).getDataCollection(eq(brokerReport), any(), any(), any());
-        verify(reportPage).createNameless(
+        verify(reportPage).createNamelessTable(
                 eq("providedName"),
                 tableNamePredicateCaptor.capture(),
                 tableFooterPredicateCaptor.capture(),
@@ -170,7 +171,7 @@ class AbstractReportTableTest {
     }
 
     @Test
-    void createNamelessTableByPredicateAndWithoutFooter() {
+    void createNamelessTable_byPredicateAndWithoutFooter() {
         Predicate<String> tableFirstLineFinder = v -> Objects.equals(v, "table1");
         Predicate<String> tableFooterFinder = v -> Objects.equals(v, "total1");
 
@@ -268,12 +269,12 @@ class AbstractReportTableTest {
         }
 
         ReportTable(BrokerReport report, String providedTableName, String namelessTableFirstLine,
-                           @Nullable String tableFooter) {
+                    @Nullable String tableFooter) {
             super(report, providedTableName, namelessTableFirstLine, tableFooter, TableHeader.class);
         }
 
         ReportTable(BrokerReport report, String providedTableName, Predicate<String> namelessTableFirstLineFinder,
-                           @Nullable Predicate<String> tableFooterFinder) {
+                    @Nullable Predicate<String> tableFooterFinder) {
             super(report, providedTableName, namelessTableFirstLineFinder, tableFooterFinder, TableHeader.class);
         }
 
@@ -298,11 +299,11 @@ class AbstractReportTableTest {
         }
     }
 
-   enum TableHeader implements TableHeaderColumn {
+    enum TableHeader implements TableHeaderColumn {
         ;
 
         @Override
-        @SuppressWarnings({"ReturnOfNull", "ConstantConditions"})
+        @SuppressWarnings({"ReturnOfNull", "ConstantConditions", "NullableProblems"})
         public TableColumn getColumn() {
             return null;
         }
