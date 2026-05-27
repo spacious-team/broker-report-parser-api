@@ -125,6 +125,37 @@ class AbstractReportTableTest {
     }
 
     @Test
+    void createTable_byHeaderRowCount() {
+        int headerRowCnt = 2;
+        when(reportPage.createTable(any(Predicate.class), anyInt(), any(), any(), anyInt())).thenReturn(table);
+        ReportTable reportTable = new ReportTable(brokerReport, "table1", "", headerRowCnt);
+
+        reportTable.parseTable();
+
+        verify(reportPage).createTable(any(Predicate.class), eq(1), eq(null), eq(TableHeader.class), eq(headerRowCnt));
+    }
+
+    @Test
+    void createTable_byTableFirstRow() {
+        when(reportPage.createTable(any(Predicate.class), anyInt(), any(), any(), any())).thenReturn(table);
+        ReportTable reportTable = new ReportTable(brokerReport, "table1", 2, "firstData", null);
+
+        reportTable.parseTable();
+
+        verify(reportPage).createTable(any(Predicate.class), eq(2), any(Predicate.class), eq(null), eq(TableHeader.class));
+    }
+
+    @Test
+    void createTableNameless_byTableFirstRow() {
+        when(reportPage.createNamelessTable(any(String.class), any(Predicate.class), any(), any(), any())).thenReturn(table);
+        ReportTable reportTable = new ReportTable(brokerReport, "provided-name", "header", "firstData", null);
+
+        reportTable.parseTable();
+
+        verify(reportPage).createNamelessTable(eq("provided-name"), any(Predicate.class), any(Predicate.class), eq(null), eq(TableHeader.class));
+    }
+
+    @Test
     void createNamelessTable_byPrefixAndWithoutFooter() {
         when(reportPage.createNamelessTable(eq("providedName"), any(Predicate.class), eq(null), eq(TableHeader.class), eq(1)))
                 .thenReturn(table);
@@ -264,6 +295,18 @@ class AbstractReportTableTest {
             super(report, tableName, tableFooter, TableHeader.class);
         }
 
+        ReportTable(BrokerReport report, String tableName, @Nullable String tableFooter, int headerRowsCount) {
+            super(report, tableName, tableFooter, TableHeader.class, headerRowsCount);
+        }
+
+        ReportTable(BrokerReport report,
+                    String tableName,
+                    int tableNameRowCount,
+                    String firstDataRow,
+                    @Nullable String tableFooter) {
+            super(report, tableName, tableNameRowCount, firstDataRow, tableFooter, TableHeader.class);
+        }
+
         ReportTable(BrokerReport report, Predicate<String> tableNameFinder, @Nullable Predicate<String> tableFooterFinder) {
             super(report, tableNameFinder, tableFooterFinder, TableHeader.class);
         }
@@ -271,6 +314,14 @@ class AbstractReportTableTest {
         ReportTable(BrokerReport report, String providedTableName, String namelessTableFirstLine,
                     @Nullable String tableFooter) {
             super(report, providedTableName, namelessTableFirstLine, tableFooter, TableHeader.class);
+        }
+
+        ReportTable(BrokerReport report,
+                    String providedTableName,
+                    String headerRowPrefix,
+                    String firstDataRowPrefix,
+                    @Nullable String tableFooter) {
+            super(report, providedTableName, headerRowPrefix, firstDataRowPrefix, tableFooter, TableHeader.class);
         }
 
         ReportTable(BrokerReport report, String providedTableName, Predicate<String> namelessTableFirstLineFinder,
