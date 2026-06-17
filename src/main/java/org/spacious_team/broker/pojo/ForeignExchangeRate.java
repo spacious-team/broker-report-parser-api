@@ -41,7 +41,7 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Schema(name = "ForeignExchangeRate")
 public class ForeignExchangeRate {
 
-    @Schema(description = "Date", example = "2021-21-23", requiredMode = REQUIRED)
+    @Schema(description = "Date", example = "2026-06-17", requiredMode = REQUIRED)
     private final LocalDate date;
 
     @JsonProperty("currency-pair")
