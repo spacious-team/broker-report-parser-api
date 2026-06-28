@@ -43,7 +43,7 @@ import static org.spacious_team.broker.pojo.CashFlowType.PRICE;
 public abstract class AbstractTransaction {
     protected final Integer id;
     protected final String tradeId;
-    protected final String portfolio;
+    protected final String account;
     protected final int security;
     protected final Instant timestamp;
     protected final int count;
@@ -60,7 +60,7 @@ public abstract class AbstractTransaction {
         return Transaction.builder()
                 .id(id)
                 .tradeId(tradeId)
-                .portfolio(portfolio)
+                .account(account)
                 .security(security)
                 .timestamp(timestamp)
                 .count(count)

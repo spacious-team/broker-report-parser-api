@@ -18,6 +18,7 @@
 
 package org.spacious_team.broker.pojo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
@@ -27,31 +28,44 @@ import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
+
 
 @Getter
 @ToString
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Свойства счета")
-public class PortfolioProperty {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(name = "AccountCash")
+public class AccountCash {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор записи", example = "111", nullable = true)
+    @Schema(description = "Record ID", example = "123", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
+    private final @NotEmpty String account;
 
-    @Schema(description = "Информация актуальна на время", example = "2021-01-01T12:00:00+03:00", nullable = true)
-    private final @Nullable Instant timestamp;
+    @Schema(description = "Date and time", example = "2021-01-23T12:00:00+03:00", requiredMode = REQUIRED)
+    private final Instant timestamp;
 
-    @Schema(description = "Свойство портфеля", example = "TOTAL_ASSETS_RUB", requiredMode = REQUIRED)
-    private final PortfolioPropertyType property;
+    @Schema(description = "Market", example = "Stock market", requiredMode = REQUIRED)
+    private final String market;
 
-    @Schema(description = "Значение свойства", example = "100.20", requiredMode = REQUIRED)
-    private final String value;
+    @EqualsAndHashCode.Exclude
+    @Schema(description = "Cash balance", example = "102.30", requiredMode = REQUIRED)
+    private final BigDecimal value;
+
+    @Schema(description = "Currency", example = "RUB", requiredMode = REQUIRED)
+    private final @NotEmpty String currency;
+
+    @EqualsAndHashCode.Include
+    @SuppressWarnings({"nullness", "ConstantConditions", "ReturnOfNull", "unused"})
+    private BigDecimal getValueForEquals() {
+        return (value == null) ? null : value.stripTrailingZeros();
+    }
 }

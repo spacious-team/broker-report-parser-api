@@ -48,8 +48,7 @@ public class WrappingReportTable<RowType> implements ReportTable<RowType> {
         assertIsTrue(tables.length > 0, "Can't wrap, report tables not provided");
         BrokerReport report = tables[0].getReport();
         boolean isAllReportsIsSame = Arrays.stream(tables)
-                .map(ReportTable::getReport)
-                .allMatch(tableReport -> tableReport == report);
+                .allMatch(t -> t.getReport() == report);
         assertIsTrue(isAllReportsIsSame, "Wrapping report tables should be built for same broker report");
         return new WrappingReportTable<>(new LazyWrappingReportTable<>(report, tables));
     }

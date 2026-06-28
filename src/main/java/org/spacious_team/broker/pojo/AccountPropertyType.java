@@ -18,7 +18,7 @@
 
 package org.spacious_team.broker.pojo;
 
-public enum PortfolioPropertyType {
+public enum AccountPropertyType {
     TOTAL_ASSETS_RUB,
     TOTAL_ASSETS_USD // if TOTAL_ASSETS_RUB and TOTAL_ASSETS_USD exists for same date, total assets is sum of them
 }

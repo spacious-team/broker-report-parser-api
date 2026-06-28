@@ -25,8 +25,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 
 @Getter
@@ -34,16 +34,13 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Issuer")
-public class Issuer {
+@Schema(name = "Account")
+public class Account {
 
-    @Schema(description = "Record ID", nullable = true)
-    private final @Nullable Integer id;
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
+    private final @NotEmpty String id;
 
-    @Schema(description = "Taxpayer identification number (Russia: INN, US: EIN, etc.)",
-            example = "7736050003", nullable = true)
-    private final @Nullable String taxpayerId;
-
-    @Schema(description = "Issuer name", example = "Apple Inc.")
-    private final @NotEmpty String name;
+    @Schema(description = "Active account flag: if false, the account is archived", requiredMode = REQUIRED)
+    @Builder.Default
+    private final boolean enabled = true;
 }

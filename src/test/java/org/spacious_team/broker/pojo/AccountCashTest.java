@@ -27,22 +27,22 @@ import java.time.Instant;
 import static nl.jqno.equalsverifier.Warning.STRICT_INHERITANCE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PortfolioCashTest {
+class AccountCashTest {
 
     @Test
     void testEqualsAndHashCode() {
         EqualsVerifier
-                .forClass(PortfolioCash.class)
+                .forClass(AccountCash.class)
                 .suppress(STRICT_INHERITANCE) // no subclass for test
-                .withLombokCachedHashCode(PortfolioCash.builder().build())
+                .withLombokCachedHashCode(AccountCash.builder().build())
                 .verify();
     }
 
     @Test
     void testToString() {
-        PortfolioCash cash = PortfolioCash.builder()
+        AccountCash cash = AccountCash.builder()
                 .id(1)
-                .portfolio("123")
+                .account("123")
                 .timestamp(Instant.MIN)
                 .market("forts")
                 .value(BigDecimal.ONE)
@@ -50,7 +50,7 @@ class PortfolioCashTest {
                 .build();
 
         assertEquals(
-                "PortfolioCash(id=1, portfolio=123, timestamp=-1000000000-01-01T00:00:00Z, " +
+                "AccountCash(id=1, account=123, timestamp=-1000000000-01-01T00:00:00Z, " +
                         "market=forts, value=1, currency=USD)",
                 cash.toString());
     }

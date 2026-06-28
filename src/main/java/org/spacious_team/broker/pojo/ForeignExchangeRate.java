@@ -38,18 +38,18 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Официальный обменный курс")
+@Schema(name = "ForeignExchangeRate")
 public class ForeignExchangeRate {
 
-    @Schema(description = "Дата", example = "2021-21-23", requiredMode = REQUIRED)
+    @Schema(description = "Date", example = "2026-06-17", requiredMode = REQUIRED)
     private final LocalDate date;
 
     @JsonProperty("currency-pair")
-    @Schema(description = "Валютная пара, для курса доллара в рублях - USDRUB", example = "USDRUB", requiredMode = REQUIRED)
+    @Schema(description = "Currency pair", example = "USDRUB", requiredMode = REQUIRED)
     private final @NotEmpty String currencyPair;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Значение обменного курса", example = "75.67", requiredMode = REQUIRED)
+    @Schema(description = "Currency exchange rate", example = "75.67", requiredMode = REQUIRED)
     private final BigDecimal rate;
 
     @EqualsAndHashCode.Include

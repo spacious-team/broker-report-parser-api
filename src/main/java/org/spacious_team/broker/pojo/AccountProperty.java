@@ -25,6 +25,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.time.Instant;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
@@ -34,14 +37,21 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Счет")
-public class Portfolio {
+@Schema(name = "AccountProperty")
+public class AccountProperty {
+    // autoincrement
+    @Schema(description = "Record ID", example = "111", nullable = true)
+    private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String id;
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
+    private final @NotEmpty String account;
 
-    @Schema(description = "Признак активного счета: если false то счет исключается из аналитического расчета",
-            requiredMode = REQUIRED)
-    @Builder.Default
-    private final boolean enabled = true;
+    @Schema(description = "Date and time", example = "2021-01-01T12:00:00+03:00", nullable = true)
+    private final @Nullable Instant timestamp;
+
+    @Schema(description = "Property", example = "TOTAL_ASSETS_RUB", requiredMode = REQUIRED)
+    private final AccountPropertyType property;
+
+    @Schema(description = "Value", example = "100.20", requiredMode = REQUIRED)
+    private final String value;
 }

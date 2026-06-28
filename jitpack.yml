@@ -7,4 +7,4 @@
 
 # Later may be supported by
 jdk:
-  - openjdk11
+  - openjdk25

@@ -39,34 +39,34 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Котировка")
+@Schema(name = "SecurityQuote", description = "Quotes for traded instruments and valuations for custom assets")
 public class SecurityQuote {
 
     // autoincrement
-    @Schema(description = "Внутренний идентификатор записи", example = "333", nullable = true)
+    @Schema(description = "Record ID", example = "333", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
+    @Schema(description = "Asset", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Время", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
+    @Schema(description = "Date and time", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Котировка (для облигаций - в процентах, деривативы - в пунктах)", example = "4800.20", requiredMode = REQUIRED)
+    @Schema(description = "Quote (for bonds - in percent, for derivatives - in points)", example = "4800.20", requiredMode = REQUIRED)
     private final BigDecimal quote; // for stock, currency pair and asset in currency, for bond - in percent, for derivative - in quote
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Котировка (в валюте, только для облигаций и деривативов)", example = "1020.30", nullable = true)
+    @Schema(description = "Quote in currency (for bonds and derivatives only)", example = "1020.30", nullable = true)
     private final @Nullable BigDecimal price; // for bond and derivative - in currency, for others is null
 
     @EqualsAndHashCode.Exclude
     @JsonProperty("accrued-interest")
-    @Schema(description = "НКД (в валюте, только для облигаций)", example = "10.20", nullable = true)
+    @Schema(description = "Accrued coupon interest (in currency, for bonds only)", example = "10.20", nullable = true)
     private final @Nullable BigDecimal accruedInterest; // for bond in currency, for others is null
 
     @JsonProperty("currency")
-    @Schema(description = "Валюта котировки для акций, облигаций, произвольных активов и опционально для деривативов",
+    @Schema(description = "Quote currency for stocks, bonds, and custom assets and optionally for derivatives",
             example = "RUB", nullable = true)
     private final @Nullable String currency;
 

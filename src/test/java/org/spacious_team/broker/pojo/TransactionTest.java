@@ -42,14 +42,14 @@ class TransactionTest {
         Transaction transaction = Transaction.builder()
                 .id(1)
                 .tradeId("AB123")
-                .portfolio("2")
+                .account("2")
                 .security(3)
                 .timestamp(Instant.MIN)
                 .count(4)
                 .build();
 
         assertEquals(
-                "Transaction(id=1, tradeId=AB123, portfolio=2, security=3, " +
+                "Transaction(id=1, tradeId=AB123, account=2, security=3, " +
                         "timestamp=-1000000000-01-01T00:00:00Z, count=4)",
                 transaction.toString());
     }

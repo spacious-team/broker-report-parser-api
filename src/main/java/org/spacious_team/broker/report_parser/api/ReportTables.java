@@ -18,10 +18,10 @@
 
 package org.spacious_team.broker.report_parser.api;
 
+import org.spacious_team.broker.pojo.AccountCash;
+import org.spacious_team.broker.pojo.AccountProperty;
 import org.spacious_team.broker.pojo.EventCashFlow;
 import org.spacious_team.broker.pojo.ForeignExchangeRate;
-import org.spacious_team.broker.pojo.PortfolioCash;
-import org.spacious_team.broker.pojo.PortfolioProperty;
 import org.spacious_team.broker.pojo.Security;
 import org.spacious_team.broker.pojo.SecurityEventCashFlow;
 import org.spacious_team.broker.pojo.SecurityQuote;
@@ -30,9 +30,9 @@ import org.spacious_team.broker.pojo.SecurityQuote;
 public interface ReportTables {
     BrokerReport getReport();
 
-    ReportTable<PortfolioProperty> getPortfolioPropertyTable();
+    ReportTable<AccountProperty> getAccountPropertyTable();
 
-    ReportTable<PortfolioCash> getPortfolioCashTable();
+    ReportTable<AccountCash> getAccountCashTable();
 
     ReportTable<EventCashFlow> getCashFlowTable();
 

@@ -42,34 +42,34 @@ import static lombok.EqualsAndHashCode.CacheStrategy.LAZY;
 @Jacksonized
 @Builder(toBuilder = true)
 @EqualsAndHashCode(cacheStrategy = LAZY)
-@Schema(name = "Событие по бумаге", description = "Дивиденды, купоны, амортизация, вариационная маржа, налоги, комиссии")
+@Schema(name = "SecurityEventCashFlow", description = "Dividends, coupons, amortizations, variation margin, taxes, fees")
 public class SecurityEventCashFlow {
     // autoincrement
-    @Schema(description = "Внутренний идентификатор записи", example = "222", nullable = true)
+    @Schema(description = "Record ID", example = "222", nullable = true)
     private final @Nullable Integer id;
 
-    @Schema(description = "Номер счета в системе учета брокера", example = "10200I", requiredMode = REQUIRED)
-    private final @NotEmpty String portfolio;
+    @Schema(description = "Account number in the broker's accounting system", example = "10200I", requiredMode = REQUIRED)
+    private final @NotEmpty String account;
 
-    @Schema(description = "Время события", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
+    @Schema(description = "Event time", example = "2021-01-01T19:00:00+03:00", requiredMode = REQUIRED)
     private final Instant timestamp;
 
-    @Schema(description = "Инструмент", example = "123", requiredMode = REQUIRED)
+    @Schema(description = "Security", example = "123", requiredMode = REQUIRED)
     private final int security;
 
-    @Schema(description = "Количество бумаг (контрактов)", example = "10", requiredMode = REQUIRED)
+    @Schema(description = "Number of securities (contracts)", example = "10", requiredMode = REQUIRED)
     private final Integer count;
 
     @JsonProperty("event-type")
-    @Schema(description = "Тип события", example = "DIVIDEND", requiredMode = REQUIRED)
+    @Schema(description = "Event type", example = "DIVIDEND", requiredMode = REQUIRED)
     private final CashFlowType eventType;
 
     @EqualsAndHashCode.Exclude
-    @Schema(description = "Сумма", example = "100.20", requiredMode = REQUIRED)
+    @Schema(description = "Amount", example = "100.20", requiredMode = REQUIRED)
     private final BigDecimal value;
 
     @Builder.Default
-    @Schema(description = "Валюта", example = "RUB", defaultValue = "RUB", nullable = true)
+    @Schema(description = "Currency", example = "RUB", defaultValue = "RUB", nullable = true)
     private final String currency = "RUR";
 
     /**
@@ -80,7 +80,7 @@ public class SecurityEventCashFlow {
         return cash1.getSecurity() == cash2.getSecurity() &&
                 Objects.equals(cash1.getEventType(), cash2.getEventType()) &&
                 Objects.equals(cash1.getTimestamp(), cash2.getTimestamp()) &&
-                Objects.equals(cash1.getPortfolio(), cash2.getPortfolio());
+                Objects.equals(cash1.getAccount(), cash2.getAccount());
     }
 
     /**

@@ -39,10 +39,10 @@ class SecurityDescriptionTest {
     void testToString() {
         SecurityDescription description = SecurityDescription.builder()
                 .security(1)
-                .sector("Финансы")
+                .sector("Information Technology")
                 .issuer(10)
                 .build();
 
-        assertEquals("SecurityDescription(security=1, sector=Финансы, issuer=10)", description.toString());
+        assertEquals("SecurityDescription(security=1, sector=Information Technology, issuer=10)", description.toString());
     }
 }
